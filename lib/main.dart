@@ -1,132 +1,192 @@
-import 'package:flutter/material.dart';
+import 'dart:math';
 
-void main() => runApp(new MyApp());
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'search.dart';
+
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'PotLuck Demo',
-      theme: new ThemeData(
-        primarySwatch: Colors.green,
+    return MaterialApp(
+      title: 'PotLuck',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
-      home: new SearchPage(),
+      home: HomePage(title: 'PotLuck Search Page'),
     );
   }
 }
 
-class SearchPage extends StatefulWidget {
-  @override
-  _SearchPageState createState() => new _SearchPageState();
-}
+class HomePage extends StatelessWidget {
+  final String title;
 
-class _SearchPageState extends State<SearchPage> {
-  // final formKey = new GlobalKey<FormState>();
-  // final key = new GlobalKey<ScaffoldState>();
-  final TextEditingController _filter = new TextEditingController();
-  //final dio = new Dio();
-  String _searchText = "";
-  List names = new List();
-  List filteredNames = new List();
-  Icon _searchIcon = new Icon(Icons.search);
-  Widget _appBarTitle = new Text( 'Search by Ingredient' );
-
-  _SearchPageState() {
-    _filter.addListener(() {
-      if (_filter.text.isEmpty) {
-        setState(() {
-          _searchText = "";
-          filteredNames = names;
-        });
-      } else {
-        setState(() {
-          _searchText = _filter.text;
-        });
-      }
-    });
-  }
+  HomePage({this.title});
 
   @override
-  void initState() {
-    this._getNames();
-    super.initState();
-  }
-
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildBar(context),
-      body: Container(
-        child: _buildList(),
-      ),
-      resizeToAvoidBottomPadding: false,
-    );
-  }
-
-  Widget _buildBar(BuildContext context) {
-    return new AppBar(
-      centerTitle: true,
-      title: _appBarTitle,
-      leading: new IconButton(
-        icon: _searchIcon,
-        onPressed: _searchPressed,
-
-      ),
-    );
-  }
-
-  Widget _buildList() {
-    if (!(_searchText.isEmpty)) {
-      List tempList = new List();
-      for (int i = 0; i < filteredNames.length; i++) {
-        if (filteredNames[i]['name'].toLowerCase().contains(_searchText.toLowerCase())) {
-          tempList.add(filteredNames[i]);
-        }
-      }
-      filteredNames = tempList;
-    }
-    return ListView.builder(
-      itemCount: names == null ? 0 : filteredNames.length,
-      itemBuilder: (BuildContext context, int index) {
-        return new ListTile(
-          title: Text(filteredNames[index]['name']),
-          onTap: () => print(filteredNames[index]['name']),
-        );
-      },
-    );
-  }
-
-  void _searchPressed() {
-    setState(() {
-      if (this._searchIcon.icon == Icons.search) {
-        this._searchIcon = new Icon(Icons.close);
-        this._appBarTitle = new TextField(
-          controller: _filter,
-          decoration: new InputDecoration(
-              prefixIcon: new Icon(Icons.search),
-              hintText: 'i.e. apple, banana, carrot...'
+      body: SafeArea(
+        child: BlocProvider(
+          builder: (context) => SearchBloc(),
+          child: Column(
+            children: <Widget>[
+              SearchBar(),
+              SearchBody(),
+            ],
           ),
-        );
-      } else {
-        this._searchIcon = new Icon(Icons.search);
-        this._appBarTitle = new Text( 'Search Example' );
-        filteredNames = names;
-        _filter.clear();
-      }
-    });
+        ),
+      ),
+    );
   }
+}
 
-  void _getNames() async {
-    //final response = await dio.get('https://swapi.co/api/people');
-    List tempList = new List();
-    //for (int i = 0; i < response.data['results'].length; i++) {
-      //tempList.add(response.data['results'][i]);
-    }
-    //setState(() {
-      //names = tempList;
-      //names.shuffle();
-      //filteredNames = names;
-    //});
-  //}
+class SearchBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Just a type of container that has certain properties we can use
+    return Material(
+      // Controls how large of a shadow this should have
+      elevation: 3.0,
+      child: Padding(
+        // Adds some padding around our TextField
+        padding: const EdgeInsets.symmetric(
+          vertical: 5.0,
+          horizontal: 15.0,
+        ),
+        child: TextField(
+          // Type of "Done" button to show on keyboard
+          textInputAction: TextInputAction.search,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            // Shows when TextField is empty
+            hintText: "Search Ingredients",
+          ),
+          onSubmitted: (value) {
+            BlocProvider.of<SearchBloc>(context).dispatch(
+              Submit(),
+//              SearchEvent(value, submitted: true),
+            );
+          },
+          onChanged: (value) {
+            BlocProvider.of<SearchBloc>(context).dispatch(
+              QueryChange(value),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
 
+class SearchBody extends StatelessWidget {
+  final SliverGridDelegate _gridDelegate;
 
+  SearchBody()
+      : _gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
+          // This is how many results we want in one row
+          crossAxisCount: 2,
+
+          // This is the vertical spacing between our results
+          mainAxisSpacing: 5.0,
+
+          // This is the horizontal spacing between our results
+          crossAxisSpacing: 5.0,
+        );
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: BlocBuilder<SearchBloc, SearchState>(
+          /*
+                   * This function is called on every change in our app's state.
+                   * This allows us to show different UI depending on the status
+                   * of our search (not submitted, loading, finished, error).
+                   */
+          builder: (context, state) {
+            // Nothing has been searched yet; show tip/hint
+            if (state is InitialState) {
+              return Center(
+                child: Text(
+                  "Please enter your available ingredients",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              );
+            }
+
+            // In the progress of searching; show loading animation
+            if (state is SearchInProgress) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            // TODO: Add an error condition
+
+            var results = (state as SearchSuccessful).results;
+            if (results.length == 0) {
+              return Center(
+                child: Text(
+                  "No recipes were found",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              );
+            }
+
+            // Search results returned; show formatted list of results
+            return GridView.builder(
+              // See above for explanation of this
+              gridDelegate: _gridDelegate,
+              itemCount: results.length,
+              /*
+                       * This function is called once for each grid item created.
+                       * This allows us to build items dynamically as the user
+                       * scrolls, using the index to know which item we're on.
+                       */
+              itemBuilder: (context, index) {
+                return RecipeResult(results[index]);
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class RecipeResult extends StatelessWidget {
+  final SearchResult data;
+
+  RecipeResult(this.data);
+
+  @override
+  Widget build(BuildContext context) {
+    // A container with rounded corners and a shadow by default
+    return Card(
+      color: Colors.red[300],
+      elevation: 2.0,
+      // Lay out our item as a square with header, footer, body
+      child: GridTile(
+        // Multiline header/footer designed for use in GridTile
+        header: GridTileBar(
+          backgroundColor: Color.fromARGB(64, 255, 255, 255),
+          title: Text(data.recipeName),
+          subtitle: Text("Matched Ingredients List"),
+        ),
+        footer: GridTileBar(
+          backgroundColor: Color.fromARGB(64, 127, 127, 127),
+          title: Text(Random().nextInt(5).toString() + " Missing Ingredients"),
+          subtitle: Text("Missing Ingredients List"),
+        ),
+        // This could be a thumbnail for our recipe result later
+        child: Center(
+          child: FlutterLogo(),
+        ),
+      ),
+    );
+  }
 }
