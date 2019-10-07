@@ -1,11 +1,18 @@
+import 'dart:convert' as convert;
+
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 // Encodes all the data that is returned by our recipe API interface
 // (Can be expanded later)
 class SearchResult {
   final String recipeName;
+  final int missedIngredients;
+  final int matchedIngredients;
 
-  SearchResult({this.recipeName});
+  SearchResult(
+      {this.recipeName, this.missedIngredients, this.matchedIngredients});
 }
 
 // Encodes the type and data of events coming from our search UI
@@ -76,44 +83,47 @@ class RecipeSearch {
   String addParamsToUrl(String url, Map<String, dynamic> params) {
     if (params == null || params.length == 0) return url;
 
-    url = "$url?apiKey=$_apiKey";
+    url = "$url?apiKey=$_apiKey&";
     params.forEach((key, value) {
       // Insert key-value pairs into url parameter format
       url = "$url$key=$value&";
     });
 
     // Remove unnecessary trailing ampersand
-    url.substring(0, url.length - 2);
-
-    return url;
+    return url.substring(0, url.length - 2);
   }
 
   // Fetches recipe results
   Future<List<SearchResult>> getRecipeResults(String searchString) async {
-//    var url = addParamsToUrl(
-//      "https://api.spoonacular.com/recipes/complexSearch",
-//      <String, dynamic>{"includeIngredients": searchString},
-//    );
-//    debugPrint(url);
-//    var response = await http.get(url);
-//    var data = convert.jsonDecode(response.body);
-//
-//    int count = data["number"];
-//    var results = data["results"];
-//
-//    var resultList = List<SearchResult>();
-//    for (int i = 0; i < count; i++) {
-//      resultList.add(SearchResult(recipeName: results[i]["title"]));
+    var url = addParamsToUrl(
+      "https://api.spoonacular.com/recipes/findByIngredients",
+      <String, dynamic>{"ingredients": searchString},
+    );
+    debugPrint(url);
+    var response = await http.get(url);
+    var data = convert.jsonDecode(response.body);
+
+    var resultList = List<SearchResult>();
+
+    data.forEach((result) {
+      resultList.add(SearchResult(
+        recipeName: result["title"],
+        matchedIngredients: result["usedIngredientCount"],
+        missedIngredients: result["missedIngredientCount"],
+      ));
+    });
+
+    return resultList;
+
+//    if (searchString == "ham,cheese") {
+//      // TODO: Don't forget to remove artificial delay
+//      await Future.delayed(Duration(seconds: 1));
+//      return <SearchResult>[
+//        SearchResult(recipeName: "Ham & Cheese Sandwich"),
+//        SearchResult(recipeName: "Snack Crackers"),
+//        SearchResult(recipeName: "Gourmet Crescent Rolls"),
+//      ];
 //    }
-    if (searchString == "ham,cheese") {
-      // TODO: Don't forget to remove artificial delay
-      await Future.delayed(Duration(seconds: 1));
-      return <SearchResult>[
-        SearchResult(recipeName: "Ham & Cheese Sandwich"),
-        SearchResult(recipeName: "Snack Crackers"),
-        SearchResult(recipeName: "Gourmet Crescent Rolls"),
-      ];
-    }
-    return List<SearchResult>();
+//    return List<SearchResult>();
   }
 }

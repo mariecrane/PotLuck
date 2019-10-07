@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -175,11 +173,13 @@ class RecipeResult extends StatelessWidget {
         header: GridTileBar(
           backgroundColor: Color.fromARGB(64, 255, 255, 255),
           title: Text(data.recipeName),
-          subtitle: Text("Matched Ingredients List"),
+          subtitle:
+              Text(data.matchedIngredients.toString() + " Matched Ingredients"),
         ),
         footer: GridTileBar(
           backgroundColor: Color.fromARGB(64, 127, 127, 127),
-          title: Text(Random().nextInt(5).toString() + " Missing Ingredients"),
+          title:
+              Text(data.missedIngredients.toString() + " Missing Ingredients"),
           subtitle: Text("Missing Ingredients List"),
         ),
         // This could be a thumbnail for our recipe result later
