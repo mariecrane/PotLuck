@@ -135,6 +135,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.5"
+  spoonacular:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: cd486f07df2cef9a08a0629388794fd6271f45ee
+      url: "https://github.com/Preston12321/spoonacular-dart-api-client.git"
+    source: git
+    version: "1.0.0"
   stack_trace:
     dependency: transitive
     description:
