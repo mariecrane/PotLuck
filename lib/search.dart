@@ -95,6 +95,7 @@ class RecipeSearch {
 
   // Fetches recipe results
   Future<List<SearchResult>> getRecipeResults(String searchString) async {
+    if (searchString.indexOf(",") == -1) searchString+=","; // fixes weird one search term bug //TODO: investigate further
     var url = addParamsToUrl(
       "https://api.spoonacular.com/recipes/findByIngredients",
       <String, dynamic>{"ingredients": searchString},
