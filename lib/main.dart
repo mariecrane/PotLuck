@@ -81,7 +81,7 @@ class SearchBar extends StatelessWidget {
 
 class SearchBody extends StatelessWidget {
   final SliverGridDelegate _gridDelegate;
-
+//TODO: vfffff
   SearchBody()
       : _gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
           // This is how many results we want in one row
@@ -136,15 +136,23 @@ class SearchBody extends StatelessWidget {
             }
 
             // Search results returned; show formatted list of results
-            return GridView.builder(
-              // See above for explanation of this
-              gridDelegate: _gridDelegate,
+//            return GridView.builder(
+//              // See above for explanation of this
+//              gridDelegate: _gridDelegate,
+//              itemCount: results.length,
+//              /*
+//                       * This function is called once for each grid item created.
+//                       * This allows us to build items dynamically as the user
+//                       * scrolls, using the index to know which item we're on.
+//                       */
+//              itemBuilder: (context, index) {
+//                return RecipeResult(results[index]);
+//              },
+//            );
+            // TODO: LIST VIEW
+            return ListView.builder(
               itemCount: results.length,
-              /*
-                       * This function is called once for each grid item created.
-                       * This allows us to build items dynamically as the user
-                       * scrolls, using the index to know which item we're on.
-                       */
+              shrinkWrap: true,
               itemBuilder: (context, index) {
                 return RecipeResult(results[index]);
               },
@@ -165,28 +173,46 @@ class RecipeResult extends StatelessWidget {
   Widget build(BuildContext context) {
     // A container with rounded corners and a shadow by default
     return Card(
-      color: Colors.red[300],
+      color: Colors.deepOrange[50],
       elevation: 2.0,
+      shape: RoundedRectangleBorder(
+      ),
       // Lay out our item as a square with header, footer, body
-      child: GridTile(
-        // Multiline header/footer designed for use in GridTile
-        header: GridTileBar(
-          backgroundColor: Color.fromARGB(64, 255, 255, 255),
-          title: Text(data.recipeName),
-          subtitle:
-              Text("Matching: "+ data.usedIngredients),
+      child: ListTile(
+        //Image should be shown
+        // TODO: change it to real
+//        leading: Icon(Icons.fastfood),
+        leading: CircleAvatar(
+          backgroundImage: NetworkImage(data.imageUrl),
         ),
-        footer: GridTileBar(
-          backgroundColor: Color.fromARGB(64, 127, 127, 127),
-          title:
-              Text(data.missedIngredientCount.toString() + " Missing Ingredients"),
-          subtitle: Text(data.missedIngredients),
-        ),
-        // This could be a thumbnail for our recipe result later
-        child: Center(
-          child: FlutterLogo(),
-        ),
+        title: Text(data.recipeName),
+        subtitle: Text("Use: " + data.usedIngredients.toString()),
       ),
     );
+
+//    return Card(
+//      color: Colors.red[300],
+//      elevation: 2.0,
+//      // Lay out our item as a square with header, footer, body
+//      child: GridTile(
+//        // Multiline header/footer designed for use in GridTile
+//        header: GridTileBar(
+//          backgroundColor: Color.fromARGB(64, 255, 255, 255),
+//          title: Text(data.recipeName),
+//          subtitle:
+//          Text(data.matchedIngredients.toString() + " Matched Ingredients"),
+//        ),
+//        footer: GridTileBar(
+//          backgroundColor: Color.fromARGB(64, 127, 127, 127),
+//          title:
+//          Text(data.missedIngredients.toString() + " Missing Ingredients"),
+//          subtitle: Text("Missing Ingredients List"),
+//        ),
+//        // This could be a thumbnail for our recipe result later
+//        child: Center(
+//          child: FlutterLogo(),
+//        ),
+//      ),
+//    );
   }
 }
