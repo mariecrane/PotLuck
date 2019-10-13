@@ -14,6 +14,7 @@ class SearchResult {
   final String missedIngredients;
   final String usedIngredients;
   final String imageUrl;
+  final int likes;
 
   SearchResult(this.id,
       {this.recipeName,
@@ -22,6 +23,7 @@ class SearchResult {
         this.missedIngredients,
         this.usedIngredients,
         this.imageUrl,
+        this.likes,
       });
 }
 
@@ -143,6 +145,7 @@ class RecipeSearch {
     data.forEach((result) {
       var missedIngredients = "";
       for(var i=0;i<result["missedIngredients"].length;i++){
+        // gets each missing ingredient and adds it to missedIngredients string
         missedIngredients += result["missedIngredients"][i]["name"] + ", ";
         //TODO: implement "+6 more"
       }
@@ -153,6 +156,7 @@ class RecipeSearch {
       debugPrint(missedIngredients);
       var usedIngredients = "";
       for(var i=0;i<result["usedIngredients"].length;i++){
+        // gets each matching ingredient and adds it to usedIngredients string
         usedIngredients += result["usedIngredients"][i]["name"] + ", ";
         //TODO: implement "+6 more"
       }
@@ -169,6 +173,7 @@ class RecipeSearch {
         missedIngredients: missedIngredients,
         usedIngredients: usedIngredients,
         imageUrl: result["image"],
+        likes: result["likes"],
       ));
     });
     return resultList;
