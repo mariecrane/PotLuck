@@ -9,8 +9,9 @@ class RecipePage extends StatelessWidget {
         backgroundColor: Colors.red[300],
         automaticallyImplyLeading: true,
         title: Text("Recipe Title"),
-        leading: IconButton(icon:Icon(Icons.arrow_back),
-          onPressed:() => Navigator.pop(context, false),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context, false),
         ),
       ),
       body: ListView(
