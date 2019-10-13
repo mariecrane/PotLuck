@@ -9,11 +9,18 @@ import 'package:http/http.dart' as http;
 class SearchResult {
   final int id;
   final String recipeName;
-  final int missedIngredients;
-  final int matchedIngredients;
+  final int missedIngredientCount;
+  final int usedIngredientCount;
+  final String missedIngredients;
+  final String usedIngredients;
 
   SearchResult(this.id,
-      {this.recipeName, this.missedIngredients, this.matchedIngredients});
+      {this.recipeName,
+        this.missedIngredientCount,
+        this.usedIngredientCount,
+        this.missedIngredients,
+        this.usedIngredients,
+      });
 }
 
 /// Encodes the type and data of events coming from our search UI
@@ -84,7 +91,7 @@ class RecipeSearch {
   RecipeSearch._privateConstructor();
   static final RecipeSearch instance = RecipeSearch._privateConstructor();
 
-  final String _apiKey = "";
+  final String _apiKey = "712ae78dc1114622840c68b7a760caaf";
 
   bool get useMetricUnits {
     // TODO: Add logic to determine whether we should use US or Metric units
@@ -126,19 +133,31 @@ class RecipeSearch {
     );
     debugPrint(url);
     var response = await http.get(url);
+    debugPrint(response.body);
     var data = convert.jsonDecode(response.body);
 
     var resultList = List<SearchResult>();
 
     data.forEach((result) {
+      var missedIngredients = "";
+      for(var i=0;i<result["missedIngredients"].length;i++){
+        missedIngredients += result["missedIngredients"][i]["name"] + ", "; //TODO: implement "+6 more" and get rid of final comma
+      }
+      debugPrint(missedIngredients);
+      var usedIngredients = "";
+      for(var i=0;i<result["usedIngredients"].length;i++){
+        usedIngredients += result["usedIngredients"][i]["name"] + ", "; //TODO: implement "+6 more" and get rid of final comma
+      }
+      debugPrint(usedIngredients);
       resultList.add(SearchResult(
         result["id"],
         recipeName: result["title"],
-        matchedIngredients: result["usedIngredientCount"],
-        missedIngredients: result["missedIngredientCount"],
+        usedIngredientCount: result["usedIngredientCount"],
+        missedIngredientCount: result["missedIngredientCount"],
+        missedIngredients: missedIngredients,
+        usedIngredients: usedIngredients,
       ));
     });
-
     return resultList;
   }
 

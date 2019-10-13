@@ -174,13 +174,13 @@ class RecipeResult extends StatelessWidget {
           backgroundColor: Color.fromARGB(64, 255, 255, 255),
           title: Text(data.recipeName),
           subtitle:
-              Text(data.matchedIngredients.toString() + " Matched Ingredients"),
+              Text(data.usedIngredients),
         ),
         footer: GridTileBar(
           backgroundColor: Color.fromARGB(64, 127, 127, 127),
           title:
-              Text(data.missedIngredients.toString() + " Missing Ingredients"),
-          subtitle: Text("Missing Ingredients List"),
+              Text(data.missedIngredientCount.toString() + " Missing Ingredients"),
+          subtitle: Text(data.missedIngredients),
         ),
         // This could be a thumbnail for our recipe result later
         child: Center(
