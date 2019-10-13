@@ -13,6 +13,7 @@ class SearchResult {
   final int usedIngredientCount;
   final String missedIngredients;
   final String usedIngredients;
+  final String imageUrl;
 
   SearchResult(this.id,
       {this.recipeName,
@@ -20,6 +21,7 @@ class SearchResult {
         this.usedIngredientCount,
         this.missedIngredients,
         this.usedIngredients,
+        this.imageUrl,
       });
 }
 
@@ -156,6 +158,7 @@ class RecipeSearch {
         missedIngredientCount: result["missedIngredientCount"],
         missedIngredients: missedIngredients,
         usedIngredients: usedIngredients,
+        imageUrl: result["image"],
       ));
     });
     return resultList;
