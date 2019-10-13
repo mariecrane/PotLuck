@@ -174,7 +174,7 @@ class RecipeResult extends StatelessWidget {
           backgroundColor: Color.fromARGB(64, 255, 255, 255),
           title: Text(data.recipeName),
           subtitle:
-              Text(data.usedIngredients),
+              Text("Matching: "+ data.usedIngredients),
         ),
         footer: GridTileBar(
           backgroundColor: Color.fromARGB(64, 127, 127, 127),

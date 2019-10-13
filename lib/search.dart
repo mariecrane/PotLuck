@@ -93,7 +93,7 @@ class RecipeSearch {
   RecipeSearch._privateConstructor();
   static final RecipeSearch instance = RecipeSearch._privateConstructor();
 
-  final String _apiKey = "712ae78dc1114622840c68b7a760caaf";
+  final String _apiKey = ""; // REMEMBER TO ADD AND REMOVE API KEY!!!
 
   bool get useMetricUnits {
     // TODO: Add logic to determine whether we should use US or Metric units
@@ -143,12 +143,22 @@ class RecipeSearch {
     data.forEach((result) {
       var missedIngredients = "";
       for(var i=0;i<result["missedIngredients"].length;i++){
-        missedIngredients += result["missedIngredients"][i]["name"] + ", "; //TODO: implement "+6 more" and get rid of final comma
+        missedIngredients += result["missedIngredients"][i]["name"] + ", ";
+        //TODO: implement "+6 more"
+      }
+      if(missedIngredients.length != 0){
+        // removes final comma
+        missedIngredients = missedIngredients.substring(0, missedIngredients.length-2);
       }
       debugPrint(missedIngredients);
       var usedIngredients = "";
       for(var i=0;i<result["usedIngredients"].length;i++){
-        usedIngredients += result["usedIngredients"][i]["name"] + ", "; //TODO: implement "+6 more" and get rid of final comma
+        usedIngredients += result["usedIngredients"][i]["name"] + ", ";
+        //TODO: implement "+6 more"
+      }
+      if(usedIngredients.length != 0){
+        // removes final comma
+        usedIngredients = usedIngredients.substring(0, usedIngredients.length-2);
       }
       debugPrint(usedIngredients);
       resultList.add(SearchResult(
