@@ -16,15 +16,16 @@ class SearchResult {
   final String imageUrl;
   final int likes;
 
-  SearchResult(this.id,
-      {this.recipeName,
-        this.missedIngredientCount,
-        this.usedIngredientCount,
-        this.missedIngredients,
-        this.usedIngredients,
-        this.imageUrl,
-        this.likes,
-      });
+  SearchResult(
+    this.id, {
+    this.recipeName,
+    this.missedIngredientCount,
+    this.usedIngredientCount,
+    this.missedIngredients,
+    this.usedIngredients,
+    this.imageUrl,
+    this.likes,
+  });
 }
 
 /// Encodes the type and data of events coming from our search UI
@@ -144,25 +145,27 @@ class RecipeSearch {
 
     data.forEach((result) {
       var missedIngredients = "";
-      for(var i=0;i<result["missedIngredients"].length;i++){
+      for (var i = 0; i < result["missedIngredients"].length; i++) {
         // gets each missing ingredient and adds it to missedIngredients string
         missedIngredients += result["missedIngredients"][i]["name"] + ", ";
         //TODO: implement "+6 more"
       }
-      if(missedIngredients.length != 0){
+      if (missedIngredients.length != 0) {
         // removes final comma
-        missedIngredients = missedIngredients.substring(0, missedIngredients.length-2);
+        missedIngredients =
+            missedIngredients.substring(0, missedIngredients.length - 2);
       }
       debugPrint(missedIngredients);
       var usedIngredients = "";
-      for(var i=0;i<result["usedIngredients"].length;i++){
+      for (var i = 0; i < result["usedIngredients"].length; i++) {
         // gets each matching ingredient and adds it to usedIngredients string
         usedIngredients += result["usedIngredients"][i]["name"] + ", ";
         //TODO: implement "+6 more"
       }
-      if(usedIngredients.length != 0){
+      if (usedIngredients.length != 0) {
         // removes final comma
-        usedIngredients = usedIngredients.substring(0, usedIngredients.length-2);
+        usedIngredients =
+            usedIngredients.substring(0, usedIngredients.length - 2);
       }
       debugPrint(usedIngredients);
       resultList.add(SearchResult(

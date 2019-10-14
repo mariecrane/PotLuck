@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/search.dart';
+import 'package:pot_luck/ui/recipe_page.dart';
 
 class SearchPage extends StatelessWidget {
   final String title;
@@ -170,6 +172,12 @@ class RecipeResult extends StatelessWidget {
         ),
         title: Text(data.recipeName),
         subtitle: Text("Use: " + data.usedIngredients.toString()),
+        onTap: () {
+          Navigator.push(
+            context,
+            CupertinoPageRoute(builder: (context) => RecipePage(data)),
+          );
+        },
       ),
     );
 
