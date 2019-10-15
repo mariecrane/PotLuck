@@ -50,6 +50,11 @@ class SearchSuccessful extends SearchState {
   SearchSuccessful(this.results);
 }
 
+class SearchError extends SearchState {
+  final String message;
+  SearchError(this.message);
+}
+
 /// Connects our business logic with our UI code in an extensible way
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   String _searchString;
@@ -80,10 +85,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         // Update: seems unnecessary now, but for safety, we'll keep this around
         // await Future.delayed(Duration(milliseconds: 100));
 
-        // When our search returns results, pass them to the UI
-        var results =
-            await RecipeSearch.instance.getRecipeResults(_searchString);
-        yield SearchSuccessful(results);
+        try {
+          // When our search returns results, pass them to the UI
+          var results =
+              await RecipeSearch.instance.getRecipeResults(_searchString);
+          yield SearchSuccessful(results);
+        } catch (error) {
+          // TODO: Add more meaningful error messages
+          yield SearchError(error.toString());
+        }
       } else {
         // Nothing has been input; go back to initial state
         yield InitialState();
@@ -215,11 +225,13 @@ class RecipeSearch {
     // TODO: Handle multiple sets of instructions (prerequisite ingredients)
     // Parse out the list of steps
     var steps = List<RecipeStep>();
-    data["analyzedInstructions"][0]["steps"].forEach((instruction) {
-      steps.add(RecipeStep(
-        instructionsText: instruction["step"],
-      ));
-    });
+    if (data["analyzedInstructions"].length != 0) {
+      data["analyzedInstructions"][0]["steps"].forEach((instruction) {
+        steps.add(RecipeStep(
+          instructionsText: instruction["step"],
+        ));
+      });
+    }
 
     return RecipeInfo(
       id: data["id"],

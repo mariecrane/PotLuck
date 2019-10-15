@@ -28,6 +28,16 @@ class RecipePage extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                snapshot.error.toString(),
+                style: TextStyle(color: Colors.red),
+              ),
+            );
+          }
+
           // TODO: Use data variable to fill in live data returned from our API
           RecipeInfo data = snapshot.data;
           // Now we can show our data

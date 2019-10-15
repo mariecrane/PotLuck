@@ -109,7 +109,15 @@ class SearchBody extends StatelessWidget {
               );
             }
 
-            // TODO: Add an error condition
+            // Some error happened; display error message
+            if (state is SearchError) {
+              return Center(
+                child: Text(
+                  state.message,
+                  style: TextStyle(color: Colors.red),
+                ),
+              );
+            }
 
             var results = (state as SearchSuccessful).results;
             if (results.length == 0) {
