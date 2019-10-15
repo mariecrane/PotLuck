@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:pot_luck/search.dart';
 
 class RecipePage extends StatelessWidget {
@@ -31,6 +32,8 @@ class RecipePage extends StatelessWidget {
           // TODO: Use data variable to fill in live data returned from our API
           RecipeInfo data = snapshot.data;
           // Now we can show our data
+          String ingredient_list = "";
+          data.ingredients.forEach((ingredient){ingredient_list = ingredient_list + " " + ingredient.name + "\n";});
           return ListView(
             children: ListTile.divideTiles(
               context: context,
@@ -39,7 +42,7 @@ class RecipePage extends StatelessWidget {
                   semanticContainer: true,
                   clipBehavior: Clip.antiAliasWithSaveLayer,
                   child: Image.network(
-                    'https://placeimg.com/640/480/any',
+                    data.imageUrl,
                     fit: BoxFit.fill,
                   ),
                   shape: RoundedRectangleBorder(
@@ -48,12 +51,9 @@ class RecipePage extends StatelessWidget {
                   margin: EdgeInsets.all(10),
                 ),
                 ListTile(
-                  title: Text('Brief Description of Recipe'),
-                  subtitle: Text("A description"),
-                ),
-                ListTile(
                   title: Text('Ingredients:'),
-                  subtitle: Text("A list of ingredients"),
+                  subtitle: Text(ingredient_list
+                ),
                 ),
                 ListTile(
                   title: Center(child: Text('Interested in this Recipe?')),
@@ -61,7 +61,7 @@ class RecipePage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: RaisedButton(
-                    onPressed: () {},
+                    onPressed: () {launch(data.sourceUrl);},
                     textColor: Colors.white,
                     color: Colors.red[300],
                     child: const Text(

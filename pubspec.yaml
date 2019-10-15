@@ -24,6 +24,7 @@ dependencies:
   http: ^0.12.0+2
   spoonacular:
     git: https://github.com/Preston12321/spoonacular-dart-api-client.git
+  url_launcher: ^5.1.6
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
