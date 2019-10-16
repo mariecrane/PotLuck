@@ -154,87 +154,82 @@ class RecipeResult extends StatelessWidget {
   Widget build(BuildContext context) {
     // A container with rounded corners and a shadow by default
     return Card(
-      color: Colors.white,
-      elevation: 3.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(35.0)
-      ),
-      child:InkWell(
-        splashColor: Colors.blueGrey[200],
-        onTap: () {
-          Navigator.push(
-            context,
-            CupertinoPageRoute(builder: (context) => RecipePage(data)),
-          );
-        },
-        child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-            child: SizedBox(
-                height: 120.0,
-                child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(right: 20.0),
-                        child: AspectRatio(
+        color: Colors.white,
+        elevation: 3.0,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(35.0)),
+        child: InkWell(
+          splashColor: Colors.blueGrey[200],
+          onTap: () {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(builder: (context) => RecipePage(data)),
+            );
+          },
+          child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+              child: SizedBox(
+                  height: 120.0,
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: AspectRatio(
                             aspectRatio: 1.0,
                             child: ClipRRect(
-                                borderRadius: new BorderRadius.circular(30.0),
-                                child:Image(
-                                    image: NetworkImage(data.imageUrl),
-                                    fit: BoxFit.cover
-                                )
-                            )
+                              borderRadius: new BorderRadius.circular(30.0),
+                              child: Image(
+                                image: NetworkImage(data.imageUrl),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          //Recipe name and used ingredients
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Container(
-                                  width: 200.0,
-                                  child: Text(data.recipeName,
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              //Recipe name and used ingredients
+                              Text(
+                                data.recipeName,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  // TODO: font change
+                                ),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.only(bottom: 5.0),
+                              ),
+                              Text(
+                                "Uses: " + data.usedIngredients.toString(),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              Expanded(
+                                child: Align(
+                                  alignment: FractionalOffset.bottomLeft,
+                                  child: Text(
+                                    data.likes.toString() + " LIKES",
                                     style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      // TODO: font change
+                                      fontSize: 13.0,
+                                      color: Colors.black87,
                                     ),
                                   ),
                                 ),
-                                const Padding(padding: EdgeInsets.only(bottom: 5.0)),
-                                Container(
-                                  width: 200.0,
-                                  child:Text("Uses: " + data.usedIngredients.toString(),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 14.0,
-                                      color: Colors.black54,
-                                  ),
-                                ),
-                              )
+                              ),
                             ],
                           ),
-                        ),
-                      Text(data.likes.toString() + " LIKES",
-                              style: const TextStyle(
-                                fontSize: 13.0,
-                                color: Colors.black87,
-                      ),
-                    ),
-                  ],
-                )
-              ]
-            )
-          )
-        ),
-      )
-    );
+                        )
+                      ]))),
+        ));
   }
 }
