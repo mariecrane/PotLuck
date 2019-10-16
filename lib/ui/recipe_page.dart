@@ -10,13 +10,13 @@ class RecipePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.blueGrey[50],
       appBar: AppBar(
-        backgroundColor: Colors.red[300],
+        backgroundColor: Colors.white,
         automaticallyImplyLeading: true,
-        title: Text(result.recipeName),
+        title: Text(result.recipeName, style: TextStyle(color: Colors.black)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context, false),
         ),
       ),
@@ -39,11 +39,11 @@ class RecipePage extends StatelessWidget {
             );
           }
 
-          // TODO: Use data variable to fill in live data returned from our API
           RecipeInfo data = snapshot.data;
           // Now we can show our data
           String ingredient_list = "";
-          data.ingredients.forEach((ingredient){ingredient_list = ingredient_list + " " + ingredient.name + "\n";});
+          int n = 0;
+          data.ingredients.forEach((ingredient){n++; ingredient_list = ingredient_list + " " + n.toString() + ". " + ingredient.name + "\n";});
           return ListView(
             children: ListTile.divideTiles(
               context: context,
@@ -56,29 +56,42 @@ class RecipePage extends StatelessWidget {
                     fit: BoxFit.fill,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(35.0),
                   ),
                   margin: EdgeInsets.all(10),
                 ),
-                ListTile(
-                  title: Text('Ingredients:'),
-                  subtitle: Text(ingredient_list
-                ),
-                ),
-                ListTile(
-                  title: Center(child: Text('Interested in this Recipe?')),
+                Card(
+                  semanticContainer: true,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child: Container(
+                    child: ListTile(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+                      title: Text('Ingredients:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        subtitle: Text(ingredient_list)
+                    )
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(35.0),
+                  ),
+                  margin: EdgeInsets.all(10),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: RaisedButton(
                     onPressed: () {launch(data.sourceUrl);},
-                    textColor: Colors.white,
-                    color: Colors.red[300],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(25.0),
+                      side: BorderSide(color: Colors.white)),
+                    textColor: Colors.black,
+                    color: Colors.white,
                     child: const Text(
                       'Click Here To Visit the Webpage',
-                      style: TextStyle(fontSize: 18),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
+                ),
+                ListTile(
+                  title: Center(child: Text('@ 2019 blues_Comp225', style: TextStyle(fontSize: 10, color: Colors.grey))),
                 ),
               ],
             ).toList(),
