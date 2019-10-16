@@ -117,7 +117,7 @@ class RecipeSearch {
   /// Builds the full URL for an image of an ingredient
   String ingredientImageUrl(String fileName) {
     // TODO: Add some way to pick the image size? (Choices are 100, 250, 500)
-    String size = "250x250";
+    String size = "250X250";
     return "https://spoonacular.com/cdn/ingredients_$size/$fileName";
   }
 
