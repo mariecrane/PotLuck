@@ -12,6 +12,7 @@ class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey[50],
       body: SafeArea(
         child: BlocProvider(
           builder: (context) => SearchBloc(),
@@ -33,7 +34,7 @@ class SearchBar extends StatelessWidget {
     // Just a type of container that has certain properties we can use
     return Material(
       // Controls how large of a shadow this should have
-      elevation: 3.0,
+      elevation: 1.0,
       child: Padding(
         // Adds some padding around our TextField
         padding: const EdgeInsets.symmetric(
@@ -66,19 +67,19 @@ class SearchBar extends StatelessWidget {
 }
 
 class SearchBody extends StatelessWidget {
-  final SliverGridDelegate _gridDelegate;
-//TODO: vfffff
-  SearchBody()
-      : _gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
-          // This is how many results we want in one row
-          crossAxisCount: 2,
-
-          // This is the vertical spacing between our results
-          mainAxisSpacing: 5.0,
-
-          // This is the horizontal spacing between our results
-          crossAxisSpacing: 5.0,
-        );
+//  final SliverGridDelegate _gridDelegate;
+//TODO: delete it?
+//  SearchBody()
+//      : _gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
+//          // This is how many results we want in one row
+//          crossAxisCount: 2,
+//
+//          // This is the vertical spacing between our results
+//          mainAxisSpacing: 5.0,
+//
+//          // This is the horizontal spacing between our results
+//          crossAxisSpacing: 5.0,
+//        );
 
   @override
   Widget build(BuildContext context) {
@@ -130,20 +131,6 @@ class SearchBody extends StatelessWidget {
             }
 
             // Search results returned; show formatted list of results
-//            return GridView.builder(
-//              // See above for explanation of this
-//              gridDelegate: _gridDelegate,
-//              itemCount: results.length,
-//              /*
-//                       * This function is called once for each grid item created.
-//                       * This allows us to build items dynamically as the user
-//                       * scrolls, using the index to know which item we're on.
-//                       */
-//              itemBuilder: (context, index) {
-//                return RecipeResult(results[index]);
-//              },
-//            );
-            // TODO: LIST VIEW
             return ListView.builder(
               itemCount: results.length,
               shrinkWrap: true,
@@ -167,51 +154,84 @@ class RecipeResult extends StatelessWidget {
   Widget build(BuildContext context) {
     // A container with rounded corners and a shadow by default
     return Card(
-      color: Colors.deepOrange[50],
-      elevation: 2.0,
-      shape: RoundedRectangleBorder(),
-      // Lay out our item as a square with header, footer, body
-      child: ListTile(
-        //Image should be shown
-        // TODO: change it to real
-//        leading: Icon(Icons.fastfood),
-        leading: CircleAvatar(
-          backgroundImage: NetworkImage(data.imageUrl),
-        ),
-        title: Text(data.recipeName),
-        subtitle: Text("Use: " + data.usedIngredients.toString()),
+      color: Colors.white,
+      elevation: 3.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(35.0)
+      ),
+      child:InkWell(
+        splashColor: Colors.blueGrey[200],
         onTap: () {
           Navigator.push(
             context,
             CupertinoPageRoute(builder: (context) => RecipePage(data)),
           );
         },
-      ),
+        child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+            child: SizedBox(
+                height: 100.0,
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(right: 20.0),
+                        child: AspectRatio(
+                            aspectRatio: 1.0,
+                            child: ClipRRect(
+                                borderRadius: new BorderRadius.circular(25.0),
+                                child:Image(
+                                    image: NetworkImage(data.imageUrl),
+                                    fit: BoxFit.cover
+                                )
+                            )
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          //Recipe name and used ingredients
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  width: 200.0,
+                                  child: Text(data.recipeName,
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      // TODO: font change
+                                    ),
+                                  ),
+                                ),
+                                const Padding(padding: EdgeInsets.only(bottom: 5.0)),
+                                Text("Uses: " + data.usedIngredients.toString(),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text(data.likes.toString() + " LIKES",
+                              style: const TextStyle(
+                                fontSize: 13.0,
+                                color: Colors.black87,
+                        ),
+                      ),
+                  ],
+                )
+              ]
+            )
+          )
+        ),
+      )
     );
-
-//    return Card(
-//      color: Colors.red[300],
-//      elevation: 2.0,
-//      // Lay out our item as a square with header, footer, body
-//      child: GridTile(
-//        // Multiline header/footer designed for use in GridTile
-//        header: GridTileBar(
-//          backgroundColor: Color.fromARGB(64, 255, 255, 255),
-//          title: Text(data.recipeName),
-//          subtitle:
-//          Text(data.matchedIngredients.toString() + " Matched Ingredients"),
-//        ),
-//        footer: GridTileBar(
-//          backgroundColor: Color.fromARGB(64, 127, 127, 127),
-//          title:
-//          Text(data.missedIngredients.toString() + " Missing Ingredients"),
-//          subtitle: Text("Missing Ingredients List"),
-//        ),
-//        // This could be a thumbnail for our recipe result later
-//        child: Center(
-//          child: FlutterLogo(),
-//        ),
-//      ),
-//    );
   }
 }
