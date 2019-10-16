@@ -170,7 +170,7 @@ class RecipeResult extends StatelessWidget {
         child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
             child: SizedBox(
-                height: 100.0,
+                height: 120.0,
                 child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -179,7 +179,7 @@ class RecipeResult extends StatelessWidget {
                         child: AspectRatio(
                             aspectRatio: 1.0,
                             child: ClipRRect(
-                                borderRadius: new BorderRadius.circular(25.0),
+                                borderRadius: new BorderRadius.circular(30.0),
                                 child:Image(
                                     image: NetworkImage(data.imageUrl),
                                     fit: BoxFit.cover
@@ -208,23 +208,26 @@ class RecipeResult extends StatelessWidget {
                                   ),
                                 ),
                                 const Padding(padding: EdgeInsets.only(bottom: 5.0)),
-                                Text("Uses: " + data.usedIngredients.toString(),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.black54,
+                                Container(
+                                  width: 200.0,
+                                  child:Text("Uses: " + data.usedIngredients.toString(),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 14.0,
+                                      color: Colors.black54,
                                   ),
                                 ),
-                              ],
-                            ),
+                              )
+                            ],
                           ),
-                          Text(data.likes.toString() + " LIKES",
+                        ),
+                      Text(data.likes.toString() + " LIKES",
                               style: const TextStyle(
                                 fontSize: 13.0,
                                 color: Colors.black87,
-                        ),
                       ),
+                    ),
                   ],
                 )
               ]
