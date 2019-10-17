@@ -160,6 +160,9 @@ class RecipeResult extends StatelessWidget {
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(35.0)),
         child: InkWell(
           splashColor: Colors.blueGrey[200],
+          customBorder: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(35.0)
+        ),
           onTap: () {
             Navigator.push(
               context,
