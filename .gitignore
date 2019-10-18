@@ -1,3 +1,6 @@
+# Exclude secret strings
+assets/secrets.json
+
 # Miscellaneous
 *.class
 *.log

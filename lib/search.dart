@@ -2,6 +2,7 @@ import 'dart:convert' as convert;
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
 
@@ -107,8 +108,6 @@ class RecipeSearch {
   RecipeSearch._privateConstructor();
   static final RecipeSearch instance = RecipeSearch._privateConstructor();
 
-  final String _apiKey = ""; // REMEMBER TO ADD AND REMOVE API KEY!!!
-
   bool get useMetricUnits {
     // TODO: Add logic to determine whether we should use US or Metric units
     // (Could also maybe fetch this from app settings in the future...)
@@ -123,9 +122,13 @@ class RecipeSearch {
   }
 
   /// Adds GET parameters to a url, also adding the API key automatically
-  String addParamsToUrl(String url, Map<String, dynamic> params) {
+  Future<String> addParamsToUrl(String url, Map<String, dynamic> params) async {
+    // Fetch API key from our secrets file
+    var apiKey = convert.jsonDecode(
+        await rootBundle.loadString("assets/secrets.json"))["apiKey"];
+
     // Always add API key as the first parameter in the URL
-    url = "$url?apiKey=$_apiKey&";
+    url = "$url?apiKey=$apiKey&";
 
     if (params == null || params.length == 0) return url;
 
@@ -143,7 +146,7 @@ class RecipeSearch {
     // TODO: investigate further
     // Fixes weird one search term bug
     if (searchString.indexOf(",") == -1) searchString += ",";
-    var url = addParamsToUrl(
+    var url = await addParamsToUrl(
       "https://api.spoonacular.com/recipes/findByIngredients",
       <String, dynamic>{"ingredients": searchString},
     );
@@ -199,7 +202,7 @@ class RecipeSearch {
   /// Fetches detailed info for a single recipe asynchronously
   Future<RecipeInfo> getRecipeInfo(SearchResult recipe) async {
     // We call addParamsToURL to add the api key to the URL
-    var url = addParamsToUrl(
+    var url = await addParamsToUrl(
         "https://api.spoonacular.com/recipes/${recipe.id}/information", {});
     debugPrint(url);
 
