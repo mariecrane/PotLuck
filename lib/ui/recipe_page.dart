@@ -85,7 +85,7 @@ class RecipePage extends StatelessWidget {
                     textColor: Colors.black,
                     color: Colors.white,
                     child: const Text(
-                      'Click Here To Visit the Webpage',
+                      'Visit the Webpage',
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
