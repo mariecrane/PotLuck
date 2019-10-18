@@ -91,7 +91,7 @@ class RecipePage extends StatelessWidget {
                   ),
                 ),
                 ListTile(
-                  title: Center(child: Text('@ 2019 blues_Comp225', style: TextStyle(fontSize: 10, color: Colors.grey))),
+                  title: Center(child: Text('@ 2019 ' + data.creditsText, style: TextStyle(fontSize: 10, color: Colors.grey))),
                 ),
               ],
             ).toList(),
