@@ -2,6 +2,7 @@ import 'dart:convert' as convert;
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
 
 /// Encodes all the data that is returned by our recipe API interface
@@ -146,6 +147,9 @@ class RecipeSearch {
       "https://api.spoonacular.com/recipes/findByIngredients",
       <String, dynamic>{"ingredients": searchString},
     );
+
+    var unescape = HtmlUnescape();
+
     debugPrint(url);
     var response = await http.get(url);
     debugPrint(response.body);
@@ -180,7 +184,7 @@ class RecipeSearch {
       debugPrint(usedIngredients);
       resultList.add(SearchResult(
         result["id"],
-        recipeName: result["title"],
+        recipeName: unescape.convert(result["title"]),
         usedIngredientCount: result["usedIngredientCount"],
         missedIngredientCount: result["missedIngredientCount"],
         missedIngredients: missedIngredients,
