@@ -32,14 +32,14 @@ class SearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Just a type of container that has certain properties we can use
-    return Material(
-      // Controls how large of a shadow this should have
+    return AppBar(
+      backgroundColor: Colors.white,
       elevation: 1.0,
-      child: Padding(
+      leading: Icon(Icons.search, color: Colors.blueGrey[300]),
+      title:Padding(
         // Adds some padding around our TextField
         padding: const EdgeInsets.symmetric(
           vertical: 5.0,
-          horizontal: 15.0,
         ),
         child: TextField(
           // Type of "Done" button to show on keyboard
@@ -67,19 +67,6 @@ class SearchBar extends StatelessWidget {
 }
 
 class SearchBody extends StatelessWidget {
-//  final SliverGridDelegate _gridDelegate;
-//TODO: delete it?
-//  SearchBody()
-//      : _gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
-//          // This is how many results we want in one row
-//          crossAxisCount: 2,
-//
-//          // This is the vertical spacing between our results
-//          mainAxisSpacing: 5.0,
-//
-//          // This is the horizontal spacing between our results
-//          crossAxisSpacing: 5.0,
-//        );
 
   @override
   Widget build(BuildContext context) {
@@ -155,9 +142,9 @@ class RecipeResult extends StatelessWidget {
     // A container with rounded corners and a shadow by default
     return Card(
         color: Colors.white,
-        elevation: 3.0,
+        elevation: 1.0,
         shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(35.0)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
         child: InkWell(
           splashColor: Colors.blueGrey[200],
           customBorder: RoundedRectangleBorder(
@@ -182,7 +169,7 @@ class RecipeResult extends StatelessWidget {
                           child: AspectRatio(
                             aspectRatio: 1.0,
                             child: ClipRRect(
-                              borderRadius: new BorderRadius.circular(30.0),
+                              borderRadius: new BorderRadius.circular(20.0),
                               child: Image(
                                 image: NetworkImage(data.imageUrl),
                                 fit: BoxFit.cover,

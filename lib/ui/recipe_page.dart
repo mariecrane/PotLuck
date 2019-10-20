@@ -56,7 +56,7 @@ class RecipePage extends StatelessWidget {
                     fit: BoxFit.fill,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(35.0),
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
                   margin: EdgeInsets.all(10),
                 ),
@@ -71,7 +71,7 @@ class RecipePage extends StatelessWidget {
                     )
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(35.0),
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
                   margin: EdgeInsets.all(10),
                 ),
@@ -80,7 +80,7 @@ class RecipePage extends StatelessWidget {
                   child: RaisedButton(
                     onPressed: () {launch(data.sourceUrl);},
                     shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(25.0),
+                      borderRadius: new BorderRadius.circular(20.0),
                       side: BorderSide(color: Colors.white)),
                     textColor: Colors.black,
                     color: Colors.white,
