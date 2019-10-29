@@ -1,4 +1,4 @@
-# pot_luck
+# PotLuck
 
 A Flutter application to help people find recipes based on ingredients they already have.
 
