@@ -1,5 +1,6 @@
 # Exclude secret strings
 assets/secrets.json
+android/app/google-services.json
 
 # Miscellaneous
 *.class

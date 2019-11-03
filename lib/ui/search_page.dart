@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pot_luck/auth.dart';
 import 'package:pot_luck/search.dart';
 import 'package:pot_luck/ui/recipe_page.dart';
 
@@ -13,6 +14,13 @@ class SearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blueGrey[50],
+      // TODO: Put the sign out function somewhere that actually makes sense
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.close),
+        onPressed: () {
+          BlocProvider.of<AuthBloc>(context).dispatch(SignOutRequested());
+        },
+      ),
       body: SafeArea(
         child: BlocProvider(
           builder: (context) => SearchBloc(),
@@ -36,7 +44,7 @@ class SearchBar extends StatelessWidget {
       backgroundColor: Colors.white,
       elevation: 1.0,
       leading: Icon(Icons.search, color: Colors.blueGrey[300]),
-      title:Padding(
+      title: Padding(
         // Adds some padding around our TextField
         padding: const EdgeInsets.symmetric(
           vertical: 5.0,
@@ -67,7 +75,6 @@ class SearchBar extends StatelessWidget {
 }
 
 class SearchBody extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -147,9 +154,8 @@ class RecipeResult extends StatelessWidget {
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
         child: InkWell(
           splashColor: Colors.blueGrey[200],
-          customBorder: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(35.0)
-        ),
+          customBorder:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(35.0)),
           onTap: () {
             Navigator.push(
               context,
