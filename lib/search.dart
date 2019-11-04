@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
+import 'package:cloud_functions/cloud_functions.dart';
 
 /// Encodes all the data that is returned by our recipe API interface
 /// (Can be expanded later)
@@ -107,6 +108,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 class RecipeSearch {
   RecipeSearch._privateConstructor();
   static final RecipeSearch instance = RecipeSearch._privateConstructor();
+  static final HttpsCallable recipesByIngredients = CloudFunctions.instance.getHttpsCallable(
+    functionName: 'recipesByIngredients',
+  );
 
   bool get useMetricUnits {
     // TODO: Add logic to determine whether we should use US or Metric units
@@ -144,20 +148,14 @@ class RecipeSearch {
   /// Fetches recipe results asynchronously
   Future<List<SearchResult>> getRecipeResults(String searchString) async {
     // TODO: investigate further
-    // Fixes weird one search term bug
     if (searchString.indexOf(",") == -1) searchString += ",";
-    var url = await addParamsToUrl(
-      "https://api.spoonacular.com/recipes/findByIngredients",
-      <String, dynamic>{"ingredients": searchString},
-    );
-
     var unescape = HtmlUnescape();
 
-    debugPrint(url);
-    var response = await http.get(url);
-    debugPrint(response.body);
-    var data = convert.jsonDecode(response.body);
+    dynamic response = await recipesByIngredients.call(<String, dynamic>{
+      'ingredients': searchString,
+    });
 
+    var data = response.data;
     var resultList = List<SearchResult>();
 
     data.forEach((result) {
@@ -172,7 +170,7 @@ class RecipeSearch {
         missedIngredients =
             missedIngredients.substring(0, missedIngredients.length - 2);
       }
-      debugPrint(missedIngredients);
+//      debugPrint(missedIngredients);
       var usedIngredients = "";
       for (var i = 0; i < result["usedIngredients"].length; i++) {
         // gets each matching ingredient and adds it to usedIngredients string
@@ -184,7 +182,7 @@ class RecipeSearch {
         usedIngredients =
             usedIngredients.substring(0, usedIngredients.length - 2);
       }
-      debugPrint(usedIngredients);
+//      debugPrint(usedIngredients);
       resultList.add(SearchResult(
         result["id"],
         recipeName: unescape.convert(result["title"]),

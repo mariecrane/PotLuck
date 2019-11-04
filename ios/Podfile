@@ -37,6 +37,9 @@ end
 
 target 'Runner' do
   use_frameworks!
+  
+  # add Firebase pod to allow import
+  pod 'Firebase'
 
   # Prepare symlinks folder. We use symlinks to avoid having Podfile.lock
   # referring to absolute paths on developers' machines.
@@ -75,3 +78,6 @@ post_install do |installer|
     end
   end
 end
+
+# add pods for desired Firebase products
+# https://firebase.google.com/docs/ios/setup#available-pods
