@@ -1,11 +1,9 @@
 import 'dart:convert' as convert;
 
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:html_unescape/html_unescape.dart';
-import 'package:http/http.dart' as http;
-import 'package:cloud_functions/cloud_functions.dart';
 
 /// Encodes all the data that is returned by our recipe API interface
 /// (Can be expanded later)
@@ -108,8 +106,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 class RecipeSearch {
   RecipeSearch._privateConstructor();
   static final RecipeSearch instance = RecipeSearch._privateConstructor();
-  static final HttpsCallable recipesByIngredients = CloudFunctions.instance.getHttpsCallable(
+  static final HttpsCallable recipesByIngredients =
+      CloudFunctions.instance.getHttpsCallable(
     functionName: 'recipesByIngredients',
+  );
+  static final HttpsCallable recipeInfo =
+      CloudFunctions.instance.getHttpsCallable(
+    functionName: 'recipeInfo',
   );
 
   bool get useMetricUnits {
@@ -151,7 +154,7 @@ class RecipeSearch {
     if (searchString.indexOf(",") == -1) searchString += ",";
     var unescape = HtmlUnescape();
 
-    dynamic response = await recipesByIngredients.call(<String, dynamic>{
+    var response = await recipesByIngredients.call(<String, dynamic>{
       'ingredients': searchString,
     });
 
@@ -199,19 +202,16 @@ class RecipeSearch {
 
   /// Fetches detailed info for a single recipe asynchronously
   Future<RecipeInfo> getRecipeInfo(SearchResult recipe) async {
-    // We call addParamsToURL to add the api key to the URL
-    var url = await addParamsToUrl(
-        "https://api.spoonacular.com/recipes/${recipe.id}/information", {});
-    debugPrint(url);
+    var response = await recipeInfo.call(<String, dynamic>{
+      'id': recipe.id,
+    });
 
-    // Get the API response, formatted as a JSON object
-    var response = await http.get(url);
-    var data = convert.jsonDecode(response.body);
+    var data = response.data;
 
     // Parse out the list of required ingredients
     var ingredients = List<RecipeIngredient>();
     bool useMetric = useMetricUnits;
-    data["extendedIngredients"].forEach((ingredient) {
+    data["extendedIngredients"]?.forEach((ingredient) {
       // Get either US or Metric quantity values
       var measure = useMetric
           ? ingredient["measures"]["metric"]
@@ -221,7 +221,7 @@ class RecipeSearch {
       ingredients.add(RecipeIngredient(
         id: ingredient["id"],
         name: ingredient["name"],
-        amount: measure["amount"],
+        amount: measure["amount"].toDouble(),
         unit: measure["unitShort"],
         imageUrl: ingredientImageUrl(ingredient["image"]),
       ));
