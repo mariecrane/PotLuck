@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/auth.dart';
+import 'package:pot_luck/main.dart' as prefix0;
 import 'package:pot_luck/search.dart';
 import 'package:pot_luck/ui/recipe_page.dart';
 
@@ -21,6 +22,10 @@ class SearchPage extends StatelessWidget {
           BlocProvider.of<AuthBloc>(context).dispatch(SignOutRequested());
         },
       ),
+      appBar: AppBar(
+        backgroundColor: prefix0.myColor,
+        title: Image.asset('assets/images/icon.png', fit: BoxFit.cover)
+      ),
       body: SafeArea(
         child: BlocProvider(
           builder: (context) => SearchBloc(),
@@ -31,6 +36,32 @@ class SearchPage extends StatelessWidget {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: 0, // new
+        items: [
+          new BottomNavigationBarItem(
+            icon: Icon(Icons.dehaze, color: Colors.black),
+            title: Text('Pantry', style: TextStyle(color: Colors.black)),
+          ),
+          new BottomNavigationBarItem(
+            icon: Icon(Icons.favorite, color: Colors.black),
+            title: Text('Favorites', style: TextStyle(color: Colors.black)),
+          ),
+          new BottomNavigationBarItem(
+            icon: Icon(Icons.search, color: prefix0.myColor),
+            title: Text('Search', style: TextStyle(color: prefix0.myColor)),
+          ),
+          new BottomNavigationBarItem(
+            icon: Icon(Icons.group, color: Colors.black),
+            title: Text('Friends', style: TextStyle(color: Colors.black)),
+          ),
+          new BottomNavigationBarItem(
+              icon: Icon(Icons.person, color: Colors.black),
+              title: Text('Profile', style: TextStyle(color: Colors.black))
+          )
+        ],
       ),
     );
   }

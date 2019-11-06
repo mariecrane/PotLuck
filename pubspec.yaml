@@ -40,16 +40,16 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/icon.png"
+  image_path: "assets/images/PotLuck_Logo_1.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-
   assets:
     - assets/secrets.json
+    - assets/images/PotLuck_Logo_1.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
