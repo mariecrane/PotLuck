@@ -5,6 +5,10 @@ import 'package:pot_luck/auth.dart';
 import 'package:pot_luck/main.dart' as prefix0;
 import 'package:pot_luck/search.dart';
 import 'package:pot_luck/ui/recipe_page.dart';
+import 'pantry_page.dart';
+import 'favorite_page.dart';
+import 'profile_page.dart';
+import 'friend_page.dart';
 
 class SearchPage extends StatelessWidget {
   final String title;
@@ -23,8 +27,19 @@ class SearchPage extends StatelessWidget {
         },
       ),
       appBar: AppBar(
-        backgroundColor: prefix0.myColor,
-        title: Image.asset('assets/images/icon.png', fit: BoxFit.cover)
+        backgroundColor: Colors.white,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/PotLuck_Logo_1.png',
+              fit: BoxFit.contain,
+              height: 32,
+            ),
+            Container(
+                padding: const EdgeInsets.all(8.0), child: Text('PotLuck', style: TextStyle(color: prefix0.myColor)))
+          ],
+        ),
       ),
       body: SafeArea(
         child: BlocProvider(
@@ -39,7 +54,6 @@ class SearchPage extends StatelessWidget {
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        currentIndex: 0, // new
         items: [
           new BottomNavigationBarItem(
             icon: Icon(Icons.dehaze, color: Colors.black),
