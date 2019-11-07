@@ -82,15 +82,15 @@ class _NavWrapperState extends State<NavWrapper> {
   Widget _currentPage(BuildContext context) {
     switch (_page) {
       case 0:
-        return PantryPage(Colors.red);
+        return PantryPage(Colors.white);
       case 1:
-        return FavoritePage(Colors.blue);
+        return FavoritePage(Colors.white);
       case 2:
         return SearchPage();
       case 3:
-        return FriendPage(Colors.green);
+        return FriendPage(Colors.white);
       default:
-        return ProfilePage(Colors.orange);
+        return ProfilePage(Colors.white);
     }
   }
 

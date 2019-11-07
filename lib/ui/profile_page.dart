@@ -14,9 +14,9 @@ class ProfilePage extends StatelessWidget {
 
   static Widget buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Colors.white,
       elevation: 1.0,
-      title: Text("PotLuck"),
+      title: Text("Profile", style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: 28)),
     );
   }
 }

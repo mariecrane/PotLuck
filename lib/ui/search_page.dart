@@ -7,23 +7,6 @@ import 'package:pot_luck/ui/recipe_page.dart';
 class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-//      AppBar(
-//        backgroundColor: Colors.white,
-//        title: Row(
-//          mainAxisAlignment: MainAxisAlignment.center,
-//          children: [
-//            Image.asset(
-//              'assets/images/PotLuck_Logo_1.png',
-//              fit: BoxFit.contain,
-//              height: 32,
-//            ),
-//            Container(
-//                padding: const EdgeInsets.all(8.0),
-//                child:
-//                    Text('PotLuck', style: TextStyle(color: prefix0.myColor)))
-//          ],
-//        ),
-//      )
     return SafeArea(
       child: BlocProvider(
         builder: (context) => SearchBloc(),
@@ -41,7 +24,7 @@ class SearchPage extends StatelessWidget {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 1.0,
-      leading: Icon(Icons.search, color: Colors.blueGrey[300]),
+      leading: Icon(Icons.search, color: Theme.of(context).primaryColor),
       title: Padding(
         // Adds some padding around our TextField
         padding: const EdgeInsets.symmetric(
