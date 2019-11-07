@@ -1,90 +1,43 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pot_luck/auth.dart';
-import 'package:pot_luck/main.dart' as prefix0;
 import 'package:pot_luck/search.dart';
 import 'package:pot_luck/ui/recipe_page.dart';
-import 'pantry_page.dart';
-import 'favorite_page.dart';
-import 'profile_page.dart';
-import 'friend_page.dart';
 
 class SearchPage extends StatelessWidget {
-  final String title;
-
-  SearchPage({this.title});
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.blueGrey[50],
-      // TODO: Put the sign out function somewhere that actually makes sense
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.close),
-        onPressed: () {
-          BlocProvider.of<AuthBloc>(context).dispatch(SignOutRequested());
-        },
-      ),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/PotLuck_Logo_1.png',
-              fit: BoxFit.contain,
-              height: 32,
-            ),
-            Container(
-                padding: const EdgeInsets.all(8.0), child: Text('PotLuck', style: TextStyle(color: prefix0.myColor)))
+//      AppBar(
+//        backgroundColor: Colors.white,
+//        title: Row(
+//          mainAxisAlignment: MainAxisAlignment.center,
+//          children: [
+//            Image.asset(
+//              'assets/images/PotLuck_Logo_1.png',
+//              fit: BoxFit.contain,
+//              height: 32,
+//            ),
+//            Container(
+//                padding: const EdgeInsets.all(8.0),
+//                child:
+//                    Text('PotLuck', style: TextStyle(color: prefix0.myColor)))
+//          ],
+//        ),
+//      )
+    return SafeArea(
+      child: BlocProvider(
+        builder: (context) => SearchBloc(),
+        child: Column(
+          children: <Widget>[
+//            SearchBar(),
+            SearchBody(),
           ],
         ),
       ),
-      body: SafeArea(
-        child: BlocProvider(
-          builder: (context) => SearchBloc(),
-          child: Column(
-            children: <Widget>[
-              SearchBar(),
-              SearchBody(),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: [
-          new BottomNavigationBarItem(
-            icon: Icon(Icons.dehaze, color: Colors.black),
-            title: Text('Pantry', style: TextStyle(color: Colors.black)),
-          ),
-          new BottomNavigationBarItem(
-            icon: Icon(Icons.favorite, color: Colors.black),
-            title: Text('Favorites', style: TextStyle(color: Colors.black)),
-          ),
-          new BottomNavigationBarItem(
-            icon: Icon(Icons.search, color: prefix0.myColor),
-            title: Text('Search', style: TextStyle(color: prefix0.myColor)),
-          ),
-          new BottomNavigationBarItem(
-            icon: Icon(Icons.group, color: Colors.black),
-            title: Text('Friends', style: TextStyle(color: Colors.black)),
-          ),
-          new BottomNavigationBarItem(
-              icon: Icon(Icons.person, color: Colors.black),
-              title: Text('Profile', style: TextStyle(color: Colors.black))
-          )
-        ],
-      ),
     );
   }
-}
 
-class SearchBar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // Just a type of container that has certain properties we can use
+  static Widget buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 1.0,
@@ -105,7 +58,6 @@ class SearchBar extends StatelessWidget {
           onSubmitted: (value) {
             BlocProvider.of<SearchBloc>(context).dispatch(
               Submit(),
-//              SearchEvent(value, submitted: true),
             );
           },
           onChanged: (value) {

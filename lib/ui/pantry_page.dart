@@ -11,4 +11,12 @@ class PantryPage extends StatelessWidget {
       color: color,
     );
   }
+
+  static Widget buildAppBar(BuildContext context) {
+    return AppBar(
+      backgroundColor: Theme.of(context).primaryColor,
+      elevation: 1.0,
+      title: Text("PotLuck"),
+    );
+  }
 }
