@@ -79,7 +79,7 @@ class _NavWrapperState extends State<NavWrapper> {
       case 2:
         return SearchPage();
       case 3:
-        return FriendPage(Colors.white);
+        return FriendPage();
       default:
         return ProfilePage(Colors.white);
     }

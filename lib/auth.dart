@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
-/// Encodes the type and data of events coming from our search UI
+/// Encodes the type and data of events coming from our auth UI
 abstract class AuthEvent {}
 
 class AuthResult extends AuthEvent {}
@@ -27,7 +27,7 @@ class SignInRequested extends AuthEvent {
 
 class SignOutRequested extends AuthEvent {}
 
-/// Encodes the status and data of results returned from our recipe API interface
+/// Encodes the status and data of results returned from Firebase Auth
 abstract class AuthState {}
 
 class Initializing extends AuthState {}
