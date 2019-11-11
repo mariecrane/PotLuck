@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pot_luck/auth.dart';
 import 'package:pot_luck/ui/favorite_page.dart';
 import 'package:pot_luck/ui/friend_page.dart';
 import 'package:pot_luck/ui/pantry_page.dart';
@@ -19,13 +17,6 @@ class _NavWrapperState extends State<NavWrapper> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blueGrey[50],
-      // TODO: Put the sign out function somewhere that actually makes sense
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.close),
-        onPressed: () {
-          BlocProvider.of<AuthBloc>(context).dispatch(SignOutRequested());
-        },
-      ),
       appBar: _currentAppBar(context),
       body: _currentPage(context),
       bottomNavigationBar: BottomNavigationBar(
