@@ -3,10 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/auth.dart';
 
 class ProfilePage extends StatelessWidget {
-  final Color color;
-
-  ProfilePage(this.color);
-
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -20,23 +16,34 @@ class ProfilePage extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     //TODO: replace set image with image from user's account and add default if none provided
-                    backgroundImage: NetworkImage("https://as1.ftcdn.net/jpg/00/20/71/56/500_F_20715690_qfB7YxRpr4RUWdwXIUzHDrHlOpxsh2yN.jpg"),
+                    backgroundImage: NetworkImage(
+                      "https://as1.ftcdn.net/jpg/00/20/71/56/500_F_20715690_qfB7YxRpr4RUWdwXIUzHDrHlOpxsh2yN.jpg",
+                    ),
                     radius: 130.0,
-                  )
-                ]
-              )
-            )
+                  ),
+                ],
+              ),
+            ),
           ),
           Card(
             semanticContainer: true,
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: Container(
-                child: ListTile(
-                  //TODO: replace dummy data with data from user's account on database
-                    contentPadding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-                    title: Text('John Doe', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    subtitle: Text('Username: @jdoe\nEmail: jdoe@hotmail.com')
-                )
+              child: ListTile(
+                //TODO: replace dummy data with data from user's account on database
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 30.0,
+                  vertical: 10.0,
+                ),
+                title: Text(
+                  'John Doe',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                subtitle: Text('Username: @jdoe\nEmail: jdoe@hotmail.com'),
+              ),
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0),
@@ -50,8 +57,9 @@ class ProfilePage extends StatelessWidget {
                 //TODO: implement pop up window to edit name, username, email, password, and photo
               },
               shape: RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(20.0),
-                  side: BorderSide(color: Colors.white)),
+                borderRadius: new BorderRadius.circular(20.0),
+                side: BorderSide(color: Colors.white),
+              ),
               textColor: Colors.black,
               color: Colors.white,
               child: const Text(
@@ -67,8 +75,9 @@ class ProfilePage extends StatelessWidget {
                 BlocProvider.of<AuthBloc>(context).dispatch(SignOutRequested());
               },
               shape: RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(20.0),
-                  side: BorderSide(color: Colors.white)),
+                borderRadius: new BorderRadius.circular(20.0),
+                side: BorderSide(color: Colors.white),
+              ),
               textColor: Colors.red,
               color: Colors.white,
               icon: Icon(Icons.exit_to_app),
@@ -87,7 +96,14 @@ class ProfilePage extends StatelessWidget {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 1.0,
-      title: Text("Profile", style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor, fontSize: 28)),
+      title: Text(
+        "Profile",
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Theme.of(context).primaryColor,
+          fontSize: 28,
+        ),
+      ),
     );
   }
 }
