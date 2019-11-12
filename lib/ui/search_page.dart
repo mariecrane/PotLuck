@@ -8,14 +8,11 @@ class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: BlocProvider(
-        builder: (context) => SearchBloc(),
-        child: Column(
-          children: <Widget>[
+      child: Column(
+        children: <Widget>[
 //            SearchBar(),
-            SearchBody(),
-          ],
-        ),
+          SearchBody(),
+        ],
       ),
     );
   }

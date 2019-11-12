@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/auth.dart';
+import 'package:pot_luck/friend.dart';
+import 'package:pot_luck/search.dart';
 import 'package:pot_luck/ui/auth_page.dart';
 import 'package:pot_luck/ui/nav.dart';
 
@@ -29,8 +31,18 @@ class MyApp extends StatelessWidget {
         primarySwatch: myColor,
       ),
       // Update based on authentication state
-      home: BlocProvider(
-        builder: (context) => AuthBloc(),
+      home: MultiBlocProvider(
+        providers: <BlocProvider>[
+          BlocProvider<AuthBloc>(
+            builder: (context) => AuthBloc(),
+          ),
+          BlocProvider<SearchBloc>(
+            builder: (context) => SearchBloc(),
+          ),
+          BlocProvider<FriendBloc>(
+            builder: (context) => FriendBloc(),
+          ),
+        ],
         child: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
             if (state is Initializing) {

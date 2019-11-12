@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/friend.dart';
@@ -6,25 +7,22 @@ class FriendPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: BlocProvider(
-        builder: (context) => FriendBloc(),
-        child: BlocBuilder<FriendBloc, FriendState>(
-          builder: (context, state) {
-            if (state is FriendsListUpdate) {
-              var tiles = List<Widget>();
-              state.friendsList.forEach((friend) {
-                tiles.add(FriendTile(friend));
-              });
+      child: BlocBuilder<FriendBloc, FriendState>(
+        builder: (context, state) {
+          if (state is FriendsListUpdate) {
+            var tiles = List<Widget>();
+            state.friendsList.forEach((friend) {
+              tiles.add(FriendTile(friend));
+            });
 
-              return ListView(
-                padding: EdgeInsets.all(5.0),
-                children: tiles,
-              );
-            }
+            return ListView(
+              padding: EdgeInsets.all(5.0),
+              children: tiles,
+            );
+          }
 
-            return Container();
-          },
-        ),
+          return Container();
+        },
       ),
     );
   }
@@ -43,6 +41,23 @@ class FriendPage extends StatelessWidget {
 //        ),
 //      ),
 //    );
+  }
+
+  static Widget buildFloatingActionButton(BuildContext context) {
+    return FloatingActionButton(
+      child: Icon(Icons.add),
+      backgroundColor: Theme.of(context).primaryColor,
+      onPressed: () {
+        Navigator.of(context).push(
+          CupertinoPageRoute(
+            builder: (_) => BlocProvider<FriendBloc>.value(
+              value: BlocProvider.of<FriendBloc>(context),
+              child: AddFriendPage(),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -104,6 +119,18 @@ class ConfirmRemoveFriendDialog extends StatelessWidget {
           },
         ),
       ],
+    );
+  }
+}
+
+class AddFriendPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add a Friend"),
+      ),
+      body: Container(),
     );
   }
 }

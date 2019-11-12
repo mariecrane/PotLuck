@@ -19,6 +19,7 @@ class _NavWrapperState extends State<NavWrapper> {
       backgroundColor: Colors.blueGrey[50],
       appBar: _currentAppBar(context),
       body: _currentPage(context),
+      floatingActionButton: _currentButton(context),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         onTap: (index) => setState(() {
@@ -55,7 +56,7 @@ class _NavWrapperState extends State<NavWrapper> {
     );
   }
 
-  _currentAppBar(BuildContext context) {
+  Widget _currentAppBar(BuildContext context) {
     switch (_page) {
       case 0:
         return PantryPage.buildAppBar(context);
@@ -82,6 +83,21 @@ class _NavWrapperState extends State<NavWrapper> {
         return FriendPage();
       default:
         return ProfilePage(Colors.white);
+    }
+  }
+
+  Widget _currentButton(BuildContext context) {
+    switch (_page) {
+      case 0:
+        return null;
+      case 1:
+        return null;
+      case 2:
+        return null;
+      case 3:
+        return FriendPage.buildFloatingActionButton(context);
+      default:
+        return null;
     }
   }
 
