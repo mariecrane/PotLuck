@@ -20,4 +20,8 @@ class PantryPage extends StatelessWidget {
       ),
     );
   }
+
+  static Widget buildFloatingActionButton(BuildContext context) {
+    return null;
+  }
 }

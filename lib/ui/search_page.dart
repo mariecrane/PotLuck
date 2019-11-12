@@ -8,7 +8,11 @@ class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SearchBody(),
+      child: Column(
+        children: <Widget>[
+          SearchBody(),
+        ],
+      ),
     );
   }
 
@@ -43,6 +47,10 @@ class SearchPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  static Widget buildFloatingActionButton(BuildContext context) {
+    return null;
   }
 }
 

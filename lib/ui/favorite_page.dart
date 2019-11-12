@@ -73,6 +73,10 @@ class FavoritePage extends StatelessWidget {
       ),
     );
   }
+
+  static Widget buildFloatingActionButton(BuildContext context) {
+    return null;
+  }
 }
 
 class RecipeResult extends StatelessWidget {

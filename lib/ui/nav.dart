@@ -89,15 +89,15 @@ class _NavWrapperState extends State<NavWrapper> {
   Widget _currentButton(BuildContext context) {
     switch (_page) {
       case 0:
-        return null;
+        return PantryPage.buildFloatingActionButton(context);
       case 1:
-        return null;
+        return FavoritePage.buildFloatingActionButton(context);
       case 2:
-        return null;
+        return SearchPage.buildFloatingActionButton(context);
       case 3:
         return FriendPage.buildFloatingActionButton(context);
       default:
-        return null;
+        return ProfilePage.buildFloatingActionButton(context);
     }
   }
 
