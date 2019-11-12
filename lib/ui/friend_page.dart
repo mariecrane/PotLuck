@@ -5,12 +5,26 @@ import 'package:pot_luck/friend.dart';
 class FriendPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      builder: (context) => FriendBloc(),
-      child: BlocBuilder<FriendBloc, FriendState>(
-        builder: (context, state) {
-          return Container();
-        },
+    return SafeArea(
+      child: BlocProvider(
+        builder: (context) => FriendBloc(),
+        child: BlocBuilder<FriendBloc, FriendState>(
+          builder: (context, state) {
+            if (state is FriendsListUpdate) {
+              var tiles = List<Widget>();
+              state.friendsList.forEach((friend) {
+                tiles.add(FriendTile(friend));
+              });
+
+              return ListView(
+                padding: EdgeInsets.all(5.0),
+                children: tiles,
+              );
+            }
+
+            return Container();
+          },
+        ),
       ),
     );
   }
@@ -29,5 +43,67 @@ class FriendPage extends StatelessWidget {
 //        ),
 //      ),
 //    );
+  }
+}
+
+class FriendTile extends StatelessWidget {
+  final Friend _friend;
+
+  const FriendTile(this._friend, {Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20.0),
+        child: ListTile(
+          leading: CircleAvatar(
+            child: FlutterLogo(),
+            backgroundColor: Colors.white,
+          ),
+          title: Text(_friend.name),
+        ),
+        onTap: () {},
+        onLongPress: () async {
+          bool confirmed = await showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (context) => ConfirmRemoveFriendDialog(_friend),
+          );
+          if (confirmed != null && confirmed) {
+            BlocProvider.of<FriendBloc>(context)
+                .dispatch(FriendRemoved(_friend));
+          }
+        },
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+    );
+  }
+}
+
+class ConfirmRemoveFriendDialog extends StatelessWidget {
+  final Friend _friend;
+
+  const ConfirmRemoveFriendDialog(this._friend, {Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text("Remove ${_friend.name} from friends list?"),
+      actions: <Widget>[
+        FlatButton(
+          child: Text("Cancel"),
+          onPressed: () {
+            Navigator.of(context).pop(false);
+          },
+        ),
+        FlatButton(
+          child: Text("Remove"),
+          onPressed: () {
+            Navigator.of(context).pop(true);
+          },
+        ),
+      ],
+    );
   }
 }
