@@ -51,6 +51,7 @@ class FavoritePage extends StatelessWidget {
     });
 
     return ListView.builder(
+      key: PageStorageKey<String>("favorites_page"),
       itemCount: favorites.length,
       shrinkWrap: true,
       itemBuilder: (context, index) {

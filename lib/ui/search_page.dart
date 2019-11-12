@@ -106,6 +106,7 @@ class SearchBody extends StatelessWidget {
 
             // Search results returned; show formatted list of results
             return ListView.builder(
+              key: PageStorageKey<String>("search_page"),
               itemCount: results.length,
               shrinkWrap: true,
               itemBuilder: (context, index) {

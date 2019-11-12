@@ -16,6 +16,7 @@ class FriendPage extends StatelessWidget {
             });
 
             return ListView(
+              key: PageStorageKey<String>("friend_page"),
               padding: EdgeInsets.all(5.0),
               children: tiles,
             );
