@@ -16,6 +16,8 @@ class FriendsListUpdate extends FriendState {
   FriendsListUpdate(this.friendsList);
 }
 
+class FriendsListEmpty extends FriendState {}
+
 class FriendBloc extends Bloc<FriendEvent, FriendState> {
   List<Friend> _friendsList = <Friend>[
     Friend("Marie Crane", "alskdjf98123fe98hj"),
@@ -33,7 +35,9 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
     // TODO: implement mapEventToState
     if (event is FriendRemoved) {
       _friendsList.removeWhere((friend) => friend == event.friend);
-      yield FriendsListUpdate(_friendsList);
+      yield _friendsList.isEmpty
+          ? FriendsListEmpty()
+          : FriendsListUpdate(_friendsList);
     }
   }
 }

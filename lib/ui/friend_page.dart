@@ -22,6 +22,15 @@ class FriendPage extends StatelessWidget {
             );
           }
 
+          if (state is FriendsListEmpty) {
+            return Center(
+              child: Text(
+                "Add friends using the + icon below",
+                style: TextStyle(color: Colors.grey),
+              ),
+            );
+          }
+
           return Container();
         },
       ),
