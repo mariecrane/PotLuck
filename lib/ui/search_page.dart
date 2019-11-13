@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/search.dart';
@@ -62,7 +61,6 @@ class SearchPage extends StatelessWidget {
   }
 }
 
-
 class SearchBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -124,55 +122,51 @@ class SearchBody extends StatelessWidget {
   }
 }
 
-buildList(BuildContext context){
-  return ListView(
-    children: <Widget>[
-      ListView.builder(
-          key: PageStorageKey<String>("ingredients_page"),
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-          return IngredientsList(pantryList[index]);
-          },
-          itemCount: pantryList.length,
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 120),
-        child: RaisedButton(
-          onPressed: () {
-            //TODO: SEARCHHHHHH!!!!!
-          },
-          shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(20.0),
+buildList(BuildContext context) {
+  return ListView.builder(
+    key: PageStorageKey<String>("ingredients_page"),
+    shrinkWrap: true,
+    itemBuilder: (context, index) {
+      return (index < pantryList.length)
+          ? IngredientsList(pantryList[index])
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 120),
+              child: RaisedButton(
+                onPressed: () {
+                  //TODO: SEARCHHHHHH!!!!!
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(20.0),
 //            side: BorderSide(color: Theme.of(context).primaryColor),
-          ),
-          textColor: Colors.white,
-          color: Theme.of(context).primaryColor,
-          child: const Text(
-            'Search',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
-    ],
+                ),
+                textColor: Colors.white,
+                color: Theme.of(context).primaryColor,
+                child: const Text(
+                  'Search',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+            );
+    },
+    itemCount: pantryList.length + 1,
   );
 }
 
-class IngredientsList extends StatelessWidget{
+class IngredientsList extends StatelessWidget {
   final Pantry pantry;
   IngredientsList(this.pantry);
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return _buildTiles(pantry);
   }
 
-  Widget _buildTiles(Pantry p){
+  Widget _buildTiles(Pantry p) {
     return ExpansionTile(
       key: PageStorageKey<Pantry>(p),
       leading: Icon(Icons.shopping_basket),
       title: Text(p.title),
-      children: [
-      p.pantryContainer(p.inPantry)],
+      children: [p.pantryContainer(p.inPantry)],
     );
   }
 }
@@ -184,44 +178,57 @@ class Pantry {
   Pantry(this.title, [this.inPantry = const <String>[]]);
 
   //TODO: make all category always open
-  Widget pantryContainer(List<String> inP){
+  Widget pantryContainer(List<String> inP) {
     var pantryArea = new Wrap(
         spacing: 5.0,
-        children: inP.map<Widget>(
-                (inG)=> Container(
-          child:InputChip(
-            label:Text(inG),
-            onDeleted:(){
-              //TODO: actually delete the chip: will it be too small?
-            },
-          )
-         )
-       ).toList()
-    );
+        children: inP
+            .map<Widget>((inG) => Container(
+                    child: InputChip(
+                  label: Text(inG),
+                  onDeleted: () {
+                    //TODO: actually delete the chip: will it be too small?
+                  },
+                )))
+            .toList());
 
-   return pantryArea;
+    return pantryArea;
   }
 }
 
 //TODO: this is hard-coded and very inefficient; ideally it changes depends on the friend but I cannot do anything about that now
-List<Pantry> pantryList = <Pantry> [
+List<Pantry> pantryList = <Pantry>[
   Pantry(
-    'All', ["egg", "cream cheese", "chicken", "garlic", "apple", "potato", "tomato", "basil"],
-      ),
-  Pantry(
-    'My Pantry', ["egg", "chicken"],
+    'All',
+    [
+      "egg",
+      "cream cheese",
+      "chicken",
+      "garlic",
+      "apple",
+      "potato",
+      "tomato",
+      "basil"
+    ],
   ),
   Pantry(
-    'Unus Amica', ["garlic", "potato"],
+    'My Pantry',
+    ["egg", "chicken"],
   ),
   Pantry(
-    'Duo Amica', ["apple", "basil"],
+    'Unus Amica',
+    ["garlic", "potato"],
   ),
   Pantry(
-    'Somnium', ["tomato"],
+    'Duo Amica',
+    ["apple", "basil"],
   ),
   Pantry(
-    'Others', ["cream cheese"],
+    'Somnium',
+    ["tomato"],
+  ),
+  Pantry(
+    'Others',
+    ["cream cheese"],
   ),
 ];
 
