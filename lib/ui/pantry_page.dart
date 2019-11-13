@@ -5,14 +5,28 @@ class PantryPage extends StatelessWidget {
   static Widget buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
-      elevation: 1.0,
-      title: Text(
-        "Pantry",
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Theme.of(context).primaryColor,
-          fontSize: 28,
+      automaticallyImplyLeading: true,
+      title: Padding(
+        // Adds some padding around our TextField
+        padding: const EdgeInsets.symmetric(
+          vertical: 5.0,
         ),
+        child: TextField(
+          // Type of "Done" button to show on keyboard
+          textInputAction: TextInputAction.search,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            // Shows when TextField is empty
+            hintText: "Add Ingredients to Pantry...",
+          ),
+          onSubmitted: (value) {},
+          onChanged: (value) {},
+        ),
+      ),
+      leading: IconButton(
+        icon: Icon(Icons.add, color: Theme
+            .of(context)
+            .primaryColor),
       ),
     );
   }
@@ -23,35 +37,7 @@ class PantryPage extends StatelessWidget {
   String dropdownValue4 = 'Fruits';
   String dropdownValue5 = 'Other';
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: true,
-        title: Padding(
-          // Adds some padding around our TextField
-          padding: const EdgeInsets.symmetric(
-            vertical: 5.0,
-          ),
-          child: TextField(
-            // Type of "Done" button to show on keyboard
-            textInputAction: TextInputAction.search,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              // Shows when TextField is empty
-              hintText: "Add Ingredients to Pantry...",
-            ),
-            onSubmitted: (value) {},
-            onChanged: (value) {},
-          ),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.add, color: Theme
-              .of(context)
-              .primaryColor),
-        ),
-      ),
-      body: ListView(
+    return ListView(
               children: ListTile.divideTiles(
               context: context,
               tiles: [
@@ -214,8 +200,7 @@ class PantryPage extends StatelessWidget {
                 ),
               ],
             ).toList(),
-          )
-        );
+          );
   }
 
   static Widget buildFloatingActionButton(BuildContext context) {
