@@ -215,16 +215,20 @@ List<Pantry> pantryList = <Pantry>[
     ["egg", "chicken"],
   ),
   Pantry(
-    'Unus Amica',
+    'Shouayee Vue',
     ["garlic", "potato"],
   ),
   Pantry(
-    'Duo Amica',
-    ["apple", "basil"],
+    'Preston Locke',
+    ["apple"],
   ),
   Pantry(
-    'Somnium',
+    'Tracy Cai',
     ["tomato"],
+  ),
+  Pantry(
+    'Marie Crane',
+    ["basil"],
   ),
   Pantry(
     'Others',
