@@ -8,10 +8,31 @@ class PantryPage extends StatelessWidget {
         children: ListTile.divideTiles(
           context: context,
           tiles: [
-            new Container(),
-            Card(),
-            Padding(),
-            Padding(),
+            Card(
+              semanticContainer: true,
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              child: Container(
+                child: ListTile(
+                  //TODO: replace dummy data with data from user's account on database
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 30.0,
+                    vertical: 10.0,
+                  ),
+                  title: Text(
+                    'John Doe',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: Text('Username: @jdoe\nEmail: jdoe@hotmail.com'),
+                ),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              margin: EdgeInsets.all(10),
+            ),
           ],
         ).toList(),
       );
