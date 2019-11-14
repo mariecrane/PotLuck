@@ -11,6 +11,7 @@ class ProfilePage extends StatelessWidget {
         context: context,
         tiles: [
           new Container(
+            padding: const EdgeInsets.symmetric(vertical: 15),
             child: new Center(
               child: new Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -94,18 +95,19 @@ class ProfilePage extends StatelessWidget {
   }
 
   static Widget buildAppBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 1.0,
-      title: Text(
-        "Profile",
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Theme.of(context).primaryColor,
-          fontSize: 28,
-        ),
-      ),
-    );
+    return null;
+//    return AppBar(
+//      backgroundColor: Colors.white,
+//      elevation: 1.0,
+//      title: Text(
+//        "Profile",
+//        style: TextStyle(
+//          fontWeight: FontWeight.bold,
+//          color: Theme.of(context).primaryColor,
+//          fontSize: 28,
+//        ),
+//      ),
+//    );
   }
 
   static Widget buildFloatingActionButton(BuildContext context) {
