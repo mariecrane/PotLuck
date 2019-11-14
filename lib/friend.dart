@@ -8,6 +8,12 @@ class FriendRemoved extends FriendEvent {
   FriendRemoved(this.friend);
 }
 
+class FriendAddRequest extends FriendEvent {
+  final String name;
+
+  FriendAddRequest(this.name);
+}
+
 abstract class FriendState {}
 
 class FriendsListUpdate extends FriendState {
@@ -32,12 +38,21 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
 
   @override
   Stream<FriendState> mapEventToState(FriendEvent event) async* {
-    // TODO: implement mapEventToState
     if (event is FriendRemoved) {
       _friendsList.removeWhere((friend) => friend == event.friend);
       yield _friendsList.isEmpty
           ? FriendsListEmpty()
           : FriendsListUpdate(_friendsList);
+    }
+
+    if (event is FriendAddRequest) {
+      try {
+        _friendsList.firstWhere((friend) => friend.name == event.name);
+      } catch (e) {
+        // TODO: Obviously replace this with an actual call to Firebase
+        _friendsList.add(Friend(event.name, "as09df8j029jf2f9e0"));
+        yield FriendsListUpdate(_friendsList);
+      }
     }
   }
 }

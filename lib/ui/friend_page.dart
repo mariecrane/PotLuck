@@ -133,14 +133,45 @@ class ConfirmRemoveFriendDialog extends StatelessWidget {
   }
 }
 
-class AddFriendPage extends StatelessWidget {
+class AddFriendPage extends StatefulWidget {
+  @override
+  _AddFriendPageState createState() => _AddFriendPageState();
+}
+
+class _AddFriendPageState extends State<AddFriendPage> {
+  var _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Add a Friend"),
       ),
-      body: Container(),
+      body: Column(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+            child: TextField(
+              controller: _controller,
+            ),
+          ),
+          RaisedButton(
+            child: Text("Add"),
+            onPressed: () {
+              BlocProvider.of<FriendBloc>(context).dispatch(
+                FriendAddRequest(_controller.text),
+              );
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
