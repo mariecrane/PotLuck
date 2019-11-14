@@ -56,6 +56,9 @@ class SearchPage extends StatelessWidget {
       backgroundColor: Theme.of(context).primaryColor,
       onPressed: () {
         //TODO: link to the page where you can add ingredients by pantry
+        Navigator.of(context).push(CupertinoPageRoute(
+          builder: (context) => AddSearchIngredientsPage(),
+        ));
       },
     );
   }
@@ -108,7 +111,7 @@ class SearchBody extends StatelessWidget {
 
             // Search results returned; show formatted list of results
             return ListView.builder(
-              key: PageStorageKey<String>("search_page"),
+              key: PageStorageKey<String>("results_page"),
               itemCount: results.length,
               shrinkWrap: true,
               itemBuilder: (context, index) {
@@ -124,7 +127,7 @@ class SearchBody extends StatelessWidget {
 
 buildList(BuildContext context) {
   return ListView.builder(
-    key: PageStorageKey<String>("ingredients_page"),
+    key: PageStorageKey<String>("search_page"),
     shrinkWrap: true,
     itemBuilder: (context, index) {
       return (index < pantryList.length)
@@ -324,6 +327,46 @@ class RecipeResult extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class AddSearchIngredientsPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add Search Ingredients"),
+      ),
+      body: ListView.builder(
+        key: PageStorageKey<String>("search_ingredients_page"),
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          return (index < pantryList.length)
+              ? IngredientsList(pantryList[index])
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 120),
+                  child: RaisedButton(
+                    onPressed: () {
+                      //TODO: Add ingredients to search (probably via bloc)
+                      Navigator.of(context).pop();
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(20.0),
+//            side: BorderSide(color: Theme.of(context).primaryColor),
+                    ),
+                    textColor: Colors.white,
+                    color: Theme.of(context).primaryColor,
+                    child: const Text(
+                      'Add',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                );
+        },
+        itemCount: pantryList.length + 1,
       ),
     );
   }

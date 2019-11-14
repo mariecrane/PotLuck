@@ -1,17 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pot_luck/search.dart';
-import 'package:pot_luck/ui/recipe_page.dart';
 
 class PantryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
-        children: <Widget>[ buildList(context)
-        ],
-      ),
+      child: buildList(context),
     );
   }
 
@@ -37,9 +31,7 @@ class PantryPage extends StatelessWidget {
         ),
       ),
       leading: IconButton(
-        icon: Icon(Icons.add, color: Theme
-            .of(context)
-            .primaryColor),
+        icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
       ),
     );
   }
@@ -51,14 +43,14 @@ class PantryPage extends StatelessWidget {
 
 buildList(BuildContext context) {
   return ListView.builder(
-    key: PageStorageKey<String>("ingredients_page"),
+    key: PageStorageKey<String>("pantry_page"),
     shrinkWrap: true,
     itemBuilder: (context, index) {
       return (index < pantryList.length)
           ? IngredientsList(pantryList[index])
           : Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 120),
-      );
+              padding: const EdgeInsets.symmetric(horizontal: 120),
+            );
     },
     itemCount: pantryList.length + 1,
   );
@@ -94,12 +86,10 @@ class Pantry {
     var pantryArea = new Wrap(
         spacing: 5.0,
         children: inP
-            .map<Widget>((inG) =>
-            Container(
-                child: InputChip(
+            .map<Widget>((inG) => Container(
+                    child: InputChip(
                   label: Text(inG),
-                  onDeleted: () {
-                  },
+                  onDeleted: () {},
                 )))
             .toList());
 
