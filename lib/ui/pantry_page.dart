@@ -67,11 +67,12 @@ class IngredientsList extends StatelessWidget {
   }
 
   Widget _buildTiles(Pantry p) {
-    return ExpansionTile(
+    return Card(
+      semanticContainer: true,
+      clipBehavior: Clip.antiAliasWithSaveLayer,
       key: PageStorageKey<Pantry>(p),
-      leading: Icon(Icons.shopping_basket),
-      title: Text(p.title),
-      children: [p.pantryContainer(p.inPantry)],
+      child: Column(
+        children: [p.pantryContainer(p.inPantry)],)
     );
   }
 }
