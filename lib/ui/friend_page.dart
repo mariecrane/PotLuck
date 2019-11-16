@@ -96,8 +96,7 @@ class FriendTile extends StatelessWidget {
             builder: (context) => ConfirmRemoveFriendDialog(_friend),
           );
           if (confirmed != null && confirmed) {
-            BlocProvider.of<FriendBloc>(context)
-                .dispatch(FriendRemoved(_friend));
+            BlocProvider.of<FriendBloc>(context).add(FriendRemoved(_friend));
           }
         },
       ),
@@ -158,7 +157,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
           RaisedButton(
             child: Text("Add"),
             onPressed: () {
-              BlocProvider.of<FriendBloc>(context).dispatch(
+              BlocProvider.of<FriendBloc>(context).add(
                 FriendAddRequest(_controller.text),
               );
               Navigator.of(context).pop();

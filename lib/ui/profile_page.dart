@@ -74,7 +74,7 @@ class ProfilePage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: RaisedButton.icon(
               onPressed: () {
-                BlocProvider.of<AuthBloc>(context).dispatch(SignOutRequested());
+                BlocProvider.of<AuthBloc>(context).add(SignOutRequested());
               },
               shape: RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(20.0),

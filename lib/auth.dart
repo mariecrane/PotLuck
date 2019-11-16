@@ -47,9 +47,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() {
     FirebaseAuth.instance.currentUser().then((user) {
       _currentUser = user;
-      dispatch(AuthResult());
+      add(AuthResult());
     }).catchError((error) {
-      dispatch(AuthFailed());
+      add(AuthFailed());
     });
   }
 
@@ -102,7 +102,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
 
     if (event is SignOutRequested) {
-      await FirebaseAuth.instance.signOut();
+      if (_currentUser.isAnonymous) {
+        await _currentUser.delete();
+      } else {
+        await FirebaseAuth.instance.signOut();
+      }
       _currentUser = null;
       yield NotAuthenticated();
     }

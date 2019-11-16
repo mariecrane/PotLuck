@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pot_luck/ui/search_page.dart';
 
 class PantryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: buildList(context),
+      child: IngredientsListView(_pantry),
     );
   }
 
@@ -41,66 +42,46 @@ class PantryPage extends StatelessWidget {
   }
 }
 
-buildList(BuildContext context) {
-  return ListView.builder(
-    key: PageStorageKey<String>("pantry_page"),
-    shrinkWrap: true,
-    itemBuilder: (context, index) {
-      return (index < pantryList.length)
-          ? IngredientsList(pantryList[index])
-          : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 120),
-            );
-    },
-    itemCount: pantryList.length + 1,
-  );
-}
+class IngredientsListView extends StatelessWidget {
+  final Pantry _pantry;
 
-class IngredientsList extends StatelessWidget {
-  final Pantry pantry;
-
-  IngredientsList(this.pantry);
+  IngredientsListView(this._pantry);
 
   @override
   Widget build(BuildContext context) {
-    return _buildTiles(pantry);
-  }
-
-  Widget _buildTiles(Pantry p) {
-    return Card(
-      semanticContainer: true,
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      key: PageStorageKey<Pantry>(p),
-      child: Column(
-        children: [p.pantryContainer(p.inPantry)],)
+    return ListView(
+      key: PageStorageKey<String>("pantry_page"),
+      children: <Widget>[
+        Card(
+          child: Wrap(
+            spacing: 5.0,
+            children: _pantry.ingredients
+                .map<Widget>(
+                  (ingredient) => Container(
+                    child: InputChip(
+                      label: Text(ingredient.name),
+                      onDeleted: () {
+                        //TODO: actually delete the chip: will it be too small?
+                      },
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        )
+      ],
     );
   }
 }
 
-class Pantry {
-  String title;
-  List<String> inPantry;
-
-  Pantry(this.title, [this.inPantry = const <String>[]]);
-
-  Widget pantryContainer(List<String> inP) {
-    var pantryArea = new Wrap(
-        spacing: 5.0,
-        children: inP
-            .map<Widget>((inG) => Container(
-                    child: InputChip(
-                  label: Text(inG),
-                  onDeleted: () {},
-                )))
-            .toList());
-
-    return pantryArea;
-  }
-}
-
-List<Pantry> pantryList = <Pantry>[
-  Pantry(
-    'My Pantry',
-    ["egg", "chicken", "spinach", "tofu", "onion", "turkey"],
-  ),
-];
+Pantry _pantry = Pantry(
+  'My Pantry',
+  [
+    PantryIngredient(name: "egg"),
+    PantryIngredient(name: "chicken"),
+    PantryIngredient(name: "spinach"),
+    PantryIngredient(name: "tofu"),
+    PantryIngredient(name: "onion"),
+    PantryIngredient(name: "turkey"),
+  ],
+);

@@ -36,12 +36,12 @@ class SearchPage extends StatelessWidget {
           ),
           //TODO: change direct searching to adding the ingredients to the dropdown; bloc involved
           onSubmitted: (value) {
-            BlocProvider.of<SearchBloc>(context).dispatch(
+            BlocProvider.of<SearchBloc>(context).add(
               Submit(),
             );
           },
           onChanged: (value) {
-            BlocProvider.of<SearchBloc>(context).dispatch(
+            BlocProvider.of<SearchBloc>(context).add(
               QueryChange(value),
             );
           },
@@ -55,7 +55,6 @@ class SearchPage extends StatelessWidget {
       child: Icon(Icons.add_shopping_cart),
       backgroundColor: Theme.of(context).primaryColor,
       onPressed: () {
-        //TODO: link to the page where you can add ingredients by pantry
         Navigator.of(context).push(CupertinoPageRoute(
           builder: (context) => AddSearchIngredientsPage(),
         ));
@@ -72,14 +71,14 @@ class SearchBody extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: BlocBuilder<SearchBloc, SearchState>(
           /*
-                   * This function is called on every change in our app's state.
-                   * This allows us to show different UI depending on the status
-                   * of our search (not submitted, loading, finished, error).
-                   */
+           * This function is called on every change in our app's state.
+           * This allows us to show different UI depending on the status
+           * of our search (not submitted, loading, finished, error).
+           */
           builder: (context, state) {
             // Nothing has been searched yet; show tip/hint
             if (state is InitialState) {
-              return buildList(context);
+              return PantryListView();
             }
 
             // In the progress of searching; show loading animation
@@ -125,117 +124,140 @@ class SearchBody extends StatelessWidget {
   }
 }
 
-buildList(BuildContext context) {
-  return ListView.builder(
-    key: PageStorageKey<String>("search_page"),
-    shrinkWrap: true,
-    itemBuilder: (context, index) {
-      return (index < pantryList.length)
-          ? IngredientsList(pantryList[index])
-          : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 120),
-              child: RaisedButton(
-                onPressed: () {
-                  //TODO: SEARCHHHHHH!!!!!
-                },
-                shape: RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(20.0),
-//            side: BorderSide(color: Theme.of(context).primaryColor),
-                ),
-                textColor: Colors.white,
-                color: Theme.of(context).primaryColor,
-                child: const Text(
-                  'Search',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ),
-            );
-    },
-    itemCount: pantryList.length + 1,
-  );
-}
-
-class IngredientsList extends StatelessWidget {
-  final Pantry pantry;
-  IngredientsList(this.pantry);
-
+class PantryListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return _buildTiles(pantry);
-  }
-
-  Widget _buildTiles(Pantry p) {
-    return ExpansionTile(
-      key: PageStorageKey<Pantry>(p),
-      leading: Icon(Icons.shopping_basket),
-      title: Text(p.title),
-      children: [p.pantryContainer(p.inPantry)],
+    return ListView.builder(
+      key: PageStorageKey<String>("search_page"),
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        return (index < _pantryList.length)
+            ? PantryTile(_pantryList[index])
+            : Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 120),
+                child: RaisedButton(
+                  onPressed: () {
+                    //TODO: SEARCHHHHHH!!!!!
+                  },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(20.0),
+//            side: BorderSide(color: Theme.of(context).primaryColor),
+                  ),
+                  textColor: Colors.white,
+                  color: Theme.of(context).primaryColor,
+                  child: const Text(
+                    'Search',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              );
+      },
+      itemCount: _pantryList.length + 1,
     );
   }
 }
 
-class Pantry {
-  String title;
-  List<String> inPantry;
+class PantryTile extends StatelessWidget {
+  final Pantry _pantry;
+  PantryTile(this._pantry);
 
-  Pantry(this.title, [this.inPantry = const <String>[]]);
-
-  //TODO: make all category always open
-  Widget pantryContainer(List<String> inP) {
-    var pantryArea = new Wrap(
-        spacing: 5.0,
-        children: inP
-            .map<Widget>((inG) => Container(
-                    child: InputChip(
-                  label: Text(inG),
-                  onDeleted: () {
-                    //TODO: actually delete the chip: will it be too small?
-                  },
-                )))
-            .toList());
-
-    return pantryArea;
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      key: PageStorageKey<Pantry>(_pantry),
+      leading: Icon(Icons.shopping_basket),
+      title: Text(_pantry.title),
+      children: <Widget>[
+        Wrap(
+          spacing: 5.0,
+          children: _pantry.ingredients
+              .map<Widget>(
+                (ingredient) => Container(
+                  child: InputChip(
+                    label: Text(ingredient.name),
+                    onDeleted: () {
+                      //TODO: actually delete the chip: will it be too small?
+                    },
+                  ),
+                ),
+              )
+              .toList(),
+        ),
+      ],
+    );
   }
 }
 
+/// Simple data model for a single pantry with a title
+class Pantry {
+  final String title;
+  final List<PantryIngredient> ingredients;
+
+  Pantry(this.title, this.ingredients);
+}
+
+/// Simple data model for a single ingredient stored in a pantry
+class PantryIngredient {
+  final int id;
+  final String name;
+  final double amount;
+  final String unit;
+
+  PantryIngredient({this.id, this.name, this.amount, this.unit});
+}
+
 //TODO: this is hard-coded and very inefficient; ideally it changes depends on the friend but I cannot do anything about that now
-List<Pantry> pantryList = <Pantry>[
+List<Pantry> _pantryList = <Pantry>[
   Pantry(
     'All',
-    [
-      "egg",
-      "cream cheese",
-      "chicken",
-      "garlic",
-      "apple",
-      "potato",
-      "tomato",
-      "basil"
+    <PantryIngredient>[
+      PantryIngredient(name: "egg"),
+      PantryIngredient(name: "cream cheese"),
+      PantryIngredient(name: "chicken"),
+      PantryIngredient(name: "garlic"),
+      PantryIngredient(name: "apple"),
+      PantryIngredient(name: "potato"),
+      PantryIngredient(name: "tomato"),
+      PantryIngredient(name: "basil"),
     ],
   ),
   Pantry(
     'My Pantry',
-    ["egg", "chicken"],
+    <PantryIngredient>[
+      PantryIngredient(name: "egg"),
+      PantryIngredient(name: "chicken"),
+    ],
   ),
   Pantry(
     'Shouayee Vue',
-    ["garlic", "potato"],
+    <PantryIngredient>[
+      PantryIngredient(name: "garlic"),
+      PantryIngredient(name: "potato"),
+    ],
   ),
   Pantry(
     'Preston Locke',
-    ["apple"],
+    <PantryIngredient>[
+      PantryIngredient(name: "apple"),
+    ],
   ),
   Pantry(
     'Tracy Cai',
-    ["tomato"],
+    <PantryIngredient>[
+      PantryIngredient(name: "tomato"),
+    ],
   ),
   Pantry(
     'Marie Crane',
-    ["basil"],
+    <PantryIngredient>[
+      PantryIngredient(name: "basil"),
+    ],
   ),
   Pantry(
     'Others',
-    ["cream cheese"],
+    <PantryIngredient>[
+      PantryIngredient(name: "cream cheese"),
+    ],
   ),
 ];
 
@@ -343,8 +365,8 @@ class AddSearchIngredientsPage extends StatelessWidget {
         key: PageStorageKey<String>("search_ingredients_page"),
         shrinkWrap: true,
         itemBuilder: (context, index) {
-          return (index < pantryList.length)
-              ? IngredientsList(pantryList[index])
+          return (index < _pantryList.length)
+              ? PantryTile(_pantryList[index])
               : Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 120),
                   child: RaisedButton(
@@ -366,7 +388,7 @@ class AddSearchIngredientsPage extends StatelessWidget {
                   ),
                 );
         },
-        itemCount: pantryList.length + 1,
+        itemCount: _pantryList.length + 1,
       ),
     );
   }

@@ -74,8 +74,7 @@ class _AuthPageState extends State<AuthPage> {
           child: Text("Sign in later"),
           onPressed: () {
             // Request BLoC to do anonymous login
-            BlocProvider.of<AuthBloc>(context)
-                .dispatch(AnonymousAuthRequested());
+            BlocProvider.of<AuthBloc>(context).add(AnonymousAuthRequested());
           },
         ),
       ],
@@ -128,7 +127,7 @@ class _AuthFormState extends State<AuthForm> {
               );
             }
             // Get reference to AuthBloc and dispatch event
-            BlocProvider.of<AuthBloc>(context).dispatch(event);
+            BlocProvider.of<AuthBloc>(context).add(event);
           },
         )
       ],
