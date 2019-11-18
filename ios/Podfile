@@ -81,3 +81,10 @@ end
 
 # add pods for desired Firebase products
 # https://firebase.google.com/docs/ios/setup#available-pods
+pod 'Firebase/Auth'
+pod 'Firebase/Firestore'
+pod 'Firebase/Functions'
+pod 'Firebase/Messaging'
+pod 'Firebase/Storage'
+pod 'Firebase/Analytics'
+
