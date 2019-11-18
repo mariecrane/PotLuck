@@ -1,12 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pot_luck/ui/search_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pot_luck/pantry.dart';
 
 class PantryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: IngredientsListView(_pantry),
+      child: BlocBuilder<PantryBloc, PantryState>(
+        builder: (context, state) {
+          if (state is PantryUpdated) {
+            return IngredientsListView(state.pantry);
+          }
+
+          return CircularProgressIndicator();
+        },
+      ),
     );
   }
 
@@ -61,7 +70,8 @@ class IngredientsListView extends StatelessWidget {
                     child: InputChip(
                       label: Text(ingredient.name),
                       onDeleted: () {
-                        //TODO: actually delete the chip: will it be too small?
+                        BlocProvider.of<PantryBloc>(context)
+                            .add(PantryIngredientRemoved(ingredient));
                       },
                     ),
                   ),
@@ -73,15 +83,3 @@ class IngredientsListView extends StatelessWidget {
     );
   }
 }
-
-Pantry _pantry = Pantry(
-  'My Pantry',
-  [
-    PantryIngredient(name: "egg"),
-    PantryIngredient(name: "chicken"),
-    PantryIngredient(name: "spinach"),
-    PantryIngredient(name: "tofu"),
-    PantryIngredient(name: "onion"),
-    PantryIngredient(name: "turkey"),
-  ],
-);

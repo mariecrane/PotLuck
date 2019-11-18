@@ -72,7 +72,7 @@ class FriendPage extends StatelessWidget {
 }
 
 class FriendTile extends StatelessWidget {
-  final Friend _friend;
+  final User _friend;
 
   const FriendTile(this._friend, {Key key}) : super(key: key);
 
@@ -106,7 +106,7 @@ class FriendTile extends StatelessWidget {
 }
 
 class ConfirmRemoveFriendDialog extends StatelessWidget {
-  final Friend _friend;
+  final User _friend;
 
   const ConfirmRemoveFriendDialog(this._friend, {Key key}) : super(key: key);
 

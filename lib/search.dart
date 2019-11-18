@@ -1,9 +1,9 @@
-import 'dart:convert' as convert;
-
 import 'package:bloc/bloc.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/cupertino.dart';
 import 'package:html_unescape/html_unescape.dart';
+import 'package:pot_luck/friend.dart';
+import 'package:pot_luck/pantry.dart';
 
 /// Encodes all the data that is returned by our recipe API interface
 /// (Can be expanded later)
@@ -34,17 +34,39 @@ abstract class SearchEvent {}
 
 class Submit extends SearchEvent {}
 
-class QueryChange extends SearchEvent {
-  final String searchString;
-  QueryChange(this.searchString);
+class IngredientAdded extends SearchEvent {
+  final PantryIngredient ingredient;
+  IngredientAdded(this.ingredient);
+}
+
+class IngredientRemoved extends SearchEvent {
+  final PantryIngredient ingredient;
+  IngredientRemoved(this.ingredient);
+}
+
+class SearchCleared extends SearchEvent {}
+
+class PantriesUpdated extends SearchEvent {
+  final Pantry myPantry;
+  final List<Pantry> friendPantries;
+
+  PantriesUpdated(this.myPantry, this.friendPantries);
 }
 
 /// Encodes the status and data of results returned from our recipe API interface
 abstract class SearchState {}
 
-class InitialState extends SearchState {}
+class BuildingSearch extends SearchState {
+  final List<PantryIngredient> allIngredients;
+  final List<Pantry> pantries;
 
-class SearchInProgress extends SearchState {}
+  BuildingSearch({
+    this.allIngredients = const <PantryIngredient>[],
+    this.pantries = const <Pantry>[],
+  });
+}
+
+class SearchLoading extends SearchState {}
 
 class SearchSuccessful extends SearchState {
   final List<SearchResult> results;
@@ -58,38 +80,103 @@ class SearchError extends SearchState {
 
 /// Connects our business logic with our UI code in an extensible way
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  String _searchString;
-  String _lastSearch;
+  Pantry _myPantry;
+  List<Pantry> _friendPantries;
+  List<PantryIngredient> _currentSearch = <PantryIngredient>[
+    PantryIngredient(
+      name: "cream cheese",
+      fromPantry: Pantry(
+        title: "Other",
+        owner: User(
+          name: "",
+          isNobody: true,
+        ),
+        ingredients: <PantryIngredient>[],
+      ),
+    ),
+  ];
+
+  SearchBloc() {
+    var pf = PantryFetcher.instance;
+    var futures = <Future>[
+      pf.getMyPantry(),
+      pf.getFriendPantries(),
+    ];
+    Future.wait(futures).then((results) {
+      add(PantriesUpdated(results[0], results[1]));
+      debugPrint("added PantriesUpdated event");
+    });
+    pf.onUpdate((myPantry, friendPantries) {
+      add(PantriesUpdated(myPantry, friendPantries));
+    });
+  }
 
   @override
-  SearchState get initialState => InitialState();
+  SearchState get initialState {
+    if (_myPantry != null && _friendPantries != null) {
+      return _makeBuildingSearchState();
+    }
+    debugPrint("Returned SearchLoading from initialState");
+    return SearchLoading();
+  }
 
-  // TODO: Add an error condition
   @override
   Stream<SearchState> mapEventToState(SearchEvent event) async* {
-    // Keep track of the current query
-    if (event is QueryChange) {
-      _searchString = event.searchString;
+    if (event is PantriesUpdated) {
+      debugPrint("received PantriesUpdated event");
+      _myPantry = event.myPantry;
+      _friendPantries = event.friendPantries;
+      yield _makeBuildingSearchState();
+      return;
     }
+
+    // TODO: Maybe yield loading state while fetching pantries
+    _myPantry = await PantryFetcher.instance.getMyPantry();
+    _friendPantries = await PantryFetcher.instance.getFriendPantries();
+
+    if (event is SearchCleared) {
+      _currentSearch.clear();
+      yield _makeBuildingSearchState();
+    }
+
+    if (event is IngredientAdded) {
+      var ingredient = event.ingredient;
+
+      Pantry pantry;
+      if (ingredient.fromPantry.owner.isMe) {
+        pantry = _myPantry;
+      } else {
+        pantry = _friendPantries.firstWhere((p) => p == ingredient.fromPantry);
+      }
+
+      // Don't add to search if the ingredient isn't in friend's pantry anymore
+      if (pantry.ingredients.contains(ingredient) == false) return;
+      debugPrint("ingredient is still in pantry");
+
+      if (_currentSearch.contains(ingredient)) return;
+      debugPrint("search does not already contain ingredient");
+
+      _currentSearch.add(ingredient);
+      yield _makeBuildingSearchState();
+    }
+
+    if (event is IngredientRemoved) {
+      if (_currentSearch.contains(event.ingredient)) {
+        _currentSearch.remove(event.ingredient);
+      }
+      yield _makeBuildingSearchState();
+    }
+
     // Commence a search if our user hit submit
     if (event is Submit) {
-      // Don't submit if the search didn't actually change
-      if (_searchString == _lastSearch) return;
-
-      if (_searchString != "") {
+      if (_currentSearch.isNotEmpty) {
         // Let our UI know we're currently performing a search
-        yield SearchInProgress();
-
-        // This is a horrible workaround but somehow the only working one to
-        // get our SearchInProgress state to actually send
-        // Hopefully unneeded when we put in real API calls?
-        // Update: seems unnecessary now, but for safety, we'll keep this around
-        // await Future.delayed(Duration(milliseconds: 100));
+        yield SearchLoading();
 
         try {
           // When our search returns results, pass them to the UI
           var results =
-              await RecipeSearch.instance.getRecipeResults(_searchString);
+              await RecipeSearch.instance.getRecipeResults(_currentSearch);
           yield SearchSuccessful(results);
         } catch (error) {
           // TODO: Add more meaningful error messages
@@ -97,9 +184,61 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         }
       } else {
         // Nothing has been input; go back to initial state
-        yield InitialState();
+        yield _makeBuildingSearchState();
       }
     }
+  }
+
+  BuildingSearch _makeBuildingSearchState() {
+    _cleanSearch();
+    var ingredients = _currentSearch.where((i) => i.fromPantry.owner.isNobody);
+
+    var otherIngredients = Pantry(
+      title: "Other",
+      owner: User(
+        name: "",
+        isNobody: true,
+      ),
+      ingredients: <PantryIngredient>[],
+    );
+
+    ingredients.forEach((ingredient) {
+      otherIngredients.ingredients.add(ingredient);
+    });
+
+    var friendPantries = <Pantry>[];
+    _friendPantries.forEach((pantry) {
+      friendPantries.add(pantry);
+    });
+
+    if (otherIngredients.ingredients.isNotEmpty) {
+      friendPantries.add(otherIngredients);
+    }
+
+    var allPantries = <Pantry>[_myPantry];
+    allPantries.addAll(friendPantries);
+
+    return BuildingSearch(
+      allIngredients: _currentSearch,
+      pantries: allPantries,
+    );
+  }
+
+  void _cleanSearch() {
+    _currentSearch.removeWhere((ingredient) {
+      if (ingredient.fromPantry.owner.isMe) {
+        if (_myPantry.ingredients.contains(ingredient) == false) {
+          return true;
+        }
+      } else if (ingredient.fromPantry.owner.isNobody == false) {
+        var pantry =
+            _friendPantries.firstWhere((p) => p == ingredient.fromPantry);
+        if (pantry.ingredients.contains(ingredient) == false) {
+          return true;
+        }
+      }
+      return false;
+    });
   }
 }
 
@@ -128,29 +267,30 @@ class RecipeSearch {
     return "https://spoonacular.com/cdn/ingredients_$size/$fileName";
   }
 
-  /// Adds GET parameters to a url, also adding the API key automatically
-  Future<String> addParamsToUrl(String url, Map<String, dynamic> params) async {
-    // Fetch API key from our secrets file
-    var apiKey = convert.jsonDecode(
-        await rootBundle.loadString("assets/secrets.json"))["apiKey"];
-
-    // Always add API key as the first parameter in the URL
-    url = "$url?apiKey=$apiKey&";
-
-    if (params == null || params.length == 0) return url;
-
-    params.forEach((key, value) {
-      // Insert key-value pairs into url parameter format
-      url = "$url$key=$value&";
-    });
-
-    // Remove unnecessary trailing ampersand
-    return url.substring(0, url.length - 1);
-  }
+//  /// Adds GET parameters to a url, also adding the API key automatically
+//  Future<String> addParamsToUrl(String url, Map<String, dynamic> params) async {
+//    // Fetch API key from our secrets file
+//    var apiKey = convert.jsonDecode(
+//        await rootBundle.loadString("assets/secrets.json"))["apiKey"];
+//
+//    // Always add API key as the first parameter in the URL
+//    url = "$url?apiKey=$apiKey&";
+//
+//    if (params == null || params.length == 0) return url;
+//
+//    params.forEach((key, value) {
+//      // Insert key-value pairs into url parameter format
+//      url = "$url$key=$value&";
+//    });
+//
+//    // Remove unnecessary trailing ampersand
+//    return url.substring(0, url.length - 1);
+//  }
 
   /// Fetches recipe results asynchronously
-  Future<List<SearchResult>> getRecipeResults(String searchString) async {
-    // TODO: investigate further
+  Future<List<SearchResult>> getRecipeResults(
+      List<PantryIngredient> search) async {
+    var searchString = _ingredientsListToString(search);
     if (searchString.indexOf(",") == -1) searchString += ",";
     var unescape = HtmlUnescape();
 
@@ -166,7 +306,6 @@ class RecipeSearch {
       for (var i = 0; i < result["missedIngredients"].length; i++) {
         // gets each missing ingredient and adds it to missedIngredients string
         missedIngredients += result["missedIngredients"][i]["name"] + ", ";
-        //TODO: implement "+6 more"
       }
       if (missedIngredients.length != 0) {
         // removes final comma
@@ -178,7 +317,6 @@ class RecipeSearch {
       for (var i = 0; i < result["usedIngredients"].length; i++) {
         // gets each matching ingredient and adds it to usedIngredients string
         usedIngredients += result["usedIngredients"][i]["name"] + ", ";
-        //TODO: implement "+6 more"
       }
       if (usedIngredients.length != 0) {
         // removes final comma
@@ -247,6 +385,17 @@ class RecipeSearch {
       ingredients: ingredients,
       steps: steps,
     );
+  }
+
+  String _ingredientsListToString(List<PantryIngredient> search) {
+    var result = StringBuffer();
+    for (int i = 0; i < search.length; i++) {
+      result.write(search[i].name);
+      if (i != search.length || search.length == 1) {
+        result.write(",");
+      }
+    }
+    return result.toString();
   }
 }
 

@@ -1,35 +1,34 @@
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 
 abstract class FriendEvent {}
 
 class FriendRemoved extends FriendEvent {
-  final Friend friend;
-
+  final User friend;
   FriendRemoved(this.friend);
 }
 
 class FriendAddRequest extends FriendEvent {
   final String name;
-
   FriendAddRequest(this.name);
 }
 
 abstract class FriendState {}
 
 class FriendsListUpdate extends FriendState {
-  final List<Friend> friendsList;
-
+  final List<User> friendsList;
   FriendsListUpdate(this.friendsList);
 }
 
 class FriendsListEmpty extends FriendState {}
 
 class FriendBloc extends Bloc<FriendEvent, FriendState> {
-  List<Friend> _friendsList = <Friend>[
-    Friend("Marie Crane", "alskdjf98123fe98hj"),
-    Friend("Preston Locke", "3skdhjfaljf9812e98"),
-    Friend("Shouayee Vue", "98djfalsk8hjfe9123"),
-    Friend("Tracy Cai", "lskf812djah9f3je98"),
+  List<User> _friendsList = <User>[
+    User(name: "Marie Crane"),
+    User(name: "Preston Locke"),
+    User(name: "Shouayee Vue"),
+    User(name: "Tracy Cai"),
   ];
 
   @override
@@ -47,19 +46,30 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
 
     if (event is FriendAddRequest) {
       try {
+        // TODO: Change this to check IDs instead
         _friendsList.firstWhere((friend) => friend.name == event.name);
       } catch (e) {
         // TODO: Obviously replace this with an actual call to Firebase
-        _friendsList.add(Friend(event.name, "as09df8j029jf2f9e0"));
+        _friendsList.add(User(name: event.name));
         yield FriendsListUpdate(_friendsList);
       }
     }
   }
 }
 
-class Friend {
+class User extends Equatable {
   final String name;
   final String id;
+  final bool isNobody;
+  final bool isMe;
 
-  Friend(this.name, this.id);
+  User({
+    @required this.name,
+    this.id,
+    this.isNobody = false,
+    this.isMe = false,
+  });
+
+  @override
+  List<Object> get props => [name, isNobody, isMe];
 }
