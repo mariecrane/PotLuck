@@ -20,7 +20,7 @@ class SearchPage extends StatelessWidget {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 1.0,
-      leading: Icon(Icons.search, color: Theme.of(context).primaryColor),
+      leading: Icon(Icons.add, color: Theme.of(context).primaryColor),
       title: Padding(
         // Adds some padding around our TextField
         padding: const EdgeInsets.symmetric(
@@ -51,15 +51,16 @@ class SearchPage extends StatelessWidget {
   }
 
   static Widget buildFloatingActionButton(BuildContext context) {
-    return FloatingActionButton(
-      child: Icon(Icons.add_shopping_cart),
-      backgroundColor: Theme.of(context).primaryColor,
-      onPressed: () {
-        Navigator.of(context).push(CupertinoPageRoute(
-          builder: (context) => AddSearchIngredientsPage(),
-        ));
-      },
-    );
+//    return FloatingActionButton(
+//      child: Icon(Icons.add_shopping_cart),
+//      backgroundColor: Theme.of(context).primaryColor,
+//      onPressed: () {
+//        Navigator.of(context).push(CupertinoPageRoute(
+//          builder: (context) => AddSearchIngredientsPage(),
+//        ));
+//      },
+//    );
+      return null;
   }
 }
 
@@ -132,7 +133,7 @@ class PantryListView extends StatelessWidget {
       shrinkWrap: true,
       itemBuilder: (context, index) {
         return (index < _pantryList.length)
-            ? PantryTile(_pantryList[index])
+            ? PantryTile(_pantryList[index], _themeColorList[index % _themeColorList.length], index)
             : Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 120),
                 child: RaisedButton(
@@ -159,31 +160,127 @@ class PantryListView extends StatelessWidget {
 
 class PantryTile extends StatelessWidget {
   final Pantry _pantry;
-  PantryTile(this._pantry);
+  final Color _themeColor;
+  final int _index;
+  PantryTile(this._pantry, this._themeColor, this. _index);
 
   @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
+    return Theme(
+      data: ThemeData(
+        accentColor: _themeColor
+      ),
+      child:(_index == 0)
+        ?Container(
+          child:Column(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Selected Ingrediants",
+                style: TextStyle(fontSize: 24.0)),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left:8.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  child: Wrap(
+                    spacing: 5.0,
+                    children: _pantry.ingredients
+                        .map<Widget>(
+                          (ingredient) => Container(
+                        child: InputChip(
+                          label: Text(ingredient.name),
+                          backgroundColor: _themeColor,
+                          onDeleted: () {
+                            //TODO: actually delete?
+                          },
+                        ),
+                      ),
+                    )
+                        .toList(),
+                  ),
+                )
+              )
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 120),
+                child: RaisedButton(
+                  onPressed: () {
+                    //TODO: Add ingredients to search (probably via bloc)
+                    //Navigator.of(context).pop();
+                  },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(20.0),
+                  ),
+                  textColor: Colors.white,
+                  color: Theme.of(context).primaryColor,
+                  child: const Text(
+                    'Search',
+                    style:
+                    TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              )
+            ),
+          ]
+        )
+      )
+        :ExpansionTile(
       key: PageStorageKey<Pantry>(_pantry),
+      //change it into profile picture
       leading: Icon(Icons.shopping_basket),
       title: Text(_pantry.title),
+      initiallyExpanded: false,
       children: <Widget>[
         Wrap(
           spacing: 5.0,
           children: _pantry.ingredients
               .map<Widget>(
                 (ingredient) => Container(
-                  child: InputChip(
-                    label: Text(ingredient.name),
-                    onDeleted: () {
-                      //TODO: actually delete the chip: will it be too small?
-                    },
+                  child: filterChipWidget(chipName:ingredient.name,
+                    chipColor: _themeColor,
                   ),
                 ),
               )
               .toList(),
         ),
       ],
+    )
+    );
+  }
+}
+
+class filterChipWidget extends StatefulWidget {
+  final String chipName;
+  final Color chipColor;
+
+  filterChipWidget({Key key, this.chipName, this.chipColor}) : super(key: key);
+
+  @override
+  _filterChipWidgetState createState() => _filterChipWidgetState();
+}
+
+class _filterChipWidgetState extends State<filterChipWidget>{
+  var _isSelected = false;
+
+  Widget build(BuildContext context) {
+    return FilterChip(
+      label: Text(widget.chipName),
+      selected: _isSelected,
+      backgroundColor: Colors.blueGrey[150],
+      onSelected: (isSelected){
+        setState(() {
+          _isSelected = isSelected;
+          });
+        //add the chip in All
+        },
+      selectedColor: widget.chipColor,
     );
   }
 }
@@ -206,10 +303,24 @@ class PantryIngredient {
   PantryIngredient({this.id, this.name, this.amount, this.unit});
 }
 
+List<Color> _themeColorList = <Color> [
+  Colors.blueGrey[150],
+  Color.fromRGBO(226, 132, 19, 1),
+  Colors.deepOrange,
+  Colors.blue,
+  Colors.green,
+  Colors.purple,
+  Colors.brown,
+  Colors.indigo];
+
+/// The list of selected ingredients
+List<PantryIngredient> selectedIngredients = <PantryIngredient>[];
+
 //TODO: this is hard-coded and very inefficient; ideally it changes depends on the friend but I cannot do anything about that now
 List<Pantry> _pantryList = <Pantry>[
   Pantry(
     'All',
+    //TODO: to be replaced by the list of seleted ingredients after the adding function is completed
     <PantryIngredient>[
       PantryIngredient(name: "egg"),
       PantryIngredient(name: "cream cheese"),
@@ -366,7 +477,7 @@ class AddSearchIngredientsPage extends StatelessWidget {
         shrinkWrap: true,
         itemBuilder: (context, index) {
           return (index < _pantryList.length)
-              ? PantryTile(_pantryList[index])
+              ? PantryTile(_pantryList[index], Theme.of(context).primaryColor, index)
               : Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 120),
                   child: RaisedButton(
