@@ -29,7 +29,7 @@ class SearchPage extends StatelessWidget {
         ),
         child: TextField(
           // Type of "Done" button to show on keyboard
-          textInputAction: TextInputAction.search,
+          textInputAction: TextInputAction.done,
           decoration: InputDecoration(
             border: InputBorder.none,
             // Shows when TextField is empty
@@ -200,11 +200,11 @@ class AllIngredientsTile extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(20.0),
                 ),
-                textColor: Colors.white,
+                textColor: Colors.black,
                 color: Theme.of(context).primaryColor,
                 child: const Text(
                   'Search',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 20),
                 ),
               ),
             ),
