@@ -118,11 +118,37 @@ class PantryFetcher {
   Pantry _myPantry = Pantry(
     title: 'My Pantry',
     owner: User(name: "Me", isMe: true),
-    color: _colors[0],
+    color: _colors[1],
     ingredients: <PantryIngredient>[],
   );
 
-  List<Pantry> _friendPantries = _pantryList;
+  List<Pantry> _friendPantries = <Pantry>[
+    Pantry(
+      title: 'Shouayee Vue',
+      owner: User(name: "Shouayee Vue"),
+      color: _colors[2],
+      ingredients: <PantryIngredient>[],
+    ),
+    Pantry(
+      title: 'Preston Locke',
+      owner: User(name: "Preston Locke"),
+      color: _colors[3],
+      ingredients: <PantryIngredient>[],
+    ),
+    Pantry(
+      title: 'Tracy Cai',
+      owner: User(name: "Tracy Cai"),
+      color: _colors[4],
+      ingredients: <PantryIngredient>[],
+    ),
+    Pantry(
+      title: 'Marie Crane',
+      owner: User(name: "Marie Crane"),
+      color: _colors[5],
+      ingredients: <PantryIngredient>[],
+    ),
+  ];
+
   List<UpdateCallback> _updateCallbacks = <UpdateCallback>[];
 
   Future<Pantry> getMyPantry() async {
@@ -181,58 +207,35 @@ class PantryFetcher {
         PantryIngredient(name: "turkey", fromPantry: _myPantry),
       ],
     );
-    _pantryList[0].ingredients.add(
+    _friendPantries[0].ingredients.add(
           PantryIngredient(
             name: "garlic",
-            fromPantry: _pantryList[0],
+            fromPantry: _friendPantries[0],
           ),
         );
-    _pantryList[0].ingredients.add(
+    _friendPantries[0].ingredients.add(
           PantryIngredient(
             name: "potato",
-            fromPantry: _pantryList[0],
+            fromPantry: _friendPantries[0],
           ),
         );
-    _pantryList[1].ingredients.add(
+    _friendPantries[1].ingredients.add(
           PantryIngredient(
             name: "apple",
-            fromPantry: _pantryList[1],
+            fromPantry: _friendPantries[1],
           ),
         );
-    _pantryList[2].ingredients.add(
+    _friendPantries[2].ingredients.add(
           PantryIngredient(
             name: "tomato",
-            fromPantry: _pantryList[2],
+            fromPantry: _friendPantries[2],
           ),
         );
-    _pantryList[3].ingredients.add(
+    _friendPantries[3].ingredients.add(
           PantryIngredient(
             name: "basil",
-            fromPantry: _pantryList[3],
+            fromPantry: _friendPantries[3],
           ),
         );
   }
 }
-
-final List<Pantry> _pantryList = <Pantry>[
-  Pantry(
-    title: 'Shouayee Vue',
-    ingredients: <PantryIngredient>[],
-    owner: User(name: "Shouayee Vue"),
-  ),
-  Pantry(
-    title: 'Preston Locke',
-    ingredients: <PantryIngredient>[],
-    owner: User(name: "Preston Locke"),
-  ),
-  Pantry(
-    title: 'Tracy Cai',
-    ingredients: <PantryIngredient>[],
-    owner: User(name: "Tracy Cai"),
-  ),
-  Pantry(
-    title: 'Marie Crane',
-    ingredients: <PantryIngredient>[],
-    owner: User(name: "Marie Crane"),
-  ),
-];
