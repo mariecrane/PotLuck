@@ -23,7 +23,7 @@ class _AuthPageState extends State<AuthPage> {
       key: key,
       body: SafeArea(
         child: WillPopScope(
-            // Allow back button to trigger a return to AuthChooser before exiting app
+          // Allow back button to trigger a return to AuthChooser before exiting app
             onWillPop: () async {
               // If already/still on AuthChooser, do default back button behavior
               if (_currentForm == 0) {
@@ -39,8 +39,8 @@ class _AuthPageState extends State<AuthPage> {
               child: _currentForm == 1
                   ? AuthForm(createAccount: false)
                   : _currentForm == 2
-                      ? AuthForm(createAccount: true)
-                      : _buildAuthChooser(),
+                  ? AuthForm(createAccount: true)
+                  : _buildAuthChooser(),
             )),
       ),
     );
@@ -60,11 +60,14 @@ class _AuthPageState extends State<AuthPage> {
         Text.rich(
           TextSpan(
             children: <TextSpan>[
-              TextSpan(text: 'Welcome to ', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+              TextSpan(text: 'Welcome to ',
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
               TextSpan(
-                  text: 'PotLuck!', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Theme
-                  .of(context)
-                  .primaryColor)),
+                  text: 'PotLuck!',
+                  style: TextStyle(
+                      fontSize: 30, fontWeight: FontWeight.bold, color: Theme
+                      .of(context)
+                      .primaryColor)),
             ],
           ),
         ),
@@ -92,7 +95,9 @@ class _AuthPageState extends State<AuthPage> {
           },
         ),
         FlatButton(
-          child: Text("Sign in later", style: TextStyle(color: Theme.of(context).primaryColor)),
+          child: Text("Sign in later", style: TextStyle(color: Theme
+              .of(context)
+              .primaryColor)),
           onPressed: () {
             // Request BLoC to do anonymous login
             BlocProvider.of<AuthBloc>(context).add(AnonymousAuthRequested());
