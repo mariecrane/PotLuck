@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/auth.dart';
 
@@ -18,6 +19,7 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     var scaffold = Scaffold(
+      backgroundColor: Colors.white,
       key: key,
       body: SafeArea(
         child: WillPopScope(
@@ -54,7 +56,25 @@ class _AuthPageState extends State<AuthPage> {
   Widget _buildAuthChooser() {
     return Column(
       children: <Widget>[
+        Image.asset('assets/images/icon.png'),
+        Text.rich(
+          TextSpan(
+            children: <TextSpan>[
+              TextSpan(text: 'Welcome to ', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+              TextSpan(
+                  text: 'PotLuck!', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Theme
+                  .of(context)
+                  .primaryColor)),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 30.0,
+          ),
+        ),
         RaisedButton(
+          color: Colors.yellow,
           child: Text("Sign in"),
           onPressed: () {
             setState(() {
@@ -63,6 +83,7 @@ class _AuthPageState extends State<AuthPage> {
           },
         ),
         RaisedButton(
+          color: Colors.yellow,
           child: Text("Create Account"),
           onPressed: () {
             setState(() {
@@ -71,7 +92,7 @@ class _AuthPageState extends State<AuthPage> {
           },
         ),
         FlatButton(
-          child: Text("Sign in later"),
+          child: Text("Sign in later", style: TextStyle(color: Theme.of(context).primaryColor)),
           onPressed: () {
             // Request BLoC to do anonymous login
             BlocProvider.of<AuthBloc>(context).add(AnonymousAuthRequested());
@@ -99,10 +120,20 @@ class _AuthFormState extends State<AuthForm> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 30.0,
+          ),
+        ),
         TextField(
           keyboardType: TextInputType.emailAddress,
           controller: _emailController,
           decoration: InputDecoration(labelText: "Email"),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 15.0,
+          ),
         ),
         TextField(
           keyboardType: TextInputType.visiblePassword,
@@ -111,6 +142,7 @@ class _AuthFormState extends State<AuthForm> {
           decoration: InputDecoration(labelText: "Password"),
         ),
         RaisedButton(
+          color: Colors.yellow,
           child: Text(widget.createAccount ? "Create account" : "Sign in"),
           onPressed: () {
             // The event to dispatch to our AuthBloc

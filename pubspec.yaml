@@ -50,6 +50,7 @@ flutter:
   assets:
     - assets/secrets.json
     - assets/images/icon.png
+    - assets/images/PotLuck_Logo_1.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

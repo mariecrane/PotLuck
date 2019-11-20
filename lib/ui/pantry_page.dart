@@ -72,7 +72,7 @@ class IngredientsListView extends StatelessWidget {
                           .of(context)
                           .primaryColor,
                       deleteIconColor: Colors.white,
-                      label: Text(ingredient.name, style: TextStyle(color: Colors.white, fontSize: 24)),
+                      label: Text(ingredient.name, style: TextStyle(color: Colors.white, fontSize: 20)),
                       onDeleted: () {
                         BlocProvider.of<PantryBloc>(context)
                             .add(PantryIngredientRemoved(ingredient));
