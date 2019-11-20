@@ -73,7 +73,7 @@ class _AuthPageState extends State<AuthPage> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(
-            vertical: 30.0,
+            vertical: 25.0,
           ),
         ),
         RaisedButton(
@@ -123,51 +123,65 @@ class _AuthFormState extends State<AuthForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 30.0,
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 15.0,
+            ),
           ),
-        ),
-        TextField(
-          keyboardType: TextInputType.emailAddress,
-          controller: _emailController,
-          decoration: InputDecoration(labelText: "Email"),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 15.0,
+          Text("Please enter your Email and Password:"),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 15.0,
+            ),
           ),
-        ),
-        TextField(
-          keyboardType: TextInputType.visiblePassword,
-          controller: _passwordController,
-          obscureText: true,
-          decoration: InputDecoration(labelText: "Password"),
-        ),
-        RaisedButton(
-          color: Colors.yellow,
-          child: Text(widget.createAccount ? "Create account" : "Sign in"),
-          onPressed: () {
-            // The event to dispatch to our AuthBloc
-            AuthEvent event;
-            if (widget.createAccount) {
-              event = AccountCreationRequested(
-                email: _emailController.text,
-                password: _passwordController.text,
-              );
-            } else {
-              event = SignInRequested(
-                email: _emailController.text,
-                password: _passwordController.text,
-              );
-            }
-            // Get reference to AuthBloc and dispatch event
-            BlocProvider.of<AuthBloc>(context).add(event);
-          },
-        )
-      ],
+          TextField(
+            keyboardType: TextInputType.emailAddress,
+            controller: _emailController,
+            decoration: InputDecoration(border: OutlineInputBorder(), labelText: "Email"),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 15.0,
+            ),
+          ),
+          TextField(
+            keyboardType: TextInputType.visiblePassword,
+            controller: _passwordController,
+            obscureText: true,
+            decoration: InputDecoration(border: OutlineInputBorder(), labelText: "Password"),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 15.0,
+            ),
+          ),
+          RaisedButton(
+            color: Colors.yellow,
+            child: Text(widget.createAccount ? "Create account" : "Sign in"),
+            onPressed: () {
+              // The event to dispatch to our AuthBloc
+              AuthEvent event;
+              if (widget.createAccount) {
+                event = AccountCreationRequested(
+                  email: _emailController.text,
+                  password: _passwordController.text,
+                );
+              } else {
+                event = SignInRequested(
+                  email: _emailController.text,
+                  password: _passwordController.text,
+                );
+              }
+              // Get reference to AuthBloc and dispatch event
+              BlocProvider.of<AuthBloc>(context).add(event);
+            },
+          )
+        ],
+      ),
     );
   }
 

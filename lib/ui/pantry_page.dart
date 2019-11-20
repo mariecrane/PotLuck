@@ -61,25 +61,33 @@ class IngredientsListView extends StatelessWidget {
     return ListView(
       key: PageStorageKey<String>("pantry_page"),
       children: <Widget>[
-        Card(
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("Ingredients in Your Pantry",
+                style: TextStyle(fontSize: 24.0)),
+          ),
+        ),
+        Container(
           child: Wrap(
             spacing: 5.0,
             children: _pantry.ingredients
                 .map<Widget>(
-                  (ingredient) => Container(
+                  (ingredient) =>
+                  Container(
                     child: InputChip(
                       backgroundColor: Theme
                           .of(context)
                           .primaryColor,
-                      deleteIconColor: Colors.white,
-                      label: Text(ingredient.name, style: TextStyle(color: Colors.white, fontSize: 20)),
+                      label: Text(ingredient.name),
                       onDeleted: () {
                         BlocProvider.of<PantryBloc>(context)
                             .add(PantryIngredientRemoved(ingredient));
                       },
                     ),
                   ),
-                )
+            )
                 .toList(),
           ),
         )
