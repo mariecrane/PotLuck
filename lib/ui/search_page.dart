@@ -77,6 +77,9 @@ class SearchBody extends StatelessWidget {
             // Nothing has been searched yet; show tip/hint
             if (state is BuildingSearch) {
               return SearchListView(state.allIngredients, state.pantries);
+              //TODO: ideally it should be autosuggestion here but I will just use potato
+              //the suggestedListView will show up when the search bar is not empty; bloc needed
+              //return _SuggestionListView(possiblePantry: suggestedPantry, input: "potato");
             }
 
             // In the progress of searching; show loading animation
@@ -145,6 +148,34 @@ class SearchListView extends StatelessWidget {
   }
 }
 
+/// hard-coded suggestionView
+List<String> suggestedPantry = <String> ["Other", "Pantry", "Shouayee", "Preston", "Tracy", "Marie"];
+
+class _SuggestionListView extends StatelessWidget{
+  final List<String> possiblePantry;
+  final String input;
+
+  const _SuggestionListView({this.possiblePantry, this.input});
+
+  Widget build(BuildContext context){
+    return ListView.builder(
+      key: PageStorageKey<String>("suggestion_page"),
+      itemCount: possiblePantry.length,
+      itemBuilder: (BuildContext context, int index){
+        final String pan = possiblePantry[index];
+        return ListTile(
+          leading: Icon(Icons.add_shopping_cart),
+          title:Text(input + " in " + pan),
+          trailing: Icon(Icons.add),
+          onTap: (){
+            //TODO: add selected ingredients
+          },
+        );
+      },
+    );
+  }
+}
+
 class AllIngredientsTile extends StatelessWidget {
   final List<PantryIngredient> ingredients;
 
@@ -160,7 +191,7 @@ class AllIngredientsTile extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text("Selected Ingredients",
-                  style: TextStyle(fontSize: 24.0)),
+                  style: TextStyle(fontSize: 24.0,fontWeight: FontWeight.bold)),
             ),
           ),
           Padding(
@@ -228,7 +259,8 @@ class PantryTile extends StatelessWidget {
         key: PageStorageKey<Pantry>(_pantry),
         //change it into profile picture
         leading: Icon(Icons.shopping_basket),
-        title: Text(_pantry.title),
+        title: Text(_pantry.title,
+            style:TextStyle(fontWeight: FontWeight.bold)),
         initiallyExpanded: false,
         children: <Widget>[
           Wrap(
