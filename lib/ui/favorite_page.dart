@@ -91,7 +91,7 @@ class RecipeResult extends StatelessWidget {
     // A container with rounded corners and a shadow by default
     return Card(
       color: Colors.white,
-      elevation: 1.0,
+      elevation: 0.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
       ),
@@ -120,7 +120,7 @@ class RecipeResult extends StatelessWidget {
                   child: AspectRatio(
                     aspectRatio: 1.0,
                     child: ClipRRect(
-                      borderRadius: new BorderRadius.circular(20.0),
+                      borderRadius: new BorderRadius.circular(25.0),
                       child: Image(
                         image: NetworkImage(data.imageUrl),
                         fit: BoxFit.cover,

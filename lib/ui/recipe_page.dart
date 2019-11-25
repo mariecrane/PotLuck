@@ -49,6 +49,7 @@ class RecipePage extends StatelessWidget {
               context: context,
               tiles: [
                 Card(
+                  elevation: 0.0,
                   semanticContainer: true,
                   clipBehavior: Clip.antiAliasWithSaveLayer,
                   child: Image.network(

@@ -79,6 +79,7 @@ class FriendTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 0.0,
       child: InkWell(
         borderRadius: BorderRadius.circular(20.0),
         child: ListTile(

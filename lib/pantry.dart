@@ -105,14 +105,13 @@ class PantryFetcher {
 
   static final PantryFetcher instance = PantryFetcher._privateConstructor();
   static final List<Color> _colors = <Color>[
-    Colors.blueGrey[150],
+    Colors.blueGrey[200],
+    Colors.red[700],
+    Color(0xff604d53),
+    Colors.deepOrange[400],
+    Colors.amber[700],
     Colors.brown[300],
-    Colors.deepOrange[300],
-    Colors.cyan,
     Colors.purple[300],
-    Colors.green[400],
-    Colors.pink[200],
-    Colors.teal[200]
   ];
 
   Pantry _myPantry = Pantry(

@@ -69,10 +69,12 @@ class IngredientsListView extends StatelessWidget {
                 style: TextStyle(fontSize: 24.0)),
           ),
         ),
-        Container(
-          child: Wrap(
-            spacing: 5.0,
-            children: _pantry.ingredients
+        Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+          child:Container(
+            child: Wrap(
+              spacing: 5.0,
+              children: _pantry.ingredients
                 .map<Widget>(
                   (ingredient) =>
                   Container(
@@ -91,6 +93,7 @@ class IngredientsListView extends StatelessWidget {
                 .toList(),
           ),
         )
+    )
       ],
     );
   }

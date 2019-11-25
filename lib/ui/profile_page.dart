@@ -28,6 +28,7 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
           Card(
+            elevation: 0.0,
             semanticContainer: true,
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: Container(
@@ -55,6 +56,7 @@ class ProfilePage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: RaisedButton(
+              elevation: 0.0,
               onPressed: () {
                 //TODO: implement pop up window to edit name, username, email, password, and photo
               },
@@ -73,6 +75,7 @@ class ProfilePage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: RaisedButton.icon(
+              elevation: 0.0,
               onPressed: () {
                 BlocProvider.of<AuthBloc>(context).add(SignOutRequested());
               },

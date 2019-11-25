@@ -47,16 +47,16 @@ class SearchPage extends StatelessWidget {
   }
 
   static Widget buildFloatingActionButton(BuildContext context) {
-//    return FloatingActionButton(
-//      child: Icon(Icons.add_shopping_cart),
-//      backgroundColor: Theme.of(context).primaryColor,
-//      onPressed: () {
+    return FloatingActionButton(
+      child: Icon(Icons.group_add),
+      backgroundColor: Colors.brown[200],
+      onPressed: () {
 //        Navigator.of(context).push(CupertinoPageRoute(
 //          builder: (context) => AddSearchIngredientsPage(),
 //        ));
-//      },
-//    );
-    return null;
+      },
+    );
+    //return null;
   }
 }
 
@@ -191,7 +191,7 @@ class AllIngredientsTile extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text("Selected Ingredients",
-                  style: TextStyle(fontSize: 24.0,fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: 24.0)),
             ),
           ),
           Padding(
@@ -205,7 +205,7 @@ class AllIngredientsTile extends StatelessWidget {
                       .map<Widget>(
                         (ingredient) => Container(
                           child: InputChip(
-                            label: Text(ingredient.name),
+                            label: Text(ingredient.name, style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),),
                             backgroundColor: ingredient.fromPantry.color,
                             onDeleted: () {
                               BlocProvider.of<SearchBloc>(context).add(
@@ -225,17 +225,21 @@ class AllIngredientsTile extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50),
               child: RaisedButton(
+                elevation: 0.0,
                 onPressed: () {
                   BlocProvider.of<SearchBloc>(context).add(Submit());
                 },
                 shape: RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(20.0),
+                  borderRadius: new BorderRadius.circular(25.0),
                 ),
                 textColor: Colors.black,
                 color: Theme.of(context).primaryColor,
-                child: const Text(
-                  'Search',
-                  style: TextStyle(fontSize: 20),
+                child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    child: Text(
+                  'Find Recipes',
+                  style: TextStyle(fontSize: 20, color: Colors.amber[100], fontWeight: FontWeight.w300),
+                )
                 ),
               ),
             ),
@@ -254,13 +258,25 @@ class PantryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: ThemeData(accentColor: _pantry.color),
+      data: ThemeData(
+          accentColor: _pantry.color),
       child: ExpansionTile(
         key: PageStorageKey<Pantry>(_pantry),
         //change it into profile picture
         leading: Icon(Icons.shopping_basket),
-        title: Text(_pantry.title,
-            style:TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(_pantry.title, style:TextStyle(color: _pantry.color, fontSize: 20.0)),
+//        Stack(
+//          children: <Widget>[
+//            Text(_pantry.title, style:TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold,
+//              foreground: Paint()
+//              ..style = PaintingStyle.stroke
+//              ..strokeWidth = 0.5
+//              ..color = Colors.black,)),
+//            Text(_pantry.title, style:TextStyle(color: _pantry.color, fontSize: 20.0, fontWeight: FontWeight.bold)),
+//          ],
+//        ),
+//        Text(_pantry.title,
+//            style:TextStyle(color: _pantry.color, fontSize: 20.0, fontWeight: FontWeight.bold)),
         initiallyExpanded: false,
         children: <Widget>[
           Wrap(
@@ -290,9 +306,9 @@ class IngredientChip extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return FilterChip(
-      label: Text(ingredient.name),
+      label: Text(ingredient.name, style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white),),
       selected: isSelected,
-      backgroundColor: Colors.blueGrey[150],
+      backgroundColor: Colors.blueGrey[200],
       onSelected: (_) {
         // Notify bloc of addition/removal
         BlocProvider.of<SearchBloc>(context).add(
@@ -316,7 +332,7 @@ class RecipeResult extends StatelessWidget {
     // A container with rounded corners and a shadow by default
     return Card(
       color: Colors.white,
-      elevation: 1.0,
+      elevation: 0.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       child: InkWell(
         splashColor: Colors.blueGrey[200],
@@ -340,7 +356,7 @@ class RecipeResult extends StatelessWidget {
                   child: AspectRatio(
                     aspectRatio: 1.0,
                     child: ClipRRect(
-                      borderRadius: new BorderRadius.circular(20.0),
+                      borderRadius: new BorderRadius.circular(25.0),
                       child: Image(
                         image: NetworkImage(data.imageUrl),
                         fit: BoxFit.cover,

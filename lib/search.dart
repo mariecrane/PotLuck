@@ -87,6 +87,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       name: "cream cheese",
       fromPantry: Pantry(
         title: "Other",
+        color: Color(0xff9e9e9e),
         owner: User(
           name: "",
           isNobody: true,
@@ -195,6 +196,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     var otherIngredients = Pantry(
       title: "Other",
+      color: Color(0xff9e9e9e),
       owner: User(
         name: "",
         isNobody: true,
