@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/pantry.dart';
 import 'package:pot_luck/search.dart';
 import 'package:pot_luck/ui/recipe_page.dart';
+import 'package:pot_luck/friend.dart';
 
 class SearchPage extends StatelessWidget {
   @override
@@ -49,14 +50,68 @@ class SearchPage extends StatelessWidget {
   static Widget buildFloatingActionButton(BuildContext context) {
     return FloatingActionButton(
       child: Icon(Icons.group_add),
-      backgroundColor: Colors.brown[200],
+      backgroundColor: Theme
+          .of(context)
+          .primaryColor,
       onPressed: () {
-//        Navigator.of(context).push(CupertinoPageRoute(
-//          builder: (context) => AddSearchIngredientsPage(),
-//        ));
+        Navigator.of(context).push(
+          CupertinoPageRoute(
+            builder: (_) =>
+            BlocProvider<FriendBloc>.value(
+              value: BlocProvider.of<FriendBloc>(context),
+              child: AddFriendPage(),
+            ),
+          ),
+        );
       },
     );
-    //return null;
+  }
+}
+
+class AddFriendPage extends StatefulWidget {
+  @override
+  _AddFriendPageState createState() => _AddFriendPageState();
+}
+
+class _AddFriendPageState extends State<AddFriendPage> {
+  var _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add a Friend"),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.all(20.0),
+            child: TextField(
+              controller: _controller,
+              obscureText: true,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(), labelText: "Search for friends by email..."),
+            ),
+          ),
+          RaisedButton(
+            color: Colors.yellow,
+            child: Text("Add"),
+            onPressed: () {
+              BlocProvider.of<FriendBloc>(context).add(
+                FriendAddRequest(_controller.text),
+              );
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
 
