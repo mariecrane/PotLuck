@@ -78,7 +78,8 @@ class IngredientsListView extends StatelessWidget {
                 .map<Widget>(
                   (ingredient) =>
                   Container(
-                    child: InputChip(
+                    child:
+                    InputChip(
                       backgroundColor: Theme
                           .of(context)
                           .primaryColor,

@@ -261,6 +261,7 @@ class AllIngredientsTile extends StatelessWidget {
                         (ingredient) => Container(
                           child: InputChip(
                             label: Text(ingredient.name, style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),),
+                            deleteIconColor: Colors.white,
                             backgroundColor: ingredient.fromPantry.color,
                             onDeleted: () {
                               BlocProvider.of<SearchBloc>(context).add(
@@ -360,20 +361,25 @@ class IngredientChip extends StatelessWidget {
   IngredientChip(this.ingredient, this.isSelected, {Key key}) : super(key: key);
 
   Widget build(BuildContext context) {
-    return FilterChip(
-      label: Text(ingredient.name, style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white),),
-      selected: isSelected,
-      backgroundColor: Colors.blueGrey[200],
-      onSelected: (_) {
+    return Theme(data: ThemeData(
+      brightness: Brightness.dark
+    ),    child:
+      FilterChip(
+        label: Text(ingredient.name, style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white),),
+        selected: isSelected,
+        backgroundColor: Colors.blueGrey[200],
+        onSelected: (_) {
         // Notify bloc of addition/removal
-        BlocProvider.of<SearchBloc>(context).add(
-          isSelected
+          BlocProvider.of<SearchBloc>(context).add(
+            isSelected
               ? IngredientRemoved(ingredient)
               : IngredientAdded(ingredient),
-        );
-      },
-      selectedColor: ingredient.fromPantry.color,
+            );
+          },
+        selectedColor: ingredient.fromPantry.color,
+      )
     );
+
   }
 }
 
