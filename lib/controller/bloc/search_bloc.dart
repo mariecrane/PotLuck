@@ -83,7 +83,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       add(PantriesUpdated(results[0], results[1]));
       debugPrint("added PantriesUpdated event");
     });
-    pf.onUpdate((myPantry, friendPantries) {
+    pf.onPantryUpdate((myPantry, friendPantries) {
       add(PantriesUpdated(myPantry, friendPantries));
     });
   }

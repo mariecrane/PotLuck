@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/user.dart';
@@ -6,7 +8,8 @@ typedef void PantryUpdateCallback(Pantry myPantry, List<Pantry> friendPantries);
 
 class DatabaseController {
   DatabaseController._privateConstructor() {
-    _buildPantries();
+    // TODO: Request info from database (my pantry, friend pantries, etc.)
+    _fetchFriendsData();
   }
 
   static final DatabaseController instance =
@@ -28,34 +31,10 @@ class DatabaseController {
     ingredients: <PantryIngredient>[],
   );
 
-  List<Pantry> _friendPantries = <Pantry>[
-    Pantry(
-      title: 'Shouayee Vue',
-      owner: User(name: "Shouayee Vue"),
-      color: _colors[2],
-      ingredients: <PantryIngredient>[],
-    ),
-    Pantry(
-      title: 'Preston Locke',
-      owner: User(name: "Preston Locke"),
-      color: _colors[3],
-      ingredients: <PantryIngredient>[],
-    ),
-    Pantry(
-      title: 'Tracy Cai',
-      owner: User(name: "Tracy Cai"),
-      color: _colors[4],
-      ingredients: <PantryIngredient>[],
-    ),
-    Pantry(
-      title: 'Marie Crane',
-      owner: User(name: "Marie Crane"),
-      color: _colors[5],
-      ingredients: <PantryIngredient>[],
-    ),
-  ];
+  var _updateCallbacks = <PantryUpdateCallback>[];
 
-  List<PantryUpdateCallback> _updateCallbacks = <PantryUpdateCallback>[];
+  var _friendsList = List<User>();
+  var _friendPantries = <Pantry>[];
 
   Future<Pantry> getMyPantry() async {
     // TODO: Actually request pantry from Firebase
@@ -67,7 +46,7 @@ class DatabaseController {
     if (_myPantry.ingredients.contains(ingredient) == false) {
       _myPantry.ingredients.add(ingredient);
     }
-    doUpdateCallbacks();
+    doPantryUpdateCallbacks();
     return _myPantry;
   }
 
@@ -76,72 +55,217 @@ class DatabaseController {
     if (_myPantry.ingredients.contains(ingredient)) {
       _myPantry.ingredients.remove(ingredient);
     }
-    doUpdateCallbacks();
+    doPantryUpdateCallbacks();
     return _myPantry;
   }
 
   Future<Pantry> clearMyPantry() async {
     _myPantry.ingredients.clear();
-    doUpdateCallbacks();
+    doPantryUpdateCallbacks();
     return _myPantry;
   }
 
   Future<List<Pantry>> getFriendPantries() async {
-    // TODO: Actually request pantries from Firebase
+    _fetchFriendsData();
     return _friendPantries;
   }
 
-  void onUpdate(PantryUpdateCallback callback) {
+  void onPantryUpdate(PantryUpdateCallback callback) {
     _updateCallbacks.add(callback);
   }
 
-  void doUpdateCallbacks() async {
+  void doPantryUpdateCallbacks() async {
     _updateCallbacks.forEach((callback) {
       callback(_myPantry, _friendPantries);
     });
   }
 
-  // TODO: Get rid of this when replacing with live data
-  void _buildPantries() {
-    _myPantry.ingredients.addAll(
-      <PantryIngredient>[
-        PantryIngredient(name: "egg", fromPantry: _myPantry),
-        PantryIngredient(name: "chicken", fromPantry: _myPantry),
-        PantryIngredient(name: "spinach", fromPantry: _myPantry),
-        PantryIngredient(name: "tofu", fromPantry: _myPantry),
-        PantryIngredient(name: "onion", fromPantry: _myPantry),
-        PantryIngredient(name: "turkey", fromPantry: _myPantry),
-      ],
-    );
-    _friendPantries[0].ingredients.add(
-          PantryIngredient(
-            name: "garlic",
-            fromPantry: _friendPantries[0],
-          ),
-        );
-    _friendPantries[0].ingredients.add(
-          PantryIngredient(
-            name: "potato",
-            fromPantry: _friendPantries[0],
-          ),
-        );
-    _friendPantries[1].ingredients.add(
-          PantryIngredient(
-            name: "apple",
-            fromPantry: _friendPantries[1],
-          ),
-        );
-    _friendPantries[2].ingredients.add(
-          PantryIngredient(
-            name: "tomato",
-            fromPantry: _friendPantries[2],
-          ),
-        );
-    _friendPantries[3].ingredients.add(
-          PantryIngredient(
-            name: "basil",
-            fromPantry: _friendPantries[3],
-          ),
-        );
+  Future<void> _fetchFriendsData() async {
+    // Get friend and pantry data from database
+    var me = await FirebaseAuth.instance.currentUser();
+    var snapshot = await Firestore.instance
+        .collection("users")
+        .document("${me.uid}")
+        .collection("userData")
+        .document("friendPantries")
+        .get();
+
+    List<Map<String, dynamic>> pantries = snapshot.data["pantries"];
+    _friendsList.clear();
+    _friendPantries.clear();
+
+    for (int i = 0; i < pantries.length; i++) {
+      var pantryData = pantries[i];
+
+      // Populate friendsList
+      var friend = User(
+        id: pantryData["id"],
+        email: pantryData["email"],
+        // TODO: Add name to user data?
+      );
+      _friendsList.add(friend);
+
+      // Populate friendPantries
+      var pantry = Pantry(
+        owner: friend,
+        title: friend.email,
+        color: _colors[i % _colors.length],
+        ingredients: List<PantryIngredient>(),
+      );
+
+      List<String> ingredientList = pantryData["ingredients"];
+
+      ingredientList.forEach((ingredient) {
+        pantry.ingredients.add(PantryIngredient(
+          fromPantry: pantry,
+          name: ingredient,
+        ));
+      });
+
+      _friendPantries.add(pantry);
+    }
   }
+
+  Future<List<User>> getFriendsList() async {
+    await _fetchFriendsData();
+    return _friendsList;
+  }
+
+  Future<List<User>> sendFriendRequest(User user) async {
+    // Check if user is already in the locally cached friends list, exit if so
+    var alreadyFriend = true;
+    try {
+      _friendsList.firstWhere((friend) => friend.email == user.email);
+    } catch (e) {
+      alreadyFriend = false;
+    }
+    if (alreadyFriend) return _friendsList;
+
+    // Try to find user with given info in the database, exit if none found
+    var snapshot = await Firestore.instance
+        .collection("users")
+        .where("email", isEqualTo: "${user.email}")
+        .getDocuments();
+    if (snapshot.documents.length == 0) {
+      return _friendsList;
+    }
+
+    // Send friend request to user
+    String friendId = snapshot.documents[0].data["userId"];
+    var me = await FirebaseAuth.instance.currentUser();
+    var doc = Firestore.instance
+        .collection("users")
+        .document("${me.uid}")
+        .collection("userData")
+        .document("friendRequests");
+    Firestore.instance.runTransaction((transaction) async {
+      var result = await transaction.get(doc);
+      List<String> requests = result.data["requestIds"];
+      if (requests.contains(friendId)) return;
+
+      requests.add(friendId);
+      await transaction.update(doc, <String, dynamic>{"requestIds": requests});
+    });
+
+    return await getFriendsList();
+  }
+
+  Future<List<User>> removeFriend(User user) async {
+    // TODO: Implement removing friends (full-stack)
+//    // Check if user is in the locally cached friends list, exit if not
+//    try {
+//      _friendsList.firstWhere((friend) => friend.email == user.email);
+//    } catch (e) {
+//      return _friendsList;
+//    }
+//
+//    // Remove user from friends in database
+//    String friendId = user.id;
+//    var me = await FirebaseAuth.instance.currentUser();
+//    var doc = Firestore.instance
+//        .collection("users")
+//        .document("${me.uid}")
+//        .collection("userData")
+//        .document("friendRequests");
+//    Firestore.instance.runTransaction((transaction) async {
+//      var result = await transaction.get(doc);
+//      List<String> requests = result.data["requestIds"];
+//      if (requests.contains(friendId)) return;
+//
+//      requests.add(friendId);
+//      await transaction.update(doc, <String, dynamic>{"requestIds": requests});
+//    });
+
+    return await getFriendsList();
+  }
+
+// TODO: Get rid of this when replacing with live data
+//  List<Pantry> _friendPantries = <Pantry>[
+//    Pantry(
+//      title: 'Shouayee Vue',
+//      owner: User(name: "Shouayee Vue"),
+//      color: _colors[2],
+//      ingredients: <PantryIngredient>[],
+//    ),
+//    Pantry(
+//      title: 'Preston Locke',
+//      owner: User(name: "Preston Locke"),
+//      color: _colors[3],
+//      ingredients: <PantryIngredient>[],
+//    ),
+//    Pantry(
+//      title: 'Tracy Cai',
+//      owner: User(name: "Tracy Cai"),
+//      color: _colors[4],
+//      ingredients: <PantryIngredient>[],
+//    ),
+//    Pantry(
+//      title: 'Marie Crane',
+//      owner: User(name: "Marie Crane"),
+//      color: _colors[5],
+//      ingredients: <PantryIngredient>[],
+//    ),
+//  ];
+//  void _buildPantries() {
+//    _myPantry.ingredients.addAll(
+//      <PantryIngredient>[
+//        PantryIngredient(name: "egg", fromPantry: _myPantry),
+//        PantryIngredient(name: "chicken", fromPantry: _myPantry),
+//        PantryIngredient(name: "spinach", fromPantry: _myPantry),
+//        PantryIngredient(name: "tofu", fromPantry: _myPantry),
+//        PantryIngredient(name: "onion", fromPantry: _myPantry),
+//        PantryIngredient(name: "turkey", fromPantry: _myPantry),
+//      ],
+//    );
+//    _friendPantries[0].ingredients.add(
+//          PantryIngredient(
+//            name: "garlic",
+//            fromPantry: _friendPantries[0],
+//          ),
+//        );
+//    _friendPantries[0].ingredients.add(
+//          PantryIngredient(
+//            name: "potato",
+//            fromPantry: _friendPantries[0],
+//          ),
+//        );
+//    _friendPantries[1].ingredients.add(
+//          PantryIngredient(
+//            name: "apple",
+//            fromPantry: _friendPantries[1],
+//          ),
+//        );
+//    _friendPantries[2].ingredients.add(
+//          PantryIngredient(
+//            name: "tomato",
+//            fromPantry: _friendPantries[2],
+//          ),
+//        );
+//    _friendPantries[3].ingredients.add(
+//          PantryIngredient(
+//            name: "basil",
+//            fromPantry: _friendPantries[3],
+//          ),
+//        );
+//  }
 }

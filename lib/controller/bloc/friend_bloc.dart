@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pot_luck/controller/database.dart';
 import 'package:pot_luck/model/user.dart';
 
 abstract class FriendEvent {}
@@ -15,6 +14,12 @@ class FriendAddRequest extends FriendEvent {
   FriendAddRequest(this.email);
 }
 
+class FriendsRetrieved extends FriendEvent {
+  final List<User> friendsList;
+
+  FriendsRetrieved(this.friendsList);
+}
+
 abstract class FriendState {}
 
 class FriendsListUpdate extends FriendState {
@@ -24,65 +29,39 @@ class FriendsListUpdate extends FriendState {
 
 class FriendsListEmpty extends FriendState {}
 
+class FriendsLoading extends FriendState {}
+
 class FriendBloc extends Bloc<FriendEvent, FriendState> {
-  List<User> _friendsList = <User>[
-    User(name: "Marie Crane"),
-    User(name: "Preston Locke"),
-    User(name: "Shouayee Vue"),
-    User(name: "Tracy Cai"),
-  ];
+  FriendBloc() {
+    DatabaseController.instance.getFriendsList().then((friends) {
+      add(FriendsRetrieved(friends));
+    });
+  }
 
   @override
   // TODO: implement initialState
-  FriendState get initialState => FriendsListUpdate(_friendsList);
+  FriendState get initialState => FriendsLoading();
 
   @override
   Stream<FriendState> mapEventToState(FriendEvent event) async* {
     if (event is FriendRemoved) {
-      _friendsList.removeWhere((friend) => friend == event.friend);
-      yield _friendsList.isEmpty
+      yield FriendsLoading();
+
+      var friendsList = await DatabaseController.instance.removeFriend(
+        event.friend,
+      );
+      yield friendsList.isEmpty
           ? FriendsListEmpty()
-          : FriendsListUpdate(_friendsList);
+          : FriendsListUpdate(friendsList);
     }
 
     if (event is FriendAddRequest) {
-      var alreadyFriend = true;
-      try {
-        _friendsList.firstWhere((friend) => friend.email == event.email);
-      } catch (e) {
-        alreadyFriend = false;
-      }
-      if (alreadyFriend) return;
-      // TODO: Obviously replace this with an actual call to Firebase
-//      _friendsList.add(User(email: event.email));
+      yield FriendsLoading();
 
-      var snapshot = await Firestore.instance
-          .collection("users")
-          .where("email", isEqualTo: "${event.email}")
-          .getDocuments();
-      if (snapshot.documents.length == 0) {
-        yield FriendsListUpdate(_friendsList);
-        return;
-      }
-      String friendId = snapshot.documents[0].data["userId"];
-
-      var user = await FirebaseAuth.instance.currentUser();
-      var doc = Firestore.instance
-          .collection("users")
-          .document("${user.uid}")
-          .collection("userData")
-          .document("friendRequests");
-
-      Firestore.instance.runTransaction((transaction) async {
-        var result = await transaction.get(doc);
-        List<String> requests = result.data["requestIds"];
-        if (requests.contains(friendId)) return;
-
-        requests.add(friendId);
-        await transaction
-            .update(doc, <String, dynamic>{"requestIds": requests});
-      });
-      yield FriendsListUpdate(_friendsList);
+      var friendsList = await DatabaseController.instance.sendFriendRequest(
+        User(email: event.email),
+      );
+      yield FriendsListUpdate(friendsList);
     }
   }
 }
