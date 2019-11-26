@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pot_luck/ui/pantry_page.dart';
-import 'package:pot_luck/ui/profile_page.dart';
-import 'package:pot_luck/ui/search_page.dart';
+import 'package:pot_luck/view/pantry_page.dart';
+import 'package:pot_luck/view/profile_page.dart';
+import 'package:pot_luck/view/search_page.dart';
 
 class NavWrapper extends StatefulWidget {
   @override

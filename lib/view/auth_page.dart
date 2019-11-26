@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pot_luck/auth.dart';
+import 'package:pot_luck/controller/bloc/auth_bloc.dart';
 
 class AuthPage extends StatefulWidget {
   final String errorMessage;
@@ -23,7 +23,7 @@ class _AuthPageState extends State<AuthPage> {
       key: key,
       body: SafeArea(
         child: WillPopScope(
-          // Allow back button to trigger a return to AuthChooser before exiting app
+            // Allow back button to trigger a return to AuthChooser before exiting app
             onWillPop: () async {
               // If already/still on AuthChooser, do default back button behavior
               if (_currentForm == 0) {
@@ -39,8 +39,8 @@ class _AuthPageState extends State<AuthPage> {
               child: _currentForm == 1
                   ? AuthForm(createAccount: false)
                   : _currentForm == 2
-                  ? AuthForm(createAccount: true)
-                  : _buildAuthChooser(),
+                      ? AuthForm(createAccount: true)
+                      : _buildAuthChooser(),
             )),
       ),
     );
@@ -60,14 +60,15 @@ class _AuthPageState extends State<AuthPage> {
         Text.rich(
           TextSpan(
             children: <TextSpan>[
-              TextSpan(text: 'Welcome to ',
+              TextSpan(
+                  text: 'Welcome to ',
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
               TextSpan(
                   text: 'PotLuck!',
                   style: TextStyle(
-                      fontSize: 30, fontWeight: FontWeight.bold, color: Theme
-                      .of(context)
-                      .primaryColor)),
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor)),
             ],
           ),
         ),
@@ -95,9 +96,8 @@ class _AuthPageState extends State<AuthPage> {
           },
         ),
         FlatButton(
-          child: Text("Sign in later", style: TextStyle(color: Theme
-              .of(context)
-              .primaryColor)),
+          child: Text("Sign in later",
+              style: TextStyle(color: Theme.of(context).primaryColor)),
           onPressed: () {
             // Request BLoC to do anonymous login
             BlocProvider.of<AuthBloc>(context).add(AnonymousAuthRequested());
@@ -141,7 +141,8 @@ class _AuthFormState extends State<AuthForm> {
           TextField(
             keyboardType: TextInputType.emailAddress,
             controller: _emailController,
-            decoration: InputDecoration(border: OutlineInputBorder(), labelText: "Email"),
+            decoration: InputDecoration(
+                border: OutlineInputBorder(), labelText: "Email"),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
@@ -152,7 +153,8 @@ class _AuthFormState extends State<AuthForm> {
             keyboardType: TextInputType.visiblePassword,
             controller: _passwordController,
             obscureText: true,
-            decoration: InputDecoration(border: OutlineInputBorder(), labelText: "Password"),
+            decoration: InputDecoration(
+                border: OutlineInputBorder(), labelText: "Password"),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(

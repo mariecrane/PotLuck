@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pot_luck/auth.dart';
-import 'package:pot_luck/friend.dart';
-import 'package:pot_luck/pantry.dart';
-import 'package:pot_luck/search.dart';
-import 'package:pot_luck/ui/auth_page.dart';
-import 'package:pot_luck/ui/nav.dart';
+import 'package:pot_luck/controller/bloc/auth_bloc.dart';
+import 'package:pot_luck/controller/bloc/friend_bloc.dart';
+import 'package:pot_luck/controller/bloc/pantry_bloc.dart';
+import 'package:pot_luck/controller/bloc/search_bloc.dart';
+import 'package:pot_luck/view/auth_page.dart';
+import 'package:pot_luck/view/nav.dart';
 
 void main() => runApp(MyApp());
 

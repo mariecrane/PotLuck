@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pot_luck/controller/search.dart';
+import 'package:pot_luck/model/recipe.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:pot_luck/search.dart';
 
 class RecipePage extends StatelessWidget {
   final SearchResult result;
@@ -43,7 +44,15 @@ class RecipePage extends StatelessWidget {
           // Now we can show our data
           String ingredient_list = "";
           int n = 0;
-          data.ingredients.forEach((ingredient){n++; ingredient_list = ingredient_list + " " + n.toString() + ". " + ingredient.name + "\n";});
+          data.ingredients.forEach((ingredient) {
+            n++;
+            ingredient_list = ingredient_list +
+                " " +
+                n.toString() +
+                ". " +
+                ingredient.name +
+                "\n";
+          });
           return ListView(
             children: ListTile.divideTiles(
               context: context,
@@ -65,12 +74,13 @@ class RecipePage extends StatelessWidget {
                   semanticContainer: true,
                   clipBehavior: Clip.antiAliasWithSaveLayer,
                   child: Container(
-                    child: ListTile(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-                      title: Text('Ingredients:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                        subtitle: Text(ingredient_list)
-                    )
-                  ),
+                      child: ListTile(
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 30.0, vertical: 10.0),
+                          title: Text('Ingredients:',
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold)),
+                          subtitle: Text(ingredient_list))),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
                   ),
@@ -79,20 +89,25 @@ class RecipePage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: RaisedButton(
-                    onPressed: () {launch(data.sourceUrl);},
+                    onPressed: () {
+                      launch(data.sourceUrl);
+                    },
                     shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(20.0),
-                      side: BorderSide(color: Colors.white)),
+                        borderRadius: new BorderRadius.circular(20.0),
+                        side: BorderSide(color: Colors.white)),
                     textColor: Colors.black,
                     color: Colors.white,
                     child: const Text(
                       'Visit the Webpage',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
                 ListTile(
-                  title: Center(child: Text('@ 2019 ' + data.creditsText, style: TextStyle(fontSize: 10, color: Colors.grey))),
+                  title: Center(
+                      child: Text('@ 2019 ' + data.creditsText,
+                          style: TextStyle(fontSize: 10, color: Colors.grey))),
                 ),
               ],
             ).toList(),

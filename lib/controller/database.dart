@@ -1,109 +1,16 @@
-//TODO: this is hard-coded and very inefficient; ideally it changes depends on the friend but I cannot do anything about that now
-import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:pot_luck/friend.dart';
+import 'package:pot_luck/model/pantry.dart';
+import 'package:pot_luck/model/user.dart';
 
-abstract class PantryEvent {}
+typedef void PantryUpdateCallback(Pantry myPantry, List<Pantry> friendPantries);
 
-class PantryIngredientAdded extends PantryEvent {
-  final PantryIngredient ingredient;
-  PantryIngredientAdded(this.ingredient);
-}
-
-class PantryIngredientRemoved extends PantryEvent {
-  final PantryIngredient ingredient;
-  PantryIngredientRemoved(this.ingredient);
-}
-
-class PantryIngredientsCleared extends PantryEvent {}
-
-class PantryUpdateRequested extends PantryEvent {}
-
-abstract class PantryState {}
-
-class LoadingPantries extends PantryState {}
-
-class PantryUpdated extends PantryState {
-  final Pantry pantry;
-  PantryUpdated(this.pantry);
-}
-
-class PantryBloc extends Bloc<PantryEvent, PantryState> {
-  PantryBloc() {
-    add(PantryUpdateRequested());
-  }
-
-  @override
-  PantryState get initialState => LoadingPantries();
-
-  @override
-  Stream<PantryState> mapEventToState(PantryEvent event) async* {
-    if (event is PantryIngredientAdded) {
-      var pantry = await PantryFetcher.instance.addToMyPantry(event.ingredient);
-      yield PantryUpdated(pantry);
-    }
-
-    if (event is PantryIngredientRemoved) {
-      var pantry =
-          await PantryFetcher.instance.removeFromMyPantry(event.ingredient);
-      yield PantryUpdated(pantry);
-    }
-
-    if (event is PantryIngredientsCleared) {
-      var pantry = await PantryFetcher.instance.clearMyPantry();
-      yield PantryUpdated(pantry);
-    }
-
-    if (event is PantryUpdateRequested) {
-      // TODO: Make an actual request for current pantry data
-      var pantry = await PantryFetcher.instance.getMyPantry();
-      yield PantryUpdated(pantry);
-    }
-  }
-}
-
-/// Simple data model for a single pantry with a title and a specific color
-class Pantry extends Equatable {
-  final User owner;
-  final String title;
-  final Color color;
-  final List<PantryIngredient> ingredients;
-
-  Pantry({this.owner, this.title, this.color, @required this.ingredients});
-
-  @override
-  List<Object> get props => [owner];
-}
-
-/// Simple data model for a single ingredient stored in a pantry
-class PantryIngredient extends Equatable {
-  final Pantry fromPantry;
-  final int id;
-  final String name;
-  final double amount;
-  final String unit;
-
-  PantryIngredient({
-    this.fromPantry,
-    this.id,
-    this.name,
-    this.amount,
-    this.unit,
-  });
-
-  @override
-  List<Object> get props => [name, fromPantry];
-}
-
-typedef void UpdateCallback(Pantry myPantry, List<Pantry> friendPantries);
-
-class PantryFetcher {
-  PantryFetcher._privateConstructor() {
+class DatabaseController {
+  DatabaseController._privateConstructor() {
     _buildPantries();
   }
 
-  static final PantryFetcher instance = PantryFetcher._privateConstructor();
+  static final DatabaseController instance =
+      DatabaseController._privateConstructor();
   static final List<Color> _colors = <Color>[
     Colors.blueGrey[200],
     Colors.red[700],
@@ -148,7 +55,7 @@ class PantryFetcher {
     ),
   ];
 
-  List<UpdateCallback> _updateCallbacks = <UpdateCallback>[];
+  List<PantryUpdateCallback> _updateCallbacks = <PantryUpdateCallback>[];
 
   Future<Pantry> getMyPantry() async {
     // TODO: Actually request pantry from Firebase
@@ -184,7 +91,7 @@ class PantryFetcher {
     return _friendPantries;
   }
 
-  void onUpdate(UpdateCallback callback) {
+  void onUpdate(PantryUpdateCallback callback) {
     _updateCallbacks.add(callback);
   }
 

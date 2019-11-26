@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pot_luck/pantry.dart';
-import 'package:pot_luck/search.dart';
-import 'package:pot_luck/ui/recipe_page.dart';
-import 'package:pot_luck/friend.dart';
+import 'package:pot_luck/controller/bloc/friend_bloc.dart';
+import 'package:pot_luck/controller/bloc/search_bloc.dart';
+import 'package:pot_luck/model/pantry.dart';
+import 'package:pot_luck/model/recipe.dart';
+import 'package:pot_luck/view/recipe_page.dart';
 
 class SearchPage extends StatelessWidget {
   @override
@@ -50,14 +51,11 @@ class SearchPage extends StatelessWidget {
   static Widget buildFloatingActionButton(BuildContext context) {
     return FloatingActionButton(
       child: Icon(Icons.group_add),
-      backgroundColor: Theme
-          .of(context)
-          .primaryColor,
+      backgroundColor: Theme.of(context).primaryColor,
       onPressed: () {
         Navigator.of(context).push(
           CupertinoPageRoute(
-            builder: (_) =>
-            BlocProvider<FriendBloc>.value(
+            builder: (_) => BlocProvider<FriendBloc>.value(
               value: BlocProvider.of<FriendBloc>(context),
               child: AddFriendPage(),
             ),
@@ -90,7 +88,8 @@ class _AddFriendPageState extends State<AddFriendPage> {
               controller: _controller,
               obscureText: true,
               decoration: InputDecoration(
-                  border: OutlineInputBorder(), labelText: "Search for friends by email..."),
+                  border: OutlineInputBorder(),
+                  labelText: "Search for friends by email..."),
             ),
           ),
           RaisedButton(
@@ -204,25 +203,32 @@ class SearchListView extends StatelessWidget {
 }
 
 /// hard-coded suggestionView
-List<String> suggestedPantry = <String> ["Other", "Pantry", "Shouayee", "Preston", "Tracy", "Marie"];
+List<String> suggestedPantry = <String>[
+  "Other",
+  "Pantry",
+  "Shouayee",
+  "Preston",
+  "Tracy",
+  "Marie"
+];
 
-class _SuggestionListView extends StatelessWidget{
+class _SuggestionListView extends StatelessWidget {
   final List<String> possiblePantry;
   final String input;
 
   const _SuggestionListView({this.possiblePantry, this.input});
 
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return ListView.builder(
       key: PageStorageKey<String>("suggestion_page"),
       itemCount: possiblePantry.length,
-      itemBuilder: (BuildContext context, int index){
+      itemBuilder: (BuildContext context, int index) {
         final String pan = possiblePantry[index];
         return ListTile(
           leading: Icon(Icons.add_shopping_cart),
-          title:Text(input + " in " + pan),
+          title: Text(input + " in " + pan),
           trailing: Icon(Icons.add),
-          onTap: (){
+          onTap: () {
             //TODO: add selected ingredients
           },
         );
@@ -260,7 +266,12 @@ class AllIngredientsTile extends StatelessWidget {
                       .map<Widget>(
                         (ingredient) => Container(
                           child: InputChip(
-                            label: Text(ingredient.name, style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),),
+                            label: Text(
+                              ingredient.name,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w300),
+                            ),
                             deleteIconColor: Colors.white,
                             backgroundColor: ingredient.fromPantry.color,
                             onDeleted: () {
@@ -291,12 +302,15 @@ class AllIngredientsTile extends StatelessWidget {
                 textColor: Colors.black,
                 color: Theme.of(context).primaryColor,
                 child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 10),
                     child: Text(
-                  'Find Recipes',
-                  style: TextStyle(fontSize: 20, color: Colors.amber[100], fontWeight: FontWeight.w300),
-                )
-                ),
+                      'Find Recipes',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.amber[100],
+                          fontWeight: FontWeight.w300),
+                    )),
               ),
             ),
           ),
@@ -314,13 +328,13 @@ class PantryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: ThemeData(
-          accentColor: _pantry.color),
+      data: ThemeData(accentColor: _pantry.color),
       child: ExpansionTile(
         key: PageStorageKey<Pantry>(_pantry),
         //change it into profile picture
         leading: Icon(Icons.shopping_basket),
-        title: Text(_pantry.title, style:TextStyle(color: _pantry.color, fontSize: 20.0)),
+        title: Text(_pantry.title,
+            style: TextStyle(color: _pantry.color, fontSize: 20.0)),
 //        Stack(
 //          children: <Widget>[
 //            Text(_pantry.title, style:TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold,
@@ -361,25 +375,25 @@ class IngredientChip extends StatelessWidget {
   IngredientChip(this.ingredient, this.isSelected, {Key key}) : super(key: key);
 
   Widget build(BuildContext context) {
-    return Theme(data: ThemeData(
-      brightness: Brightness.dark
-    ),    child:
-      FilterChip(
-        label: Text(ingredient.name, style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white),),
-        selected: isSelected,
-        backgroundColor: Colors.blueGrey[200],
-        onSelected: (_) {
-        // Notify bloc of addition/removal
-          BlocProvider.of<SearchBloc>(context).add(
-            isSelected
-              ? IngredientRemoved(ingredient)
-              : IngredientAdded(ingredient),
+    return Theme(
+        data: ThemeData(brightness: Brightness.dark),
+        child: FilterChip(
+          label: Text(
+            ingredient.name,
+            style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white),
+          ),
+          selected: isSelected,
+          backgroundColor: Colors.blueGrey[200],
+          onSelected: (_) {
+            // Notify bloc of addition/removal
+            BlocProvider.of<SearchBloc>(context).add(
+              isSelected
+                  ? IngredientRemoved(ingredient)
+                  : IngredientAdded(ingredient),
             );
           },
-        selectedColor: ingredient.fromPantry.color,
-      )
-    );
-
+          selectedColor: ingredient.fromPantry.color,
+        ));
   }
 }
 

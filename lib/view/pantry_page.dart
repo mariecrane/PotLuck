@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pot_luck/pantry.dart';
+import 'package:pot_luck/controller/bloc/pantry_bloc.dart';
+import 'package:pot_luck/model/pantry.dart';
 
 class PantryPage extends StatelessWidget {
   @override
@@ -60,48 +61,43 @@ class IngredientsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-      Scaffold(
+    return Scaffold(
       backgroundColor: Colors.blueGrey[50],
       body: ListView(
-      key: PageStorageKey<String>("pantry_page"),
-      children: <Widget>[
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text("Ingredients in Your Pantry",
-                style: TextStyle(fontSize: 24.0)),
+        key: PageStorageKey<String>("pantry_page"),
+        children: <Widget>[
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Ingredients in Your Pantry",
+                  style: TextStyle(fontSize: 24.0)),
+            ),
           ),
-        ),
-        Container(
+          Container(
             alignment: Alignment.center,
             child: Wrap(
               runSpacing: 10,
               children: _pantry.ingredients
-                .map<Widget>(
-                  (ingredient) =>
-                  Container(
-                    padding: EdgeInsets.all(5),
-                    color: Colors.grey[350],
-                    child:
-                    InputChip(
-                      backgroundColor: Theme
-                          .of(context)
-                          .primaryColor,
-                      label: Text(ingredient.name),
-                      onDeleted: () {
-                        BlocProvider.of<PantryBloc>(context)
-                            .add(PantryIngredientRemoved(ingredient));
-                      },
+                  .map<Widget>(
+                    (ingredient) => Container(
+                      padding: EdgeInsets.all(5),
+                      color: Colors.grey[350],
+                      child: InputChip(
+                        backgroundColor: Theme.of(context).primaryColor,
+                        label: Text(ingredient.name),
+                        onDeleted: () {
+                          BlocProvider.of<PantryBloc>(context)
+                              .add(PantryIngredientRemoved(ingredient));
+                        },
+                      ),
                     ),
-                  ),
-            )
-                .toList(),
-          ),
-        )
-      ],
-    ),
-      );
+                  )
+                  .toList(),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

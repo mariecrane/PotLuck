@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pot_luck/auth.dart';
+import 'package:pot_luck/controller/bloc/auth_bloc.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
