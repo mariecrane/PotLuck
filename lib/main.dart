@@ -4,8 +4,10 @@ import 'package:pot_luck/controller/bloc/auth_bloc.dart';
 import 'package:pot_luck/controller/bloc/friend_bloc.dart';
 import 'package:pot_luck/controller/bloc/pantry_bloc.dart';
 import 'package:pot_luck/controller/bloc/search_bloc.dart';
+import 'package:pot_luck/controller/database.dart';
 import 'package:pot_luck/view/auth_page.dart';
 import 'package:pot_luck/view/nav.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(MyApp());
 
@@ -32,45 +34,49 @@ class MyApp extends StatelessWidget {
         primarySwatch: _primarySwatch,
       ),
       // Update based on authentication state
-      home: MultiBlocProvider(
-        providers: <BlocProvider>[
-          BlocProvider<AuthBloc>(
-            builder: (context) => AuthBloc(),
-          ),
-          BlocProvider<SearchBloc>(
-            builder: (context) => SearchBloc(),
-          ),
-          BlocProvider<PantryBloc>(
-            builder: (context) => PantryBloc(),
-          ),
-          BlocProvider<FriendBloc>(
-            builder: (context) => FriendBloc(),
-          ),
-        ],
-        child: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
-            if (state is Initializing) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+      home: Provider<DatabaseController>(
+        create: (_) => DatabaseController.instance,
+        dispose: (_, controller) => controller.dispose(),
+        child: MultiBlocProvider(
+          providers: <BlocProvider>[
+            BlocProvider<AuthBloc>(
+              builder: (context) => AuthBloc(),
+            ),
+            BlocProvider<SearchBloc>(
+              builder: (context) => SearchBloc(),
+            ),
+            BlocProvider<PantryBloc>(
+              builder: (context) => PantryBloc(),
+            ),
+            BlocProvider<FriendBloc>(
+              builder: (context) => FriendBloc(),
+            ),
+          ],
+          child: BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              if (state is Initializing) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-            if (state is AuthInProgress) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+              if (state is AuthInProgress) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-            if (state is Authenticated) {
-              return NavWrapper();
-            }
+              if (state is Authenticated) {
+                return NavWrapper();
+              }
 
-            if (state is NotAuthenticated) {
-              return AuthPage();
-            }
+              if (state is NotAuthenticated) {
+                return AuthPage();
+              }
 
-            return AuthPage(errorMessage: "Failed to authenticate");
-          },
+              return AuthPage(errorMessage: "Failed to authenticate");
+            },
+          ),
         ),
       ),
     );

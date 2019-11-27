@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,15 @@ class DatabaseController {
   DatabaseController._privateConstructor() {
     // TODO: Request info from database (my pantry, friend pantries, etc.)
     _fetchFriendsData();
+    // TODO: Get subscription to AuthEvent stream
+  }
+
+  void dispose() {
+    _friendPantriesDocSubscription.cancel();
+    _friendRequestsDocSubscription.cancel();
+    _pantryDocSubscription.cancel();
+    _userDocSubscription.cancel();
+    // TODO: Cancel subscription to AuthEvent stream
   }
 
   static final DatabaseController instance =
@@ -35,6 +46,12 @@ class DatabaseController {
 
   var _friendsList = List<User>();
   var _friendPantries = <Pantry>[];
+
+  // TODO: Create and manage stream subscriptions to user document snapshots
+  StreamSubscription _friendPantriesDocSubscription;
+  StreamSubscription _friendRequestsDocSubscription;
+  StreamSubscription _pantryDocSubscription;
+  StreamSubscription _userDocSubscription;
 
   Future<Pantry> getMyPantry() async {
     // TODO: Actually request pantry from Firebase
