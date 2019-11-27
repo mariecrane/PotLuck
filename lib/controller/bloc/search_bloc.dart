@@ -23,11 +23,11 @@ class IngredientRemoved extends SearchEvent {
 
 class SearchCleared extends SearchEvent {}
 
-class PantriesUpdated extends SearchEvent {
+class _PantriesUpdated extends SearchEvent {
   final Pantry myPantry;
   final List<Pantry> friendPantries;
 
-  PantriesUpdated(this.myPantry, this.friendPantries);
+  _PantriesUpdated(this.myPantry, this.friendPantries);
 }
 
 /// Encodes the status and data of results returned from our recipe API interface
@@ -80,11 +80,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       pf.getFriendPantries(),
     ];
     Future.wait(futures).then((results) {
-      add(PantriesUpdated(results[0], results[1]));
+      add(_PantriesUpdated(results[0], results[1]));
       debugPrint("added PantriesUpdated event");
     });
     pf.onPantryUpdate((myPantry, friendPantries) {
-      add(PantriesUpdated(myPantry, friendPantries));
+      add(_PantriesUpdated(myPantry, friendPantries));
     });
   }
 
@@ -99,7 +99,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   @override
   Stream<SearchState> mapEventToState(SearchEvent event) async* {
-    if (event is PantriesUpdated) {
+    if (event is _PantriesUpdated) {
       debugPrint("received PantriesUpdated event");
       _myPantry = event.myPantry;
       _friendPantries = event.friendPantries;

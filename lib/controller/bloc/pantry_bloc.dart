@@ -16,7 +16,7 @@ class PantryIngredientRemoved extends PantryEvent {
 
 class PantryIngredientsCleared extends PantryEvent {}
 
-class PantryUpdateRequested extends PantryEvent {}
+class _PantryUpdateRequested extends PantryEvent {}
 
 abstract class PantryState {}
 
@@ -29,7 +29,7 @@ class PantryUpdated extends PantryState {
 
 class PantryBloc extends Bloc<PantryEvent, PantryState> {
   PantryBloc() {
-    add(PantryUpdateRequested());
+    add(_PantryUpdateRequested());
   }
 
   @override
@@ -54,7 +54,7 @@ class PantryBloc extends Bloc<PantryEvent, PantryState> {
       yield PantryUpdated(pantry);
     }
 
-    if (event is PantryUpdateRequested) {
+    if (event is _PantryUpdateRequested) {
       // TODO: Make an actual request for current pantry data
       var pantry = await DatabaseController.instance.getMyPantry();
       yield PantryUpdated(pantry);

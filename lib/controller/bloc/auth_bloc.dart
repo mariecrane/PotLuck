@@ -5,10 +5,6 @@ import 'package:flutter/cupertino.dart';
 /// Encodes the type and data of events coming from our auth UI
 abstract class AuthEvent {}
 
-class AuthResult extends AuthEvent {}
-
-class AuthFailed extends AuthEvent {}
-
 class AnonymousAuthRequested extends AuthEvent {}
 
 class AccountCreationRequested extends AuthEvent {
@@ -26,6 +22,10 @@ class SignInRequested extends AuthEvent {
 }
 
 class SignOutRequested extends AuthEvent {}
+
+class _AuthResult extends AuthEvent {}
+
+class _AuthFailed extends AuthEvent {}
 
 /// Encodes the status and data of results returned from Firebase Auth
 abstract class AuthState {}
@@ -47,9 +47,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() {
     FirebaseAuth.instance.currentUser().then((user) {
       _currentUser = user;
-      add(AuthResult());
+      add(_AuthResult());
     }).catchError((error) {
-      add(AuthFailed());
+      add(_AuthFailed());
     });
   }
 
@@ -58,7 +58,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   @override
   Stream<AuthState> mapEventToState(AuthEvent event) async* {
-    if (event is AuthResult) {
+    if (event is _AuthResult) {
       yield (_currentUser != null) ? Authenticated() : NotAuthenticated();
     }
 
@@ -111,7 +111,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield NotAuthenticated();
     }
 
-    if (event is AuthFailed) {
+    if (event is _AuthFailed) {
       yield AuthError();
     }
   }

@@ -14,10 +14,10 @@ class FriendAddRequest extends FriendEvent {
   FriendAddRequest(this.email);
 }
 
-class FriendsRetrieved extends FriendEvent {
+class _FriendsRetrieved extends FriendEvent {
   final List<User> friendsList;
 
-  FriendsRetrieved(this.friendsList);
+  _FriendsRetrieved(this.friendsList);
 }
 
 abstract class FriendState {}
@@ -34,7 +34,7 @@ class FriendsLoading extends FriendState {}
 class FriendBloc extends Bloc<FriendEvent, FriendState> {
   FriendBloc() {
     DatabaseController.instance.getFriendsList().then((friends) {
-      add(FriendsRetrieved(friends));
+      add(_FriendsRetrieved(friends));
     });
   }
 
