@@ -42,9 +42,7 @@ class AuthError extends AuthState {}
 
 /// Connects our business logic with our UI code in an extensible way
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  FirebaseUser _currentUser;
-
-  AuthBloc() {
+  AuthBloc._privateConstructor() {
     FirebaseAuth.instance.currentUser().then((user) {
       _currentUser = user;
       add(_AuthResult());
@@ -52,6 +50,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       add(_AuthFailed());
     });
   }
+  // ignore: close_sinks
+  static final instance = AuthBloc._privateConstructor();
+
+  FirebaseUser _currentUser;
 
   @override
   AuthState get initialState => Initializing();

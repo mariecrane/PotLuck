@@ -3,28 +3,26 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pot_luck/controller/bloc/auth_bloc.dart';
 import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/user.dart';
 
 typedef void PantryUpdateCallback(Pantry myPantry, List<Pantry> friendPantries);
+typedef void FriendsUpdateCallback(List<User> friends);
 
 class DatabaseController {
   DatabaseController._privateConstructor() {
-    // TODO: Request info from database (my pantry, friend pantries, etc.)
-    _fetchFriendsData();
-    // TODO: Get subscription to AuthEvent stream
+    _authStateSubscription = AuthBloc.instance.listen(_onAuthStateChange);
   }
 
   void dispose() {
-    _friendPantriesDocSubscription.cancel();
-    _friendRequestsDocSubscription.cancel();
-    _pantryDocSubscription.cancel();
-    _userDocSubscription.cancel();
-    // TODO: Cancel subscription to AuthEvent stream
+    _clearDocSubscriptions();
+    _authStateSubscription.cancel();
   }
 
   static final DatabaseController instance =
       DatabaseController._privateConstructor();
+
   static final List<Color> _colors = <Color>[
     Colors.blueGrey[200],
     Colors.red[700],
@@ -35,78 +33,209 @@ class DatabaseController {
     Colors.purple[300],
   ];
 
-  Pantry _myPantry = Pantry(
-    title: 'My Pantry',
-    owner: User(name: "Me", isMe: true),
-    color: _colors[1],
-    ingredients: <PantryIngredient>[],
-  );
-
-  var _updateCallbacks = <PantryUpdateCallback>[];
-
-  var _friendsList = List<User>();
+  User _me;
+  Pantry _myPantry;
   var _friendPantries = <Pantry>[];
+  var _friendsList = List<User>();
 
-  // TODO: Create and manage stream subscriptions to user document snapshots
+  Pantry get myPantry => _myPantry;
+  List<Pantry> get friendPantries => _friendPantries;
+  List<User> get friendsList => _friendsList;
+
+  var _pantryUpdateCallbacks = <PantryUpdateCallback>[];
+  var _friendsUpdateCallbacks = <FriendsUpdateCallback>[];
+
   StreamSubscription _friendPantriesDocSubscription;
   StreamSubscription _friendRequestsDocSubscription;
   StreamSubscription _pantryDocSubscription;
   StreamSubscription _userDocSubscription;
 
-  Future<Pantry> getMyPantry() async {
-    // TODO: Actually request pantry from Firebase
-    return _myPantry;
+  StreamSubscription _authStateSubscription;
+
+  void addToMyPantry(PantryIngredient ingredient) async {
+    if (_myPantry.ingredients.contains(ingredient)) return;
+
+    var pantryDoc = Firestore.instance
+        .collection("users")
+        .document("${_me.id}")
+        .collection("userData")
+        .document("pantry");
+    await Firestore.instance.runTransaction((transaction) async {
+      var doc = await transaction.get(pantryDoc);
+      List<String> ingredients = doc.data["ingredients"];
+      if (ingredients.contains(ingredient.name)) return;
+      ingredients.add(ingredient.name);
+      await transaction.update(pantryDoc, <String, dynamic>{
+        "ingredients": ingredients,
+      });
+    });
   }
 
-  Future<Pantry> addToMyPantry(PantryIngredient ingredient) async {
-    // TODO: Actually request pantry from Firebase
-    if (_myPantry.ingredients.contains(ingredient) == false) {
-      _myPantry.ingredients.add(ingredient);
+  void removeFromMyPantry(PantryIngredient ingredient) async {
+    if (_myPantry.ingredients.contains(ingredient) == false) return;
+
+    var pantryDoc = Firestore.instance
+        .collection("users")
+        .document("${_me.id}")
+        .collection("userData")
+        .document("pantry");
+    await Firestore.instance.runTransaction((transaction) async {
+      var doc = await transaction.get(pantryDoc);
+      List<String> ingredients = doc.data["ingredients"];
+      if (ingredients.contains(ingredient.name) == false) return;
+      ingredients.remove(ingredient.name);
+      await transaction.update(pantryDoc, <String, dynamic>{
+        "ingredients": ingredients,
+      });
+    });
+  }
+
+  void clearMyPantry() async {
+    var pantryDoc = Firestore.instance
+        .collection("users")
+        .document("${_me.id}")
+        .collection("userData")
+        .document("pantry");
+    await pantryDoc.updateData(<String, dynamic>{
+      "ingredients": [],
+    });
+  }
+
+  void sendFriendRequest(User user) async {
+    // Check if user is already in the locally cached friends list, exit if so
+    var alreadyFriend = true;
+    try {
+      _friendsList.firstWhere((friend) => friend.email == user.email);
+    } catch (e) {
+      alreadyFriend = false;
     }
-    doPantryUpdateCallbacks();
-    return _myPantry;
+    if (alreadyFriend) return;
+
+    // Try to find user with given info in the database, exit if none found
+    var snapshot = await Firestore.instance
+        .collection("users")
+        .where("email", isEqualTo: "${user.email}")
+        .getDocuments();
+    if (snapshot.documents.length == 0) return;
+
+    // Send friend request to user
+    String friendId = snapshot.documents[0].data["userId"];
+    var me = await FirebaseAuth.instance.currentUser();
+    var doc = Firestore.instance
+        .collection("users")
+        .document("${me.uid}")
+        .collection("userData")
+        .document("friendRequests");
+    Firestore.instance.runTransaction((transaction) async {
+      var result = await transaction.get(doc);
+      List<String> requests = result.data["requestIds"];
+      if (requests.contains(friendId)) return;
+
+      requests.add(friendId);
+      await transaction.update(doc, <String, dynamic>{"requestIds": requests});
+    });
   }
 
-  Future<Pantry> removeFromMyPantry(PantryIngredient ingredient) async {
-    // TODO: Actually request pantry from Firebase
-    if (_myPantry.ingredients.contains(ingredient)) {
-      _myPantry.ingredients.remove(ingredient);
+  void removeFriend(User user) async {
+    // Check if user is in the locally cached friends list, exit if not
+    try {
+      _friendsList.firstWhere((friend) => friend.email == user.email);
+    } catch (e) {
+      return;
     }
-    doPantryUpdateCallbacks();
-    return _myPantry;
-  }
 
-  Future<Pantry> clearMyPantry() async {
-    _myPantry.ingredients.clear();
-    doPantryUpdateCallbacks();
-    return _myPantry;
-  }
+    // Remove user from friends in database
+    String friendId = user.id;
+    var me = await FirebaseAuth.instance.currentUser();
+    var doc = Firestore.instance
+        .collection("users")
+        .document("${me.uid}")
+        .collection("userData")
+        .document("friendRequests");
+    Firestore.instance.runTransaction((transaction) async {
+      var result = await transaction.get(doc);
+      List<String> removals = result.data["removeIds"];
+      if (removals.contains(friendId)) return;
 
-  Future<List<Pantry>> getFriendPantries() async {
-    _fetchFriendsData();
-    return _friendPantries;
+      removals.add(friendId);
+      await transaction.update(doc, <String, dynamic>{"removeIds": removals});
+    });
   }
 
   void onPantryUpdate(PantryUpdateCallback callback) {
-    _updateCallbacks.add(callback);
+    _pantryUpdateCallbacks.add(callback);
   }
 
-  void doPantryUpdateCallbacks() async {
-    _updateCallbacks.forEach((callback) {
+  void onFriendsUpdate(FriendsUpdateCallback callback) {
+    _friendsUpdateCallbacks.add(callback);
+  }
+
+  void _doPantryUpdateCallbacks() {
+    _pantryUpdateCallbacks.forEach((callback) {
       callback(_myPantry, _friendPantries);
     });
   }
 
-  Future<void> _fetchFriendsData() async {
-    // Get friend and pantry data from database
-    var me = await FirebaseAuth.instance.currentUser();
-    var snapshot = await Firestore.instance
-        .collection("users")
-        .document("${me.uid}")
-        .collection("userData")
-        .document("friendPantries")
-        .get();
+  void _doFriendsUpdateCallbacks() {
+    _friendsUpdateCallbacks.forEach((callback) {
+      callback(_friendsList);
+    });
+  }
 
+  void _onAuthStateChange(AuthState state) async {
+    _clearDocSubscriptions();
+
+    if ((state is Authenticated) == false) {
+      _me = null;
+      return;
+    }
+
+    var user = await FirebaseAuth.instance.currentUser();
+    if (user.isAnonymous) {
+      _me = User(isMe: true, id: user.uid);
+      return;
+    }
+
+    _me = User(isMe: true, email: user.email, id: user.uid);
+    var userDoc = Firestore.instance.collection("users").document("${_me.id}");
+    var userData = userDoc.collection("userData");
+
+    _friendPantriesDocSubscription = userData
+        .document("friendPantries")
+        .snapshots()
+        .listen(_onFriendPantriesSnapshot);
+    _friendRequestsDocSubscription = userData
+        .document("friendRequests")
+        .snapshots()
+        .listen(_onFriendRequestsSnapshot);
+    _pantryDocSubscription =
+        userData.document("pantry").snapshots().listen(_onPantrySnapshot);
+    _userDocSubscription = userDoc.snapshots().listen(_onUserSnapshot);
+  }
+
+  void _onPantrySnapshot(DocumentSnapshot snapshot) {
+    var pantryData = snapshot.data;
+
+    // Populate friendPantries
+    var pantry = Pantry(
+      owner: _me,
+      title: _me.email,
+      color: _colors[0],
+      ingredients: List<PantryIngredient>(),
+    );
+
+    List<String> ingredientList = pantryData["ingredients"];
+
+    ingredientList.forEach((ingredient) {
+      pantry.ingredients.add(PantryIngredient(
+        fromPantry: pantry,
+        name: ingredient,
+      ));
+    });
+    _doPantryUpdateCallbacks();
+  }
+
+  void _onFriendPantriesSnapshot(DocumentSnapshot snapshot) {
     List<Map<String, dynamic>> pantries = snapshot.data["pantries"];
     _friendsList.clear();
     _friendPantries.clear();
@@ -141,82 +270,31 @@ class DatabaseController {
 
       _friendPantries.add(pantry);
     }
+    _doPantryUpdateCallbacks();
+    _doFriendsUpdateCallbacks();
   }
 
-  Future<List<User>> getFriendsList() async {
-    await _fetchFriendsData();
-    return _friendsList;
+  void _onFriendRequestsSnapshot(DocumentSnapshot snapshot) {
+    // TODO: Update friend requests list from snapshot
   }
 
-  Future<List<User>> sendFriendRequest(User user) async {
-    // Check if user is already in the locally cached friends list, exit if so
-    var alreadyFriend = true;
-    try {
-      _friendsList.firstWhere((friend) => friend.email == user.email);
-    } catch (e) {
-      alreadyFriend = false;
-    }
-    if (alreadyFriend) return _friendsList;
-
-    // Try to find user with given info in the database, exit if none found
-    var snapshot = await Firestore.instance
-        .collection("users")
-        .where("email", isEqualTo: "${user.email}")
-        .getDocuments();
-    if (snapshot.documents.length == 0) {
-      return _friendsList;
-    }
-
-    // Send friend request to user
-    String friendId = snapshot.documents[0].data["userId"];
-    var me = await FirebaseAuth.instance.currentUser();
-    var doc = Firestore.instance
-        .collection("users")
-        .document("${me.uid}")
-        .collection("userData")
-        .document("friendRequests");
-    Firestore.instance.runTransaction((transaction) async {
-      var result = await transaction.get(doc);
-      List<String> requests = result.data["requestIds"];
-      if (requests.contains(friendId)) return;
-
-      requests.add(friendId);
-      await transaction.update(doc, <String, dynamic>{"requestIds": requests});
-    });
-
-    return await getFriendsList();
+  void _onUserSnapshot(DocumentSnapshot snapshot) {
+    // TODO: Update user info from snapshot
+  }
+  void _clearDocSubscriptions() {
+    _friendPantriesDocSubscription?.cancel();
+    _friendRequestsDocSubscription?.cancel();
+    _pantryDocSubscription?.cancel();
+    _userDocSubscription?.cancel();
   }
 
-  Future<List<User>> removeFriend(User user) async {
-    // TODO: Implement removing friends (full-stack)
-//    // Check if user is in the locally cached friends list, exit if not
-//    try {
-//      _friendsList.firstWhere((friend) => friend.email == user.email);
-//    } catch (e) {
-//      return _friendsList;
-//    }
-//
-//    // Remove user from friends in database
-//    String friendId = user.id;
-//    var me = await FirebaseAuth.instance.currentUser();
-//    var doc = Firestore.instance
-//        .collection("users")
-//        .document("${me.uid}")
-//        .collection("userData")
-//        .document("friendRequests");
-//    Firestore.instance.runTransaction((transaction) async {
-//      var result = await transaction.get(doc);
-//      List<String> requests = result.data["requestIds"];
-//      if (requests.contains(friendId)) return;
-//
-//      requests.add(friendId);
-//      await transaction.update(doc, <String, dynamic>{"requestIds": requests});
-//    });
-
-    return await getFriendsList();
-  }
-
-// TODO: Get rid of this when replacing with live data
+// TODO: Remove modeled data after replacing with live data
+//  Pantry _myPantry = Pantry(
+//    title: 'My Pantry',
+//    owner: User(name: "Me", isMe: true),
+//    color: _colors[1],
+//    ingredients: <PantryIngredient>[],
+//  );
 //  List<Pantry> _friendPantries = <Pantry>[
 //    Pantry(
 //      title: 'Shouayee Vue',

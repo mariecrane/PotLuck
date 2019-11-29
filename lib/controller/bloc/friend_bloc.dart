@@ -4,9 +4,9 @@ import 'package:pot_luck/model/user.dart';
 
 abstract class FriendEvent {}
 
-class FriendRemoved extends FriendEvent {
+class FriendRemoveRequest extends FriendEvent {
   final User friend;
-  FriendRemoved(this.friend);
+  FriendRemoveRequest(this.friend);
 }
 
 class FriendAddRequest extends FriendEvent {
@@ -32,36 +32,39 @@ class FriendsListEmpty extends FriendState {}
 class FriendsLoading extends FriendState {}
 
 class FriendBloc extends Bloc<FriendEvent, FriendState> {
-  FriendBloc() {
-    DatabaseController.instance.getFriendsList().then((friends) {
+  FriendBloc._privateConstructor() {
+    DatabaseController.instance.onFriendsUpdate((friends) {
       add(_FriendsRetrieved(friends));
     });
   }
+  // ignore: close_sinks
+  static final instance = FriendBloc._privateConstructor();
 
   @override
-  // TODO: implement initialState
   FriendState get initialState => FriendsLoading();
 
   @override
   Stream<FriendState> mapEventToState(FriendEvent event) async* {
-    if (event is FriendRemoved) {
+    if (event is _FriendsRetrieved) {
+      yield event.friendsList.isEmpty
+          ? FriendsListEmpty()
+          : FriendsListUpdate(event.friendsList);
+    }
+
+    if (event is FriendRemoveRequest) {
       yield FriendsLoading();
 
-      var friendsList = await DatabaseController.instance.removeFriend(
+      DatabaseController.instance.removeFriend(
         event.friend,
       );
-      yield friendsList.isEmpty
-          ? FriendsListEmpty()
-          : FriendsListUpdate(friendsList);
     }
 
     if (event is FriendAddRequest) {
       yield FriendsLoading();
 
-      var friendsList = await DatabaseController.instance.sendFriendRequest(
+      DatabaseController.instance.sendFriendRequest(
         User(email: event.email),
       );
-      yield FriendsListUpdate(friendsList);
     }
   }
 }

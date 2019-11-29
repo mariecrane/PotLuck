@@ -16,11 +16,14 @@ class PantryIngredientRemoved extends PantryEvent {
 
 class PantryIngredientsCleared extends PantryEvent {}
 
-class _PantryUpdateRequested extends PantryEvent {}
+class _PantryRetrieved extends PantryEvent {
+  final Pantry myPantry;
+  _PantryRetrieved(this.myPantry);
+}
 
 abstract class PantryState {}
 
-class LoadingPantries extends PantryState {}
+class LoadingPantry extends PantryState {}
 
 class PantryUpdated extends PantryState {
   final Pantry pantry;
@@ -28,36 +31,36 @@ class PantryUpdated extends PantryState {
 }
 
 class PantryBloc extends Bloc<PantryEvent, PantryState> {
-  PantryBloc() {
-    add(_PantryUpdateRequested());
+  PantryBloc._privateConstructor() {
+    DatabaseController.instance.onPantryUpdate((myPantry, friendPantries) {
+      add(_PantryRetrieved(myPantry));
+    });
   }
+  // ignore: close_sinks
+  static final instance = PantryBloc._privateConstructor();
 
   @override
-  PantryState get initialState => LoadingPantries();
+  PantryState get initialState => LoadingPantry();
 
   @override
   Stream<PantryState> mapEventToState(PantryEvent event) async* {
     if (event is PantryIngredientAdded) {
-      var pantry =
-          await DatabaseController.instance.addToMyPantry(event.ingredient);
-      yield PantryUpdated(pantry);
+      yield LoadingPantry();
+      DatabaseController.instance.addToMyPantry(event.ingredient);
     }
 
     if (event is PantryIngredientRemoved) {
-      var pantry = await DatabaseController.instance
-          .removeFromMyPantry(event.ingredient);
-      yield PantryUpdated(pantry);
+      yield LoadingPantry();
+      DatabaseController.instance.removeFromMyPantry(event.ingredient);
     }
 
     if (event is PantryIngredientsCleared) {
-      var pantry = await DatabaseController.instance.clearMyPantry();
-      yield PantryUpdated(pantry);
+      yield LoadingPantry();
+      DatabaseController.instance.clearMyPantry();
     }
 
-    if (event is _PantryUpdateRequested) {
-      // TODO: Make an actual request for current pantry data
-      var pantry = await DatabaseController.instance.getMyPantry();
-      yield PantryUpdated(pantry);
+    if (event is _PantryRetrieved) {
+      yield PantryUpdated(event.myPantry);
     }
   }
 }

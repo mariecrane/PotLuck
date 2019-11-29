@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:pot_luck/controller/database.dart';
 import 'package:pot_luck/controller/search.dart';
 import 'package:pot_luck/model/pantry.dart';
@@ -59,57 +58,45 @@ class SearchError extends SearchState {
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   Pantry _myPantry;
   List<Pantry> _friendPantries;
-  List<PantryIngredient> _currentSearch = <PantryIngredient>[
-    PantryIngredient(
-      name: "cream cheese",
-      fromPantry: Pantry(
-        title: "Other",
-        owner: User(
-          name: "",
-          isNobody: true,
-        ),
-        ingredients: <PantryIngredient>[],
-      ),
-    ),
-  ];
+  var _currentSearch = <PantryIngredient>[];
+  // TODO: Remove modeled data after replacing with live data
+//  List<PantryIngredient> _currentSearch = <PantryIngredient>[
+//    PantryIngredient(
+//      name: "cream cheese",
+//      fromPantry: Pantry(
+//        title: "Other",
+//        owner: User(
+//          name: "",
+//          isNobody: true,
+//        ),
+//        ingredients: <PantryIngredient>[],
+//      ),
+//    ),
+//  ];
 
-  SearchBloc() {
-    var pf = DatabaseController.instance;
-    var futures = <Future>[
-      pf.getMyPantry(),
-      pf.getFriendPantries(),
-    ];
-    Future.wait(futures).then((results) {
-      add(_PantriesUpdated(results[0], results[1]));
-      debugPrint("added PantriesUpdated event");
-    });
-    pf.onPantryUpdate((myPantry, friendPantries) {
+  SearchBloc._privateConstructor() {
+    DatabaseController.instance.onPantryUpdate((myPantry, friendPantries) {
       add(_PantriesUpdated(myPantry, friendPantries));
     });
   }
+  // ignore: close_sinks
+  static final instance = SearchBloc._privateConstructor();
 
   @override
   SearchState get initialState {
     if (_myPantry != null && _friendPantries != null) {
       return _makeBuildingSearchState();
     }
-    debugPrint("Returned SearchLoading from initialState");
     return SearchLoading();
   }
 
   @override
   Stream<SearchState> mapEventToState(SearchEvent event) async* {
     if (event is _PantriesUpdated) {
-      debugPrint("received PantriesUpdated event");
       _myPantry = event.myPantry;
       _friendPantries = event.friendPantries;
       yield _makeBuildingSearchState();
-      return;
     }
-
-    // TODO: Maybe yield loading state while fetching pantries
-    _myPantry = await DatabaseController.instance.getMyPantry();
-    _friendPantries = await DatabaseController.instance.getFriendPantries();
 
     if (event is SearchCleared) {
       _currentSearch.clear();
@@ -128,10 +115,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       // Don't add to search if the ingredient isn't in friend's pantry anymore
       if (pantry.ingredients.contains(ingredient) == false) return;
-      debugPrint("ingredient is still in pantry");
 
       if (_currentSearch.contains(ingredient)) return;
-      debugPrint("search does not already contain ingredient");
 
       _currentSearch.add(ingredient);
       yield _makeBuildingSearchState();
