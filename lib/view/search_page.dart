@@ -38,10 +38,10 @@ class SearchPage extends StatelessWidget {
             hintText: "Add Ingredients",
           ),
           onSubmitted: (value) {
-            // TODO: Add top suggested ingredient; bloc involved
+            BlocProvider.of<SearchBloc>(context).add(SearchBarSubmitted());
           },
           onChanged: (value) {
-            // TODO: Notify whatever bloc handles auto-suggestions
+            BlocProvider.of<SearchBloc>(context).add(SearchBarEdited(value));
           },
         ),
       ),
@@ -136,6 +136,23 @@ class SearchBody extends StatelessWidget {
               //return _SuggestionListView(possiblePantry: suggestedPantry, input: "potato");
             }
 
+            if (state is SuggestingIngredient) {
+              return _SuggestionListView(
+                state.otherSuggestion,
+                state.myPantrySuggestion,
+                state.friendSuggestions,
+              );
+            }
+
+            if (state is SuggestionsEmpty) {
+              return Center(
+                child: Text(
+                  "No ingredients found",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              );
+            }
+
             // In the progress of searching; show loading animation
             if (state is SearchLoading) {
               return Center(
@@ -213,23 +230,41 @@ List<String> suggestedPantry = <String>[
 ];
 
 class _SuggestionListView extends StatelessWidget {
-  final List<String> possiblePantry;
-  final String input;
+  final PantryIngredient otherSuggestion;
+  final PantryIngredient myPantrySuggestion;
+  final List<PantryIngredient> friendSuggestions;
 
-  const _SuggestionListView({this.possiblePantry, this.input});
+  const _SuggestionListView(
+      this.otherSuggestion, this.myPantrySuggestion, this.friendSuggestions,
+      {Key key})
+      : super(key: key);
 
   Widget build(BuildContext context) {
+    bool myPantryUsed = myPantrySuggestion != null;
+    int count = friendSuggestions.length + (myPantryUsed ? 2 : 1);
+
     return ListView.builder(
       key: PageStorageKey<String>("suggestion_page"),
-      itemCount: possiblePantry.length,
+      itemCount: count,
       itemBuilder: (BuildContext context, int index) {
-        final String pan = possiblePantry[index];
+        PantryIngredient ingredient;
+        if (index == 0) {
+          ingredient = otherSuggestion;
+        } else if (myPantryUsed) {
+          ingredient =
+              index == 1 ? myPantrySuggestion : friendSuggestions[index - 2];
+        } else {
+          ingredient = friendSuggestions[index - 1];
+        }
+
+        // TODO: Differentiate Other, My Pantry, and friend pantry ingredients
         return ListTile(
           leading: Icon(Icons.add_shopping_cart),
-          title: Text(input + " in " + pan),
+          title: Text(ingredient.name + " in " + ingredient.fromPantry.title),
           trailing: Icon(Icons.add),
           onTap: () {
-            //TODO: add selected ingredients
+            BlocProvider.of<SearchBloc>(context)
+                .add(IngredientAdded(ingredient));
           },
         );
       },

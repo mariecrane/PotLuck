@@ -8,6 +8,13 @@ import 'package:pot_luck/model/user.dart';
 /// Encodes the type and data of events coming from our search UI
 abstract class SearchEvent {}
 
+class SearchBarEdited extends SearchEvent {
+  final String text;
+  SearchBarEdited(this.text);
+}
+
+class SearchBarSubmitted extends SearchEvent {}
+
 class Submit extends SearchEvent {}
 
 class IngredientAdded extends SearchEvent {
@@ -42,6 +49,16 @@ class BuildingSearch extends SearchState {
   });
 }
 
+class SuggestingIngredient extends SearchState {
+  final PantryIngredient otherSuggestion;
+  final PantryIngredient myPantrySuggestion;
+  final List<PantryIngredient> friendSuggestions;
+  SuggestingIngredient(
+      this.otherSuggestion, this.myPantrySuggestion, this.friendSuggestions);
+}
+
+class SuggestionsEmpty extends SearchState {}
+
 class SearchLoading extends SearchState {}
 
 class SearchSuccessful extends SearchState {
@@ -56,24 +73,6 @@ class SearchError extends SearchState {
 
 /// Connects our business logic with our UI code in an extensible way
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  Pantry _myPantry;
-  List<Pantry> _friendPantries;
-  var _currentSearch = <PantryIngredient>[];
-  // TODO: Remove modeled data after replacing with live data
-//  List<PantryIngredient> _currentSearch = <PantryIngredient>[
-//    PantryIngredient(
-//      name: "cream cheese",
-//      fromPantry: Pantry(
-//        title: "Other",
-//        owner: User(
-//          name: "",
-//          isNobody: true,
-//        ),
-//        ingredients: <PantryIngredient>[],
-//      ),
-//    ),
-//  ];
-
   SearchBloc._privateConstructor() {
     DatabaseController.instance.onPantryUpdate((myPantry, friendPantries) {
       add(_PantriesUpdated(myPantry, friendPantries));
@@ -82,20 +81,40 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   // ignore: close_sinks
   static final instance = SearchBloc._privateConstructor();
 
+  Pantry _myPantry;
+  List<Pantry> _friendPantries;
+  var _currentSearch = <PantryIngredient>[];
+
   @override
-  SearchState get initialState {
-    if (_myPantry != null && _friendPantries != null) {
-      return _makeBuildingSearchState();
-    }
-    return SearchLoading();
-  }
+  SearchState get initialState => SearchLoading();
 
   @override
   Stream<SearchState> mapEventToState(SearchEvent event) async* {
     if (event is _PantriesUpdated) {
       _myPantry = event.myPantry;
       _friendPantries = event.friendPantries;
+      // FIXME: Updates to friend pantries could cause UI interruptions
       yield _makeBuildingSearchState();
+    }
+
+    if (event is SearchBarEdited) {
+      if (event.text.isEmpty) {
+        yield _makeBuildingSearchState();
+        return;
+      }
+      var suggestions =
+          await RecipeSearch.instance.getAutoSuggestions(event.text);
+
+      yield suggestions.isEmpty
+          ? SuggestionsEmpty()
+          : _makeSuggestingIngredientsState(suggestions);
+    }
+
+    if (event is SearchBarSubmitted) {
+      if (state is SuggestingIngredient) {
+        var s = state as SuggestingIngredient;
+        add(IngredientAdded(s.otherSuggestion));
+      }
     }
 
     if (event is SearchCleared) {
@@ -202,4 +221,77 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       return false;
     });
   }
+
+  _makeSuggestingIngredientsState(List<String> completions) {
+    var name = completions[0];
+
+    // Add suggestion for Other category above all else
+    var otherSuggestion = PantryIngredient(
+      name: name,
+      fromPantry: Pantry(
+        title: "Other",
+        owner: User(
+          isNobody: true,
+        ),
+        ingredients: <PantryIngredient>[],
+      ),
+    );
+
+    // Add suggestion if my pantry contains the ingredient
+    PantryIngredient myPantrySuggestion;
+    bool hasIngredient = _myPantry.ingredients.contains(
+      PantryIngredient(
+        name: name,
+        fromPantry: _myPantry,
+      ),
+    );
+    if (hasIngredient) {
+      myPantrySuggestion = PantryIngredient(
+        name: name,
+        fromPantry: _myPantry,
+      );
+    } else {
+      myPantrySuggestion = null;
+    }
+
+    // Add suggestions for any friend pantries containing the ingredient
+    var friendSuggestions = <PantryIngredient>[];
+    try {
+      var matches = _friendPantries.where((pantry) {
+        return pantry.ingredients.contains(
+          PantryIngredient(
+            name: name,
+            fromPantry: pantry,
+          ),
+        );
+      });
+
+      matches.forEach((pantry) {
+        friendSuggestions.add(
+          PantryIngredient(
+            name: name,
+            fromPantry: pantry,
+          ),
+        );
+      });
+    } catch (e) {}
+
+    return SuggestingIngredient(
+        otherSuggestion, myPantrySuggestion, friendSuggestions);
+  }
+
+// TODO: Remove modeled data after replacing with live data
+//  List<PantryIngredient> _currentSearch = <PantryIngredient>[
+//    PantryIngredient(
+//      name: "cream cheese",
+//      fromPantry: Pantry(
+//        title: "Other",
+//        owner: User(
+//          name: "",
+//          isNobody: true,
+//        ),
+//        ingredients: <PantryIngredient>[],
+//      ),
+//    ),
+//  ];
 }

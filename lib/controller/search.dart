@@ -14,6 +14,10 @@ class RecipeSearch {
       CloudFunctions.instance.getHttpsCallable(
     functionName: 'recipeInfo',
   );
+  static final HttpsCallable autocomplete =
+      CloudFunctions.instance.getHttpsCallable(
+    functionName: 'autocomplete',
+  );
 
   bool get useMetricUnits {
     // TODO: Add logic to determine whether we should use US or Metric units
@@ -28,25 +32,12 @@ class RecipeSearch {
     return "https://spoonacular.com/cdn/ingredients_$size/$fileName";
   }
 
-//  /// Adds GET parameters to a url, also adding the API key automatically
-//  Future<String> addParamsToUrl(String url, Map<String, dynamic> params) async {
-//    // Fetch API key from our secrets file
-//    var apiKey = convert.jsonDecode(
-//        await rootBundle.loadString("assets/secrets.json"))["apiKey"];
-//
-//    // Always add API key as the first parameter in the URL
-//    url = "$url?apiKey=$apiKey&";
-//
-//    if (params == null || params.length == 0) return url;
-//
-//    params.forEach((key, value) {
-//      // Insert key-value pairs into url parameter format
-//      url = "$url$key=$value&";
-//    });
-//
-//    // Remove unnecessary trailing ampersand
-//    return url.substring(0, url.length - 1);
-//  }
+  Future<List<String>> getAutoSuggestions(String partial) async {
+    var result = await autocomplete.call(<String, dynamic>{
+      "query": partial,
+    });
+    return result.data;
+  }
 
   /// Fetches recipe results asynchronously
   Future<List<SearchResult>> getRecipeResults(
@@ -158,4 +149,24 @@ class RecipeSearch {
     }
     return result.toString();
   }
+
+//  /// Adds GET parameters to a url, also adding the API key automatically
+//  Future<String> addParamsToUrl(String url, Map<String, dynamic> params) async {
+//    // Fetch API key from our secrets file
+//    var apiKey = convert.jsonDecode(
+//        await rootBundle.loadString("assets/secrets.json"))["apiKey"];
+//
+//    // Always add API key as the first parameter in the URL
+//    url = "$url?apiKey=$apiKey&";
+//
+//    if (params == null || params.length == 0) return url;
+//
+//    params.forEach((key, value) {
+//      // Insert key-value pairs into url parameter format
+//      url = "$url$key=$value&";
+//    });
+//
+//    // Remove unnecessary trailing ampersand
+//    return url.substring(0, url.length - 1);
+//  }
 }

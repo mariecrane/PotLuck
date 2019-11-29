@@ -52,6 +52,7 @@ class DatabaseController {
 
   StreamSubscription _authStateSubscription;
 
+  // TODO: Treat pantry operations differently when anonymously authenticated
   void addToMyPantry(PantryIngredient ingredient) async {
     if (_myPantry.ingredients.contains(ingredient)) return;
 
