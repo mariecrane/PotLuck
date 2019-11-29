@@ -131,9 +131,6 @@ class SearchBody extends StatelessWidget {
             // Nothing has been searched yet; show tip/hint
             if (state is BuildingSearch) {
               return SearchListView(state.allIngredients, state.pantries);
-              //TODO: ideally it should be autosuggestion here but I will just use potato
-              //the suggestedListView will show up when the search bar is not empty; bloc needed
-              //return _SuggestionListView(possiblePantry: suggestedPantry, input: "potato");
             }
 
             if (state is SuggestingIngredient) {
@@ -219,16 +216,6 @@ class SearchListView extends StatelessWidget {
   }
 }
 
-/// hard-coded suggestionView
-List<String> suggestedPantry = <String>[
-  "Other",
-  "Pantry",
-  "Shouayee",
-  "Preston",
-  "Tracy",
-  "Marie"
-];
-
 class _SuggestionListView extends StatelessWidget {
   final PantryIngredient otherSuggestion;
   final PantryIngredient myPantrySuggestion;
@@ -244,7 +231,7 @@ class _SuggestionListView extends StatelessWidget {
     int count = friendSuggestions.length + (myPantryUsed ? 2 : 1);
 
     return ListView.builder(
-      key: PageStorageKey<String>("suggestion_page"),
+      key: PageStorageKey<String>("search_suggestion_page"),
       itemCount: count,
       itemBuilder: (BuildContext context, int index) {
         PantryIngredient ingredient;

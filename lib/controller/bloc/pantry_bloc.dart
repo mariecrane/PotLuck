@@ -1,8 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:pot_luck/controller/database.dart';
+import 'package:pot_luck/controller/search.dart';
 import 'package:pot_luck/model/pantry.dart';
 
 abstract class PantryEvent {}
+
+class IngredientBarEdited extends PantryEvent {
+  final String text;
+  IngredientBarEdited(this.text);
+}
 
 class PantryIngredientAdded extends PantryEvent {
   final PantryIngredient ingredient;
@@ -30,6 +36,13 @@ class PantryUpdated extends PantryState {
   PantryUpdated(this.pantry);
 }
 
+class SuggestingIngredients extends PantryState {
+  final List<PantryIngredient> suggestions;
+  SuggestingIngredients(this.suggestions);
+}
+
+class PantrySuggestionsEmpty extends PantryState {}
+
 class PantryBloc extends Bloc<PantryEvent, PantryState> {
   PantryBloc._privateConstructor() {
     DatabaseController.instance.onPantryUpdate((myPantry, friendPantries) {
@@ -44,6 +57,12 @@ class PantryBloc extends Bloc<PantryEvent, PantryState> {
 
   @override
   Stream<PantryState> mapEventToState(PantryEvent event) async* {
+    if (event is IngredientBarEdited) {
+      var completions =
+          await RecipeSearch.instance.getAutoSuggestions(event.text);
+      yield _makeSuggestingIngredientsState(completions);
+    }
+
     if (event is PantryIngredientAdded) {
       yield LoadingPantry();
       DatabaseController.instance.addToMyPantry(event.ingredient);
@@ -62,5 +81,15 @@ class PantryBloc extends Bloc<PantryEvent, PantryState> {
     if (event is _PantryRetrieved) {
       yield PantryUpdated(event.myPantry);
     }
+  }
+
+  _makeSuggestingIngredientsState(List<String> completions) {
+    var suggestions = completions.map<PantryIngredient>((name) {
+      return PantryIngredient(
+        name: name,
+        fromPantry: DatabaseController.instance.myPantry,
+      );
+    });
+    return SuggestingIngredients(suggestions);
   }
 }

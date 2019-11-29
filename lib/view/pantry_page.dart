@@ -15,6 +15,19 @@ class PantryPage extends StatelessWidget {
             return IngredientsListView(state.pantry);
           }
 
+          if (state is SuggestingIngredients) {
+            return _SuggestionListView(state.suggestions);
+          }
+
+          if (state is PantrySuggestionsEmpty) {
+            return Center(
+              child: Text(
+                "No ingredients found",
+                style: TextStyle(color: Colors.grey),
+              ),
+            );
+          }
+
           return CircularProgressIndicator();
         },
       ),
@@ -98,6 +111,31 @@ class IngredientsListView extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class _SuggestionListView extends StatelessWidget {
+  final List<PantryIngredient> suggestions;
+
+  const _SuggestionListView(this.suggestions, {Key key}) : super(key: key);
+
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      key: PageStorageKey<String>("pantry_suggestion_page"),
+      itemCount: suggestions.length,
+      itemBuilder: (BuildContext context, int index) {
+        var ingredient = suggestions[index];
+        return ListTile(
+          leading: Icon(Icons.add_shopping_cart),
+          title: Text(ingredient.name),
+          trailing: Icon(Icons.add),
+          onTap: () {
+            BlocProvider.of<PantryBloc>(context)
+                .add(PantryIngredientAdded(ingredient));
+          },
+        );
+      },
     );
   }
 }
