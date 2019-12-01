@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pot_luck/ui/favorite_page.dart';
-import 'package:pot_luck/ui/friend_page.dart';
 import 'package:pot_luck/ui/pantry_page.dart';
 import 'package:pot_luck/ui/profile_page.dart';
 import 'package:pot_luck/ui/search_page.dart';
@@ -32,24 +30,14 @@ class _NavWrapperState extends State<NavWrapper> {
                 Text('Pantry', style: TextStyle(color: _navColor(context, 0))),
           ),
           new BottomNavigationBarItem(
-            icon: Icon(Icons.favorite, color: _navColor(context, 1)),
-            title: Text('Favorites',
-                style: TextStyle(color: _navColor(context, 1))),
+            icon: Icon(Icons.search, color: _navColor(context, 1)),
+            title:
+                Text('Search', style: TextStyle(color: _navColor(context, 1))),
           ),
           new BottomNavigationBarItem(
-            icon: Icon(Icons.search, color: _navColor(context, 2)),
+            icon: Icon(Icons.person, color: _navColor(context, 2)),
             title:
-                Text('Search', style: TextStyle(color: _navColor(context, 2))),
-          ),
-          new BottomNavigationBarItem(
-            icon: Icon(Icons.group, color: _navColor(context, 3)),
-            title:
-                Text('Friends', style: TextStyle(color: _navColor(context, 3))),
-          ),
-          new BottomNavigationBarItem(
-            icon: Icon(Icons.person, color: _navColor(context, 4)),
-            title:
-                Text('Profile', style: TextStyle(color: _navColor(context, 4))),
+                Text('Profile', style: TextStyle(color: _navColor(context, 2))),
           )
         ],
       ),
@@ -61,11 +49,7 @@ class _NavWrapperState extends State<NavWrapper> {
       case 0:
         return PantryPage.buildAppBar(context);
       case 1:
-        return FavoritePage.buildAppBar(context);
-      case 2:
         return SearchPage.buildAppBar(context);
-      case 3:
-        return FriendPage.buildAppBar(context);
       default:
         return ProfilePage.buildAppBar(context);
     }
@@ -76,11 +60,7 @@ class _NavWrapperState extends State<NavWrapper> {
       case 0:
         return PantryPage();
       case 1:
-        return FavoritePage();
-      case 2:
         return SearchPage();
-      case 3:
-        return FriendPage();
       default:
         return ProfilePage();
     }
@@ -91,11 +71,7 @@ class _NavWrapperState extends State<NavWrapper> {
       case 0:
         return PantryPage.buildFloatingActionButton(context);
       case 1:
-        return FavoritePage.buildFloatingActionButton(context);
-      case 2:
         return SearchPage.buildFloatingActionButton(context);
-      case 3:
-        return FriendPage.buildFloatingActionButton(context);
       default:
         return ProfilePage.buildFloatingActionButton(context);
     }
