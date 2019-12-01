@@ -73,13 +73,11 @@ class SearchError extends SearchState {
 
 /// Connects our business logic with our UI code in an extensible way
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  SearchBloc._privateConstructor() {
+  SearchBloc() {
     DatabaseController.instance.onPantryUpdate((myPantry, friendPantries) {
       add(_PantriesUpdated(myPantry, friendPantries));
     });
   }
-  // ignore: close_sinks
-  static final instance = SearchBloc._privateConstructor();
 
   Pantry _myPantry;
   List<Pantry> _friendPantries;

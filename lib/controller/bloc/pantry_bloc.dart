@@ -44,13 +44,11 @@ class SuggestingIngredients extends PantryState {
 class PantrySuggestionsEmpty extends PantryState {}
 
 class PantryBloc extends Bloc<PantryEvent, PantryState> {
-  PantryBloc._privateConstructor() {
+  PantryBloc() {
     DatabaseController.instance.onPantryUpdate((myPantry, friendPantries) {
       add(_PantryRetrieved(myPantry));
     });
   }
-  // ignore: close_sinks
-  static final instance = PantryBloc._privateConstructor();
 
   @override
   PantryState get initialState => LoadingPantry();

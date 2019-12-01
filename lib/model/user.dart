@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+// TODO: Maybe add profile picture to User data model
 class User extends Equatable {
   final String name;
   final String email;

@@ -40,16 +40,16 @@ class MyApp extends StatelessWidget {
         child: MultiBlocProvider(
           providers: <BlocProvider>[
             BlocProvider<AuthBloc>(
-              builder: (context) => AuthBloc.instance,
+              builder: (context) => AuthBloc(),
             ),
             BlocProvider<SearchBloc>(
-              builder: (context) => SearchBloc.instance,
+              builder: (context) => SearchBloc(),
             ),
             BlocProvider<PantryBloc>(
-              builder: (context) => PantryBloc.instance,
+              builder: (context) => PantryBloc(),
             ),
             BlocProvider<FriendBloc>(
-              builder: (context) => FriendBloc.instance,
+              builder: (context) => FriendBloc(),
             ),
           ],
           child: BlocBuilder<AuthBloc, AuthState>(

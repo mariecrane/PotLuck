@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:pot_luck/controller/database.dart';
+import 'package:pot_luck/model/user.dart';
 
 /// Encodes the type and data of events coming from our auth UI
 abstract class AuthEvent {}
@@ -14,6 +15,8 @@ class AccountCreationRequested extends AuthEvent {
   AccountCreationRequested({@required this.email, @required this.password});
 }
 
+class AccountDeletionRequested extends AuthEvent {}
+
 class SignInRequested extends AuthEvent {
   final String email;
   final String password;
@@ -23,9 +26,10 @@ class SignInRequested extends AuthEvent {
 
 class SignOutRequested extends AuthEvent {}
 
-class _AuthResult extends AuthEvent {}
-
-class _AuthFailed extends AuthEvent {}
+class _AuthChanged extends AuthEvent {
+  final User currentUser;
+  _AuthChanged(this.currentUser);
+}
 
 /// Encodes the status and data of results returned from Firebase Auth
 abstract class AuthState {}
@@ -42,79 +46,43 @@ class AuthError extends AuthState {}
 
 /// Connects our business logic with our UI code in an extensible way
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc._privateConstructor() {
-    FirebaseAuth.instance.currentUser().then((user) {
-      _currentUser = user;
-      add(_AuthResult());
-    }).catchError((error) {
-      add(_AuthFailed());
+  AuthBloc() {
+    DatabaseController.instance.onAuthUpdate((currentUser) {
+      add(_AuthChanged(currentUser));
     });
   }
-  // ignore: close_sinks
-  static final instance = AuthBloc._privateConstructor();
-
-  FirebaseUser _currentUser;
 
   @override
   AuthState get initialState => Initializing();
 
   @override
   Stream<AuthState> mapEventToState(AuthEvent event) async* {
-    if (event is _AuthResult) {
-      yield (_currentUser != null) ? Authenticated() : NotAuthenticated();
+    if (event is _AuthChanged) {
+      yield (event.currentUser != null) ? Authenticated() : NotAuthenticated();
+    }
+
+    if (event is AccountDeletionRequested) {
+      yield AuthInProgress();
+      DatabaseController.instance.deleteAccount();
     }
 
     if (event is AnonymousAuthRequested) {
       yield AuthInProgress();
-      try {
-        var result = await FirebaseAuth.instance.signInAnonymously();
-        _currentUser = result.user;
-        yield Authenticated();
-      } catch (error) {
-        yield AuthError();
-      }
+      DatabaseController.instance.signInAnonymously();
     }
 
     if (event is SignInRequested) {
       yield AuthInProgress();
-      try {
-        var result = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: event.email,
-          password: event.password,
-        );
-        _currentUser = result.user;
-        yield Authenticated();
-      } catch (error) {
-        yield AuthError();
-      }
+      DatabaseController.instance.signIn(event.email, event.password);
     }
 
     if (event is AccountCreationRequested) {
       yield AuthInProgress();
-      try {
-        var result = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: event.email,
-          password: event.password,
-        );
-        _currentUser = result.user;
-        yield Authenticated();
-      } catch (error) {
-        yield AuthError();
-      }
+      DatabaseController.instance.createAccount(event.email, event.password);
     }
 
     if (event is SignOutRequested) {
-      if (_currentUser.isAnonymous) {
-        await _currentUser.delete();
-      } else {
-        await FirebaseAuth.instance.signOut();
-      }
-      _currentUser = null;
-      yield NotAuthenticated();
-    }
-
-    if (event is _AuthFailed) {
-      yield AuthError();
+      DatabaseController.instance.signOut();
     }
   }
 }

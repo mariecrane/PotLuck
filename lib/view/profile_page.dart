@@ -1,8 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/controller/bloc/auth_bloc.dart';
+import 'package:pot_luck/controller/bloc/profile_bloc.dart';
+import 'package:pot_luck/model/user.dart';
 
 class ProfilePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ProfileBloc, ProfileState>(
+      builder: (context, state) {
+        if (state is ProfileLoading) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        if (state is NotSignedIn) {
+          return Center(
+            child: Column(
+              children: <Widget>[
+                Text(
+                  "You're not signed in! Create an account or sign in to access all the features of PotLuck",
+                  style: TextStyle(color: Colors.grey),
+                ),
+                RaisedButton(
+                  child: Text("Go to sign-in"),
+                  onPressed: () {
+                    BlocProvider.of<AuthBloc>(context).add(SignOutRequested());
+                  },
+                ),
+              ],
+            ),
+          );
+        }
+
+        if (state is DisplayingProfile) {
+          return ProfileInfoListView(state.profile);
+        }
+
+        return Center(
+          child: Text(
+            "Hmm, something went wrong...",
+            style: TextStyle(color: Colors.red),
+          ),
+        );
+      },
+    );
+  }
+
+  static Widget buildAppBar(BuildContext context) {
+    return null;
+  }
+
+  static Widget buildFloatingActionButton(BuildContext context) {
+    return null;
+  }
+}
+
+class ProfileInfoListView extends StatelessWidget {
+  final User profile;
+
+  const ProfileInfoListView(this.profile, {Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -39,13 +98,12 @@ class ProfilePage extends StatelessWidget {
                   vertical: 10.0,
                 ),
                 title: Text(
-                  'John Doe',
+                  profile.email,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                subtitle: Text('Username: @jdoe\nEmail: jdoe@hotmail.com'),
               ),
             ),
             shape: RoundedRectangleBorder(
@@ -92,28 +150,56 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: RaisedButton.icon(
+              elevation: 0.0,
+              onPressed: () async {
+                bool delete = await showDialog<bool>(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text(
+                        "This will permanently delete your account and all data tied to it. Are you sure you want to proceed?",
+                      ),
+                      actions: <Widget>[
+                        FlatButton(
+                          child: Text("Cancel"),
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                        ),
+                        FlatButton(
+                          child: Text("Proceed"),
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+                if (delete) {
+                  BlocProvider.of<AuthBloc>(context).add(
+                    AccountDeletionRequested(),
+                  );
+                }
+              },
+              shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(20.0),
+                side: BorderSide(color: Colors.white),
+              ),
+              textColor: Colors.red,
+              color: Colors.white,
+              icon: Icon(Icons.exit_to_app),
+              label: const Text(
+                'Delete My Account',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
         ],
       ).toList(),
     );
-  }
-
-  static Widget buildAppBar(BuildContext context) {
-    return null;
-//    return AppBar(
-//      backgroundColor: Colors.white,
-//      elevation: 1.0,
-//      title: Text(
-//        "Profile",
-//        style: TextStyle(
-//          fontWeight: FontWeight.bold,
-//          color: Theme.of(context).primaryColor,
-//          fontSize: 28,
-//        ),
-//      ),
-//    );
-  }
-
-  static Widget buildFloatingActionButton(BuildContext context) {
-    return null;
   }
 }

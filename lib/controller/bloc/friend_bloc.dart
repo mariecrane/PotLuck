@@ -32,13 +32,11 @@ class FriendsListEmpty extends FriendState {}
 class FriendsLoading extends FriendState {}
 
 class FriendBloc extends Bloc<FriendEvent, FriendState> {
-  FriendBloc._privateConstructor() {
+  FriendBloc() {
     DatabaseController.instance.onFriendsUpdate((friends) {
       add(_FriendsRetrieved(friends));
     });
   }
-  // ignore: close_sinks
-  static final instance = FriendBloc._privateConstructor();
 
   @override
   FriendState get initialState => FriendsLoading();

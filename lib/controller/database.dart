@@ -3,16 +3,17 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:pot_luck/controller/bloc/auth_bloc.dart';
 import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/user.dart';
 
 typedef void PantryUpdateCallback(Pantry myPantry, List<Pantry> friendPantries);
 typedef void FriendsUpdateCallback(List<User> friends);
+typedef void AuthUpdateCallback(User currentUser);
 
 class DatabaseController {
   DatabaseController._privateConstructor() {
-    _authStateSubscription = AuthBloc.instance.listen(_onAuthStateChange);
+    _authStateSubscription =
+        FirebaseAuth.instance.onAuthStateChanged.listen(_onAuthStateChange);
   }
 
   void dispose() {
@@ -44,6 +45,7 @@ class DatabaseController {
 
   var _pantryUpdateCallbacks = <PantryUpdateCallback>[];
   var _friendsUpdateCallbacks = <FriendsUpdateCallback>[];
+  var _authUpdateCallbacks = <AuthUpdateCallback>[];
 
   StreamSubscription _friendPantriesDocSubscription;
   StreamSubscription _friendRequestsDocSubscription;
@@ -51,6 +53,68 @@ class DatabaseController {
   StreamSubscription _userDocSubscription;
 
   StreamSubscription _authStateSubscription;
+
+  void signInAnonymously() async {
+    // Don't do anything if already signed in somewhere. Need to sign out first
+    if (_me != null) return;
+
+    try {
+      await FirebaseAuth.instance.signInAnonymously();
+    } catch (e) {
+      _doAuthUpdateCallbacks();
+    }
+  }
+
+  void createAccount(String email, String password) async {
+    // Don't do anything if already signed in somewhere. Need to sign out first
+    if (_me != null) return;
+
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } catch (e) {
+      _doAuthUpdateCallbacks();
+    }
+  }
+
+  void signIn(String email, String password) async {
+    // Don't do anything if already signed in somewhere. Need to sign out first
+    if (_me != null) return;
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } catch (e) {
+      _doAuthUpdateCallbacks();
+    }
+  }
+
+  void signOut() async {
+    // Don't do anything if not already signed in. Need to sign in first
+    if (_me == null) return;
+
+    try {
+      await FirebaseAuth.instance.signOut();
+    } catch (e) {
+      _doAuthUpdateCallbacks();
+    }
+  }
+
+  void deleteAccount() async {
+    // Don't do anything if not already signed in. Need to sign in first
+    if (_me == null) return;
+
+    try {
+      var user = await FirebaseAuth.instance.currentUser();
+      await user.delete();
+    } catch (e) {
+      _doAuthUpdateCallbacks();
+    }
+  }
 
   // TODO: Treat pantry operations differently when anonymously authenticated
   void addToMyPantry(PantryIngredient ingredient) async {
@@ -171,6 +235,10 @@ class DatabaseController {
     _friendsUpdateCallbacks.add(callback);
   }
 
+  void onAuthUpdate(AuthUpdateCallback callback) {
+    _authUpdateCallbacks.add(callback);
+  }
+
   void _doPantryUpdateCallbacks() {
     _pantryUpdateCallbacks.forEach((callback) {
       callback(_myPantry, _friendPantries);
@@ -183,17 +251,25 @@ class DatabaseController {
     });
   }
 
-  void _onAuthStateChange(AuthState state) async {
+  void _doAuthUpdateCallbacks() {
+    _authUpdateCallbacks.forEach((callback) {
+      callback(_me);
+    });
+  }
+
+  void _onAuthStateChange(FirebaseUser user) async {
     _clearDocSubscriptions();
 
-    if ((state is Authenticated) == false) {
+    // TODO: Make sure Firebase Auth gives null when signed out
+    if (user == null) {
       _me = null;
+      _doAuthUpdateCallbacks();
       return;
     }
 
-    var user = await FirebaseAuth.instance.currentUser();
     if (user.isAnonymous) {
       _me = User(isMe: true, id: user.uid);
+      _doAuthUpdateCallbacks();
       return;
     }
 
@@ -212,6 +288,8 @@ class DatabaseController {
     _pantryDocSubscription =
         userData.document("pantry").snapshots().listen(_onPantrySnapshot);
     _userDocSubscription = userDoc.snapshots().listen(_onUserSnapshot);
+
+    _doAuthUpdateCallbacks();
   }
 
   void _onPantrySnapshot(DocumentSnapshot snapshot) {
