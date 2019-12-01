@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/pantry.dart';
 
@@ -22,6 +23,7 @@ class PantryPage extends StatelessWidget {
   static Widget buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
+      elevation: 1.0,
       automaticallyImplyLeading: true,
       title: Padding(
         // Adds some padding around our TextField
@@ -58,7 +60,10 @@ class IngredientsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return
+      Scaffold(
+      backgroundColor: Colors.blueGrey[50],
+      body: ListView(
       key: PageStorageKey<String>("pantry_page"),
       children: <Widget>[
         Align(
@@ -69,15 +74,16 @@ class IngredientsListView extends StatelessWidget {
                 style: TextStyle(fontSize: 24.0)),
           ),
         ),
-        Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-          child:Container(
+        Container(
+            alignment: Alignment.center,
             child: Wrap(
-              spacing: 5.0,
+              runSpacing: 10,
               children: _pantry.ingredients
                 .map<Widget>(
                   (ingredient) =>
                   Container(
+                    padding: EdgeInsets.all(5),
+                    color: Colors.grey[350],
                     child:
                     InputChip(
                       backgroundColor: Theme
@@ -94,8 +100,8 @@ class IngredientsListView extends StatelessWidget {
                 .toList(),
           ),
         )
-    )
       ],
-    );
+    ),
+      );
   }
 }
