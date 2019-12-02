@@ -60,15 +60,14 @@ class _AuthPageState extends State<AuthPage> {
         Text.rich(
           TextSpan(
             children: <TextSpan>[
-              TextSpan(
-                  text: 'Welcome to ',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+              TextSpan(text: 'Welcome to ',
+                  style: TextStyle(fontSize: 30)),
               TextSpan(
                   text: 'PotLuck!',
                   style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor)),
+                      fontSize: 30, fontWeight: FontWeight.bold, color: Theme
+                      .of(context)
+                      .primaryColor, fontFamily: 'MontserratScript')),
             ],
           ),
         ),
@@ -78,8 +77,13 @@ class _AuthPageState extends State<AuthPage> {
           ),
         ),
         RaisedButton(
-          color: Colors.yellow,
-          child: Text("Sign in"),
+          elevation: 0.0,
+          color: Colors.amber[100],
+          shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(25.0),
+          ),
+          child: Text("Sign in",
+              style: TextStyle(fontSize: 15.0, color: Theme.of(context).primaryColor, fontWeight: FontWeight.w300)),
           onPressed: () {
             setState(() {
               _currentForm = 1;
@@ -87,8 +91,14 @@ class _AuthPageState extends State<AuthPage> {
           },
         ),
         RaisedButton(
-          color: Colors.yellow,
-          child: Text("Create Account"),
+          elevation: 0.0,
+          color: Theme.of(context).primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(25.0),
+          ),
+          child: Text("Create Account",
+              style: TextStyle(fontSize: 17.0, color: Colors.amber[100], fontWeight: FontWeight.w300)
+          ),
           onPressed: () {
             setState(() {
               _currentForm = 2;
@@ -97,7 +107,7 @@ class _AuthPageState extends State<AuthPage> {
         ),
         FlatButton(
           child: Text("Sign in later",
-              style: TextStyle(color: Theme.of(context).primaryColor)),
+              style: TextStyle(fontSize: 15.0, color: Theme.of(context).primaryColor, fontWeight: FontWeight.w300)),
           onPressed: () {
             // Request BLoC to do anonymous login
             BlocProvider.of<AuthBloc>(context).add(AnonymousAuthRequested());

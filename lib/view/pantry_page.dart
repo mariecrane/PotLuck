@@ -95,10 +95,9 @@ class IngredientsListView extends StatelessWidget {
                   .map<Widget>(
                     (ingredient) => Container(
                       padding: EdgeInsets.all(5),
-                      color: Colors.grey[350],
                       child: InputChip(
                         backgroundColor: Theme.of(context).primaryColor,
-                        label: Text(ingredient.name),
+                        label: Text(ingredient.name, style:TextStyle(fontSize: 17.0, color: Colors.black, fontWeight: FontWeight.w400)),
                         onDeleted: () {
                           BlocProvider.of<PantryBloc>(context)
                               .add(PantryIngredientRemoved(ingredient));

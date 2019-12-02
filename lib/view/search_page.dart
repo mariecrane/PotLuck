@@ -93,8 +93,12 @@ class _AddFriendPageState extends State<AddFriendPage> {
             ),
           ),
           RaisedButton(
-            color: Colors.yellow,
-            child: Text("Add"),
+            elevation: 0.0,
+            color: Colors.amber[100],
+            shape: RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(25.0),
+            ),
+            child: Text("Add", style: TextStyle(fontSize: 17.0, color:Theme.of(context).primaryColor, fontWeight: FontWeight.w300)),
             onPressed: () {
               BlocProvider.of<FriendBloc>(context).add(
                 FriendAddRequest(_controller.text),
