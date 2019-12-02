@@ -166,6 +166,7 @@ class DatabaseController {
     });
   }
 
+  // TODO: Change ingredients to pantry
   void sendFriendRequest(User user) async {
     // Check if user is already in the locally cached friends list, exit if so
     var alreadyFriend = true;
@@ -338,7 +339,7 @@ class DatabaseController {
         ingredients: List<PantryIngredient>(),
       );
 
-      List<String> ingredientList = pantryData["ingredients"];
+      List<String> ingredientList = pantryData["pantry"];
 
       ingredientList.forEach((ingredient) {
         pantry.ingredients.add(PantryIngredient(
