@@ -1,4 +1,4 @@
-import 'package:equatable/equatable.dart';
+gitimport 'package:equatable/equatable.dart';
 
 // TODO: Maybe add profile picture to User data model
 class User extends Equatable {
