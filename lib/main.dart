@@ -51,6 +51,9 @@ class MyApp extends StatelessWidget {
             BlocProvider<FriendBloc>(
               builder: (context) => FriendBloc(),
             ),
+            BlocProvider<PantryBloc>(
+              builder: (context) => PantryBloc(),
+            ),
           ],
           child: BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
