@@ -329,7 +329,7 @@ class DatabaseController {
     _friendPantries.clear();
 
     for (int i = 0; i < pantries.length; i++) {
-      Map<String, dynamic> pantryData = pantries[i];
+      var pantryData = pantries[i];
 
       // Populate friendsList
       var friend = User(
@@ -347,7 +347,8 @@ class DatabaseController {
         ingredients: List<PantryIngredient>(),
       );
 
-      List<String> ingredientList = pantryData["pantry"];
+      List<String> ingredientList =
+          pantryData["pantry"].map<String>((i) => i as String).toList();
 
       ingredientList.forEach((ingredient) {
         pantry.ingredients.add(PantryIngredient(
