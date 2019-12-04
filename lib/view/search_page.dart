@@ -78,11 +78,13 @@ class _AddFriendPageState extends State<AddFriendPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add a Friend",
-            style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.w300,
-                fontFamily: 'MontserratScript')),
+        title: Text(
+          "Add a Friend",
+          style: TextStyle(
+              fontSize: 20.0,
+              fontWeight: FontWeight.w300,
+              fontFamily: 'MontserratScript'),
+        ),
       ),
       body: Column(
         children: <Widget>[
@@ -90,11 +92,11 @@ class _AddFriendPageState extends State<AddFriendPage> {
             padding: const EdgeInsets.all(20.0),
             child: TextField(
               controller: _controller,
-              obscureText: true,
               decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Search for friends by email...",
-                  labelStyle: TextStyle(fontFamily: 'MontserratScript')),
+                border: OutlineInputBorder(),
+                labelText: "Search for friends by email...",
+                labelStyle: TextStyle(fontFamily: 'MontserratScript'),
+              ),
             ),
           ),
           RaisedButton(
@@ -103,12 +105,14 @@ class _AddFriendPageState extends State<AddFriendPage> {
             shape: RoundedRectangleBorder(
               borderRadius: new BorderRadius.circular(25.0),
             ),
-            child: Text("Add",
-                style: TextStyle(
-                    fontSize: 17.0,
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.w300,
-                    fontFamily: 'MontserratScript')),
+            child: Text(
+              "Add",
+              style: TextStyle(
+                  fontSize: 17.0,
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.w300,
+                  fontFamily: 'MontserratScript'),
+            ),
             onPressed: () {
               BlocProvider.of<FriendBloc>(context).add(
                 FriendAddRequest(_controller.text),

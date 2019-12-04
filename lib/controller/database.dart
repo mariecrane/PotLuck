@@ -168,7 +168,6 @@ class DatabaseController {
     });
   }
 
-  // TODO: Change ingredients to pantry
   void sendFriendRequest(User user) async {
     // Check if user is already in the locally cached friends list, exit if so
     var alreadyFriend = true;
@@ -197,11 +196,12 @@ class DatabaseController {
     Firestore.instance.runTransaction((transaction) async {
       var result = await transaction.get(doc);
       List<String> requests =
-          result.data["requestIds"].map<String>((r) => r as String).toList();
+          result.data["requestToIds"].map<String>((r) => r as String).toList();
       if (requests.contains(friendId)) return;
 
       requests.add(friendId);
-      await transaction.update(doc, <String, dynamic>{"requestIds": requests});
+      await transaction
+          .update(doc, <String, dynamic>{"requestToIds": requests});
     });
   }
 

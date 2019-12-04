@@ -7,6 +7,7 @@ abstract class PantryEvent {}
 
 class IngredientBarEdited extends PantryEvent {
   final String text;
+
   IngredientBarEdited(this.text);
 }
 
@@ -14,11 +15,13 @@ class IngredientBarSubmitted extends PantryEvent {}
 
 class PantryIngredientAdded extends PantryEvent {
   final PantryIngredient ingredient;
+
   PantryIngredientAdded(this.ingredient);
 }
 
 class PantryIngredientRemoved extends PantryEvent {
   final PantryIngredient ingredient;
+
   PantryIngredientRemoved(this.ingredient);
 }
 
@@ -26,6 +29,7 @@ class PantryIngredientsCleared extends PantryEvent {}
 
 class _PantryRetrieved extends PantryEvent {
   final Pantry myPantry;
+
   _PantryRetrieved(this.myPantry);
 }
 
@@ -35,17 +39,21 @@ class LoadingPantry extends PantryState {}
 
 class PantryUpdated extends PantryState {
   final Pantry pantry;
+
   PantryUpdated(this.pantry);
 }
 
 class SuggestingIngredients extends PantryState {
   final List<PantryIngredient> suggestions;
+
   SuggestingIngredients(this.suggestions);
 }
 
 class PantrySuggestionsEmpty extends PantryState {}
 
 class PantryBloc extends Bloc<PantryEvent, PantryState> {
+  String _barText = "";
+
   PantryBloc() {
     DatabaseController.instance.onPantryUpdate((myPantry, friendPantries) {
       add(_PantryRetrieved(myPantry));
@@ -65,8 +73,12 @@ class PantryBloc extends Bloc<PantryEvent, PantryState> {
     }
 
     if (event is IngredientBarEdited) {
+      _barText = event.text;
+
       var completions =
           await RecipeSearch.instance.getAutoSuggestions(event.text);
+
+      if (_barText != event.text) return;
 
       yield completions.isEmpty
           ? PantrySuggestionsEmpty()
@@ -74,6 +86,12 @@ class PantryBloc extends Bloc<PantryEvent, PantryState> {
     }
 
     if (event is PantryIngredientAdded) {
+      var pantry = DatabaseController.instance.myPantry;
+      if (pantry.ingredients.contains(event.ingredient)) {
+        yield PantryUpdated(pantry);
+        return;
+      }
+
       yield LoadingPantry();
       DatabaseController.instance.addToMyPantry(event.ingredient);
     }

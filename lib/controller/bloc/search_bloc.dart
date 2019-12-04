@@ -79,6 +79,8 @@ class SearchError extends SearchState {
 
 /// Connects our business logic with our UI code in an extensible way
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
+  String _barText = "";
+
   SearchBloc() {
     DatabaseController.instance.onPantryUpdate((myPantry, friendPantries) {
       add(_PantriesUpdated(myPantry, friendPantries));
@@ -102,12 +104,16 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     }
 
     if (event is SearchBarEdited) {
+      _barText = event.text;
+
       if (event.text.isEmpty) {
         yield _makeBuildingSearchState();
         return;
       }
       var suggestions =
           await RecipeSearch.instance.getAutoSuggestions(event.text);
+
+      if (_barText != event.text) return;
 
       yield suggestions.isEmpty
           ? SuggestionsEmpty()
