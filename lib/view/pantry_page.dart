@@ -28,7 +28,9 @@ class PantryPage extends StatelessWidget {
             );
           }
 
-          return CircularProgressIndicator();
+          return Center(
+            child: CircularProgressIndicator(),
+          );
         },
       ),
     );
@@ -48,10 +50,10 @@ class PantryPage extends StatelessWidget {
           // Type of "Done" button to show on keyboard
           textInputAction: TextInputAction.search,
           decoration: InputDecoration(
-            border: InputBorder.none,
-            // Shows when TextField is empty
-            hintText: "Add Ingredients to Pantry...", hintStyle: TextStyle(fontFamily: 'MontserratScript')
-          ),
+              border: InputBorder.none,
+              // Shows when TextField is empty
+              hintText: "Add Ingredients to Pantry...",
+              hintStyle: TextStyle(fontFamily: 'MontserratScript')),
           onSubmitted: (value) {},
           onChanged: (value) {
             BlocProvider.of<PantryBloc>(context)

@@ -10,6 +10,8 @@ class IngredientBarEdited extends PantryEvent {
   IngredientBarEdited(this.text);
 }
 
+class IngredientBarSubmitted extends PantryEvent {}
+
 class PantryIngredientAdded extends PantryEvent {
   final PantryIngredient ingredient;
   PantryIngredientAdded(this.ingredient);
@@ -55,6 +57,13 @@ class PantryBloc extends Bloc<PantryEvent, PantryState> {
 
   @override
   Stream<PantryState> mapEventToState(PantryEvent event) async* {
+    if (event is IngredientBarSubmitted) {
+      if (state is SuggestingIngredients) {
+        var s = state as SuggestingIngredients;
+        add(PantryIngredientAdded(s.suggestions[0]));
+      }
+    }
+
     if (event is IngredientBarEdited) {
       var completions =
           await RecipeSearch.instance.getAutoSuggestions(event.text);

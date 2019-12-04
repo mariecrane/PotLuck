@@ -33,10 +33,10 @@ class SearchPage extends StatelessWidget {
           // Type of "Done" button to show on keyboard
           textInputAction: TextInputAction.done,
           decoration: InputDecoration(
-            border: InputBorder.none,
-            // Shows when TextField is empty
-            hintText: "Add Ingredients",hintStyle: TextStyle(fontFamily: 'MontserratScript')
-          ),
+              border: InputBorder.none,
+              // Shows when TextField is empty
+              hintText: "Add Ingredients",
+              hintStyle: TextStyle(fontFamily: 'MontserratScript')),
           onSubmitted: (value) {
             BlocProvider.of<SearchBloc>(context).add(SearchBarSubmitted());
           },
@@ -78,7 +78,11 @@ class _AddFriendPageState extends State<AddFriendPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add a Friend", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w300, fontFamily: 'MontserratScript')),
+        title: Text("Add a Friend",
+            style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.w300,
+                fontFamily: 'MontserratScript')),
       ),
       body: Column(
         children: <Widget>[
@@ -89,7 +93,8 @@ class _AddFriendPageState extends State<AddFriendPage> {
               obscureText: true,
               decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: "Search for friends by email...", labelStyle: TextStyle(fontFamily: 'MontserratScript')),
+                  labelText: "Search for friends by email...",
+                  labelStyle: TextStyle(fontFamily: 'MontserratScript')),
             ),
           ),
           RaisedButton(
@@ -98,7 +103,12 @@ class _AddFriendPageState extends State<AddFriendPage> {
             shape: RoundedRectangleBorder(
               borderRadius: new BorderRadius.circular(25.0),
             ),
-            child: Text("Add", style: TextStyle(fontSize: 17.0, color:Theme.of(context).primaryColor, fontWeight: FontWeight.w300, fontFamily: 'MontserratScript')),
+            child: Text("Add",
+                style: TextStyle(
+                    fontSize: 17.0,
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w300,
+                    fontFamily: 'MontserratScript')),
             onPressed: () {
               BlocProvider.of<FriendBloc>(context).add(
                 FriendAddRequest(_controller.text),
@@ -131,7 +141,6 @@ class SearchBody extends StatelessWidget {
            * of our search (not submitted, loading, finished, error).
            */
           builder: (context, state) {
-            debugPrint(state.toString());
             // Nothing has been searched yet; show tip/hint
             if (state is BuildingSearch) {
               return SearchListView(state.allIngredients, state.pantries);
@@ -328,15 +337,15 @@ class AllIngredientsTile extends StatelessWidget {
                 textColor: Colors.black,
                 color: Theme.of(context).primaryColor,
                 child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 10),
-                    child: Text(
-                      'Find Recipes',
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.amber[100],
-                          fontWeight: FontWeight.w300),
-                    )),
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child: Text(
+                    'Find Recipes',
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.amber[100],
+                        fontWeight: FontWeight.w300),
+                  ),
+                ),
               ),
             ),
           ),
@@ -359,8 +368,10 @@ class PantryTile extends StatelessWidget {
         key: PageStorageKey<Pantry>(_pantry),
         //change it into profile picture
         leading: Icon(Icons.shopping_basket),
-        title: Text(_pantry.title,
-            style: TextStyle(color: _pantry.color, fontSize: 20.0)),
+        title: Text(
+          _pantry.title,
+          style: TextStyle(color: _pantry.color, fontSize: 20.0),
+        ),
 //        Stack(
 //          children: <Widget>[
 //            Text(_pantry.title, style:TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold,
@@ -402,24 +413,25 @@ class IngredientChip extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return Theme(
-        data: ThemeData(brightness: Brightness.dark),
-        child: FilterChip(
-          label: Text(
-            ingredient.name,
-            style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white),
-          ),
-          selected: isSelected,
-          backgroundColor: Colors.blueGrey[200],
-          onSelected: (_) {
-            // Notify bloc of addition/removal
-            BlocProvider.of<SearchBloc>(context).add(
-              isSelected
-                  ? IngredientRemoved(ingredient)
-                  : IngredientAdded(ingredient),
-            );
-          },
-          selectedColor: ingredient.fromPantry.color,
-        ));
+      data: ThemeData(brightness: Brightness.dark),
+      child: FilterChip(
+        label: Text(
+          ingredient.name,
+          style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white),
+        ),
+        selected: isSelected,
+        backgroundColor: Colors.blueGrey[200],
+        onSelected: (_) {
+          // Notify bloc of addition/removal
+          BlocProvider.of<SearchBloc>(context).add(
+            isSelected
+                ? IngredientRemoved(ingredient)
+                : IngredientAdded(ingredient),
+          );
+        },
+        selectedColor: ingredient.fromPantry.color,
+      ),
+    );
   }
 }
 

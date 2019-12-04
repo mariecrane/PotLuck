@@ -9,7 +9,7 @@ class NavWrapper extends StatefulWidget {
 }
 
 class _NavWrapperState extends State<NavWrapper> {
-  int _page = 2;
+  int _page = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -26,18 +26,36 @@ class _NavWrapperState extends State<NavWrapper> {
         items: [
           new BottomNavigationBarItem(
             icon: Icon(Icons.dehaze, color: _navColor(context, 0)),
-            title:
-                Text('Pantry', style: TextStyle(color: _navColor(context, 0), fontSize: 17.0, fontFamily: 'MontserratScript', fontWeight: FontWeight.w200)),
+            title: Text(
+              'Pantry',
+              style: TextStyle(
+                  color: _navColor(context, 0),
+                  fontSize: 17.0,
+                  fontFamily: 'MontserratScript',
+                  fontWeight: FontWeight.w200),
+            ),
           ),
           new BottomNavigationBarItem(
             icon: Icon(Icons.search, color: _navColor(context, 1)),
-            title:
-                Text('Search', style: TextStyle(color: _navColor(context, 1), fontSize: 17.0, fontFamily: 'MontserratScript', fontWeight: FontWeight.w200)),
+            title: Text(
+              'Search',
+              style: TextStyle(
+                  color: _navColor(context, 1),
+                  fontSize: 17.0,
+                  fontFamily: 'MontserratScript',
+                  fontWeight: FontWeight.w200),
+            ),
           ),
           new BottomNavigationBarItem(
             icon: Icon(Icons.person, color: _navColor(context, 2)),
-            title:
-                Text('Profile', style: TextStyle(color: _navColor(context, 2), fontSize: 17.0, fontFamily: 'MontserratScript', fontWeight: FontWeight.w200)),
+            title: Text(
+              'Profile',
+              style: TextStyle(
+                  color: _navColor(context, 2),
+                  fontSize: 17.0,
+                  fontFamily: 'MontserratScript',
+                  fontWeight: FontWeight.w200),
+            ),
           )
         ],
       ),
