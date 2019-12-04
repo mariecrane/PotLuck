@@ -4,6 +4,7 @@ import 'package:pot_luck/controller/bloc/auth_bloc.dart';
 import 'package:pot_luck/controller/bloc/friend_bloc.dart';
 import 'package:pot_luck/controller/bloc/pantry_bloc.dart';
 import 'package:pot_luck/controller/bloc/search_bloc.dart';
+import 'package:pot_luck/controller/bloc/profile_bloc.dart';
 import 'package:pot_luck/controller/database.dart';
 import 'package:pot_luck/view/auth_page.dart';
 import 'package:pot_luck/view/nav.dart';
@@ -51,8 +52,8 @@ class MyApp extends StatelessWidget {
             BlocProvider<FriendBloc>(
               builder: (context) => FriendBloc(),
             ),
-            BlocProvider<PantryBloc>(
-              builder: (context) => PantryBloc(),
+            BlocProvider<ProfileBloc>(
+              builder: (context) => ProfileBloc(),
             ),
           ],
           child: BlocBuilder<AuthBloc, AuthState>(
