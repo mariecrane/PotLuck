@@ -10,6 +10,7 @@ abstract class SearchEvent {}
 
 class SearchBarEdited extends SearchEvent {
   final String text;
+
   SearchBarEdited(this.text);
 }
 
@@ -19,11 +20,13 @@ class Submit extends SearchEvent {}
 
 class IngredientAdded extends SearchEvent {
   final PantryIngredient ingredient;
+
   IngredientAdded(this.ingredient);
 }
 
 class IngredientRemoved extends SearchEvent {
   final PantryIngredient ingredient;
+
   IngredientRemoved(this.ingredient);
 }
 
@@ -53,6 +56,7 @@ class SuggestingIngredient extends SearchState {
   final PantryIngredient otherSuggestion;
   final PantryIngredient myPantrySuggestion;
   final List<PantryIngredient> friendSuggestions;
+
   SuggestingIngredient(
       this.otherSuggestion, this.myPantrySuggestion, this.friendSuggestions);
 }
@@ -63,11 +67,13 @@ class SearchLoading extends SearchState {}
 
 class SearchSuccessful extends SearchState {
   final List<SearchResult> results;
+
   SearchSuccessful(this.results);
 }
 
 class SearchError extends SearchState {
   final String message;
+
   SearchError(this.message);
 }
 
@@ -127,15 +133,34 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       if (ingredient.fromPantry.owner.isMe) {
         pantry = _myPantry;
       } else {
-        pantry = _friendPantries.firstWhere((p) => p == ingredient.fromPantry);
+        try {
+          pantry =
+              _friendPantries.firstWhere((p) => p == ingredient.fromPantry);
+        } catch (e) {
+          pantry = Pantry(
+            title: "Other",
+            owner: User(
+              name: "",
+              isNobody: true,
+            ),
+            ingredients: <PantryIngredient>[ingredient],
+          );
+        }
       }
 
+      bool doAdd = true;
       // Don't add to search if the ingredient isn't in friend's pantry anymore
-      if (pantry.ingredients.contains(ingredient) == false) return;
+      if (pantry.ingredients.contains(ingredient) == false) {
+        doAdd = false;
+      }
 
-      if (_currentSearch.contains(ingredient)) return;
+      if (_currentSearch.contains(ingredient)) {
+        doAdd = false;
+      }
 
-      _currentSearch.add(ingredient);
+      if (doAdd) {
+        _currentSearch.add(ingredient);
+      }
       yield _makeBuildingSearchState();
     }
 

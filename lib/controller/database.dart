@@ -37,7 +37,7 @@ class DatabaseController {
   User _me;
   Pantry _myPantry;
   var _friendPantries = <Pantry>[];
-  var _friendsList = List<User>();
+  var _friendsList = <User>[];
 
   Pantry get myPantry => _myPantry;
   List<Pantry> get friendPantries => _friendPantries;
@@ -127,7 +127,8 @@ class DatabaseController {
         .document("pantry");
     await Firestore.instance.runTransaction((transaction) async {
       var doc = await transaction.get(pantryDoc);
-      List<String> ingredients = doc.data["ingredients"];
+      List<String> ingredients =
+          doc.data["ingredients"].map<String>((i) => i as String).toList();
       if (ingredients.contains(ingredient.name)) return;
       ingredients.add(ingredient.name);
       await transaction.update(pantryDoc, <String, dynamic>{
@@ -146,7 +147,8 @@ class DatabaseController {
         .document("pantry");
     await Firestore.instance.runTransaction((transaction) async {
       var doc = await transaction.get(pantryDoc);
-      List<String> ingredients = doc.data["ingredients"];
+      List<String> ingredients =
+          doc.data["ingredients"].map<String>((i) => i as String).toList();
       if (ingredients.contains(ingredient.name) == false) return;
       ingredients.remove(ingredient.name);
       await transaction.update(pantryDoc, <String, dynamic>{
@@ -194,7 +196,8 @@ class DatabaseController {
         .document("friendRequests");
     Firestore.instance.runTransaction((transaction) async {
       var result = await transaction.get(doc);
-      List<String> requests = result.data["requestIds"];
+      List<String> requests =
+          result.data["requestIds"].map<String>((r) => r as String).toList();
       if (requests.contains(friendId)) return;
 
       requests.add(friendId);
@@ -220,7 +223,8 @@ class DatabaseController {
         .document("friendRequests");
     Firestore.instance.runTransaction((transaction) async {
       var result = await transaction.get(doc);
-      List<String> removals = result.data["removeIds"];
+      List<String> removals =
+          result.data["removeIds"].map<String>((r) => r as String).toList();
       if (removals.contains(friendId)) return;
 
       removals.add(friendId);
@@ -294,34 +298,38 @@ class DatabaseController {
   }
 
   void _onPantrySnapshot(DocumentSnapshot snapshot) {
+    if (snapshot == null) return;
+
     var pantryData = snapshot.data;
 
-    // Populate friendPantries
-    var pantry = Pantry(
+    _myPantry = Pantry(
       owner: _me,
       title: _me.email,
       color: _colors[0],
       ingredients: List<PantryIngredient>(),
     );
 
-    List<String> ingredientList = pantryData["ingredients"];
+    List<dynamic> ingredientList = pantryData["ingredients"];
 
     ingredientList.forEach((ingredient) {
-      pantry.ingredients.add(PantryIngredient(
-        fromPantry: pantry,
+      _myPantry.ingredients.add(PantryIngredient(
+        fromPantry: _myPantry,
         name: ingredient,
       ));
     });
+
     _doPantryUpdateCallbacks();
   }
 
   void _onFriendPantriesSnapshot(DocumentSnapshot snapshot) {
-    List<Map<String, dynamic>> pantries = snapshot.data["pantries"];
+    if (snapshot == null) return;
+
+    List<dynamic> pantries = snapshot.data["friendPantries"];
     _friendsList.clear();
     _friendPantries.clear();
 
     for (int i = 0; i < pantries.length; i++) {
-      var pantryData = pantries[i];
+      Map<String, dynamic> pantryData = pantries[i];
 
       // Populate friendsList
       var friend = User(
@@ -350,7 +358,10 @@ class DatabaseController {
 
       _friendPantries.add(pantry);
     }
-    _doPantryUpdateCallbacks();
+
+    if (_myPantry != null) {
+      _doPantryUpdateCallbacks();
+    }
     _doFriendsUpdateCallbacks();
   }
 
@@ -367,80 +378,4 @@ class DatabaseController {
     _pantryDocSubscription?.cancel();
     _userDocSubscription?.cancel();
   }
-
-// TODO: Remove modeled data after replacing with live data
-//  Pantry _myPantry = Pantry(
-//    title: 'My Pantry',
-//    owner: User(name: "Me", isMe: true),
-//    color: _colors[1],
-//    ingredients: <PantryIngredient>[],
-//  );
-//  List<Pantry> _friendPantries = <Pantry>[
-//    Pantry(
-//      title: 'Shouayee Vue',
-//      owner: User(name: "Shouayee Vue"),
-//      color: _colors[2],
-//      ingredients: <PantryIngredient>[],
-//    ),
-//    Pantry(
-//      title: 'Preston Locke',
-//      owner: User(name: "Preston Locke"),
-//      color: _colors[3],
-//      ingredients: <PantryIngredient>[],
-//    ),
-//    Pantry(
-//      title: 'Tracy Cai',
-//      owner: User(name: "Tracy Cai"),
-//      color: _colors[4],
-//      ingredients: <PantryIngredient>[],
-//    ),
-//    Pantry(
-//      title: 'Marie Crane',
-//      owner: User(name: "Marie Crane"),
-//      color: _colors[5],
-//      ingredients: <PantryIngredient>[],
-//    ),
-//  ];
-//  void _buildPantries() {
-//    _myPantry.ingredients.addAll(
-//      <PantryIngredient>[
-//        PantryIngredient(name: "egg", fromPantry: _myPantry),
-//        PantryIngredient(name: "chicken", fromPantry: _myPantry),
-//        PantryIngredient(name: "spinach", fromPantry: _myPantry),
-//        PantryIngredient(name: "tofu", fromPantry: _myPantry),
-//        PantryIngredient(name: "onion", fromPantry: _myPantry),
-//        PantryIngredient(name: "turkey", fromPantry: _myPantry),
-//      ],
-//    );
-//    _friendPantries[0].ingredients.add(
-//          PantryIngredient(
-//            name: "garlic",
-//            fromPantry: _friendPantries[0],
-//          ),
-//        );
-//    _friendPantries[0].ingredients.add(
-//          PantryIngredient(
-//            name: "potato",
-//            fromPantry: _friendPantries[0],
-//          ),
-//        );
-//    _friendPantries[1].ingredients.add(
-//          PantryIngredient(
-//            name: "apple",
-//            fromPantry: _friendPantries[1],
-//          ),
-//        );
-//    _friendPantries[2].ingredients.add(
-//          PantryIngredient(
-//            name: "tomato",
-//            fromPantry: _friendPantries[2],
-//          ),
-//        );
-//    _friendPantries[3].ingredients.add(
-//          PantryIngredient(
-//            name: "basil",
-//            fromPantry: _friendPantries[3],
-//          ),
-//        );
-//  }
 }

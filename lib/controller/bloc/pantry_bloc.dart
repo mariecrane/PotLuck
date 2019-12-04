@@ -58,7 +58,10 @@ class PantryBloc extends Bloc<PantryEvent, PantryState> {
     if (event is IngredientBarEdited) {
       var completions =
           await RecipeSearch.instance.getAutoSuggestions(event.text);
-      yield _makeSuggestingIngredientsState(completions);
+
+      yield completions.isEmpty
+          ? PantrySuggestionsEmpty()
+          : _makeSuggestingIngredientsState(completions);
     }
 
     if (event is PantryIngredientAdded) {
@@ -87,7 +90,7 @@ class PantryBloc extends Bloc<PantryEvent, PantryState> {
         name: name,
         fromPantry: DatabaseController.instance.myPantry,
       );
-    });
+    }).toList();
     return SuggestingIngredients(suggestions);
   }
 }

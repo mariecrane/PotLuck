@@ -1,4 +1,5 @@
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/recipe.dart';
@@ -36,7 +37,15 @@ class RecipeSearch {
     var result = await autocomplete.call(<String, dynamic>{
       "query": partial,
     });
-    return result.data;
+    try {
+      List<dynamic> results = result.data;
+      List<String> completions =
+          results.map<String>((result) => result["name"]).toList();
+      return completions;
+    } catch (e) {
+      debugPrint(e.toString());
+      return <String>[];
+    }
   }
 
   /// Fetches recipe results asynchronously
@@ -64,7 +73,6 @@ class RecipeSearch {
         missedIngredients =
             missedIngredients.substring(0, missedIngredients.length - 2);
       }
-//      debugPrint(missedIngredients);
       var usedIngredients = "";
       for (var i = 0; i < result["usedIngredients"].length; i++) {
         // gets each matching ingredient and adds it to usedIngredients string
@@ -75,7 +83,6 @@ class RecipeSearch {
         usedIngredients =
             usedIngredients.substring(0, usedIngredients.length - 2);
       }
-//      debugPrint(usedIngredients);
       resultList.add(SearchResult(
         result["id"],
         recipeName: unescape.convert(result["title"]),

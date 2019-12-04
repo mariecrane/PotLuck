@@ -53,7 +53,10 @@ class PantryPage extends StatelessWidget {
             hintText: "Add Ingredients to Pantry...", hintStyle: TextStyle(fontFamily: 'MontserratScript')
           ),
           onSubmitted: (value) {},
-          onChanged: (value) {},
+          onChanged: (value) {
+            BlocProvider.of<PantryBloc>(context)
+                .add(IngredientBarEdited(value));
+          },
         ),
       ),
       leading: IconButton(
@@ -97,7 +100,11 @@ class IngredientsListView extends StatelessWidget {
                       padding: EdgeInsets.all(5),
                       child: InputChip(
                         backgroundColor: Theme.of(context).primaryColor,
-                        label: Text(ingredient.name, style:TextStyle(fontSize: 17.0, color: Colors.black, fontWeight: FontWeight.w400)),
+                        label: Text(ingredient.name,
+                            style: TextStyle(
+                                fontSize: 17.0,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400)),
                         onDeleted: () {
                           BlocProvider.of<PantryBloc>(context)
                               .add(PantryIngredientRemoved(ingredient));
