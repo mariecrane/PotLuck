@@ -102,6 +102,7 @@ class ProfileInfoListView extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
+                      fontFamily: 'MontserratScript',
                   ),
                 ),
               ),
@@ -126,7 +127,7 @@ class ProfileInfoListView extends StatelessWidget {
               color: Colors.white,
               child: const Text(
                 'Edit Profile',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300, fontFamily: 'MontserratScript'),
               ),
             ),
           ),
@@ -146,7 +147,7 @@ class ProfileInfoListView extends StatelessWidget {
               icon: Icon(Icons.exit_to_app),
               label: const Text(
                 'Sign Out',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300, fontFamily: 'MontserratScript'),
               ),
             ),
           ),
@@ -191,10 +192,10 @@ class ProfileInfoListView extends StatelessWidget {
               ),
               textColor: Colors.red,
               color: Colors.white,
-              icon: Icon(Icons.exit_to_app),
+              icon: Icon(Icons.delete_forever),
               label: const Text(
                 'Delete My Account',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300, fontFamily: 'MontserratScript'),
               ),
             ),
           ),

@@ -61,7 +61,7 @@ class _AuthPageState extends State<AuthPage> {
           TextSpan(
             children: <TextSpan>[
               TextSpan(text: 'Welcome to ',
-                  style: TextStyle(fontSize: 30)),
+                  style: TextStyle(fontSize: 30, fontFamily: 'MontserratScript')),
               TextSpan(
                   text: 'PotLuck!',
                   style: TextStyle(
@@ -83,7 +83,7 @@ class _AuthPageState extends State<AuthPage> {
             borderRadius: new BorderRadius.circular(25.0),
           ),
           child: Text("Sign in",
-              style: TextStyle(fontSize: 15.0, color: Theme.of(context).primaryColor, fontWeight: FontWeight.w300)),
+              style: TextStyle(fontSize: 15.0, color: Theme.of(context).primaryColor, fontWeight: FontWeight.w300, fontFamily: 'MontserratScript')),
           onPressed: () {
             setState(() {
               _currentForm = 1;
@@ -97,7 +97,7 @@ class _AuthPageState extends State<AuthPage> {
             borderRadius: new BorderRadius.circular(25.0),
           ),
           child: Text("Create Account",
-              style: TextStyle(fontSize: 17.0, color: Colors.amber[100], fontWeight: FontWeight.w300)
+              style: TextStyle(fontSize: 17.0, color: Colors.amber[100], fontWeight: FontWeight.w300, fontFamily: 'MontserratScript')
           ),
           onPressed: () {
             setState(() {
@@ -107,7 +107,7 @@ class _AuthPageState extends State<AuthPage> {
         ),
         FlatButton(
           child: Text("Sign in later",
-              style: TextStyle(fontSize: 15.0, color: Theme.of(context).primaryColor, fontWeight: FontWeight.w300)),
+              style: TextStyle(fontSize: 15.0, color: Theme.of(context).primaryColor, fontWeight: FontWeight.w300, fontFamily: 'MontserratScript')),
           onPressed: () {
             // Request BLoC to do anonymous login
             BlocProvider.of<AuthBloc>(context).add(AnonymousAuthRequested());
@@ -142,7 +142,7 @@ class _AuthFormState extends State<AuthForm> {
               vertical: 15.0,
             ),
           ),
-          Text("Please enter your Email and Password:"),
+          Text("Please enter your Email and Password:", style: TextStyle(fontSize: 17.0, color:Colors.black, fontWeight: FontWeight.w300, fontFamily: 'MontserratScript')),
           Padding(
             padding: const EdgeInsets.symmetric(
               vertical: 15.0,
@@ -152,7 +152,7 @@ class _AuthFormState extends State<AuthForm> {
             keyboardType: TextInputType.emailAddress,
             controller: _emailController,
             decoration: InputDecoration(
-                border: OutlineInputBorder(), labelText: "Email"),
+                border: OutlineInputBorder(), labelText: "Email", labelStyle: TextStyle(fontWeight: FontWeight.w300, fontFamily: 'MontserratScript')),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
@@ -164,7 +164,7 @@ class _AuthFormState extends State<AuthForm> {
             controller: _passwordController,
             obscureText: true,
             decoration: InputDecoration(
-                border: OutlineInputBorder(), labelText: "Password"),
+                border: OutlineInputBorder(), labelText: "Password", labelStyle: TextStyle(fontWeight: FontWeight.w300, fontFamily: 'MontserratScript')),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
@@ -172,8 +172,12 @@ class _AuthFormState extends State<AuthForm> {
             ),
           ),
           RaisedButton(
-            color: Colors.yellow,
-            child: Text(widget.createAccount ? "Create account" : "Sign in"),
+            elevation: 0.0,
+            color: Theme.of(context).primaryColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(25.0),
+            ),
+            child: Text(widget.createAccount ? "Create account" : "Sign in", style: TextStyle(fontSize: 17.0, color:Colors.amber[100], fontWeight: FontWeight.w300, fontFamily: 'MontserratScript')),
             onPressed: () {
               // The event to dispatch to our AuthBloc
               AuthEvent event;

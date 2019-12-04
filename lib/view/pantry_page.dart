@@ -50,7 +50,7 @@ class PantryPage extends StatelessWidget {
           decoration: InputDecoration(
             border: InputBorder.none,
             // Shows when TextField is empty
-            hintText: "Add Ingredients to Pantry...",
+            hintText: "Add Ingredients to Pantry...", hintStyle: TextStyle(fontFamily: 'MontserratScript')
           ),
           onSubmitted: (value) {},
           onChanged: (value) {},
