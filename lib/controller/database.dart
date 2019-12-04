@@ -343,7 +343,7 @@ class DatabaseController {
       var pantry = Pantry(
         owner: friend,
         title: friend.email,
-        color: _colors[i % _colors.length],
+        color: _colors[(i % (_colors.length - 1)) + 1],
         ingredients: List<PantryIngredient>(),
       );
 
