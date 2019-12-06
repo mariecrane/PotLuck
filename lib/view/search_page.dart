@@ -20,6 +20,85 @@ class SearchPage extends StatelessWidget {
   }
 
   static Widget buildAppBar(BuildContext context) {
+    return SearchAppBarWrapper();
+  }
+
+  static Widget buildFloatingActionButton(BuildContext context) {
+    return BlocBuilder<SearchBloc, SearchState>(
+      builder: (context, state) {
+        if (state is SearchSuccessful) {
+          return Container();
+        }
+
+        if (state is SearchLoading) {
+          return Container();
+        }
+
+        return FloatingActionButton(
+          child: Icon(Icons.group_add),
+          backgroundColor: Theme.of(context).primaryColor,
+          onPressed: () {
+            Navigator.of(context).push(
+              CupertinoPageRoute(
+                builder: (_) => BlocProvider<FriendBloc>.value(
+                  value: BlocProvider.of<FriendBloc>(context),
+                  child: AddFriendPage(),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class SearchAppBarWrapper extends StatelessWidget
+    implements PreferredSizeWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SearchBloc, SearchState>(
+      builder: (context, state) {
+        if (state is SearchSuccessful) {
+          return ResultsAppBar();
+        }
+
+        if (state is SearchLoading) {
+          return Container();
+        }
+
+        return SearchAppBar();
+      },
+    );
+  }
+
+  // This is a shameless hack, but I can't think of a cleaner way...
+  @override
+  Size get preferredSize => AppBar().preferredSize;
+}
+
+class ResultsAppBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      elevation: 1.0,
+      leading: InkWell(
+        child: Icon(Icons.arrow_back),
+        onTap: () {
+          BlocProvider.of<SearchBloc>(context).add(ResultsExited());
+        },
+      ),
+      title: Text(
+        "Search Results",
+        style: TextStyle(fontFamily: 'MontserratScript'),
+      ),
+    );
+  }
+}
+
+class SearchAppBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 1.0,
@@ -45,23 +124,6 @@ class SearchPage extends StatelessWidget {
           },
         ),
       ),
-    );
-  }
-
-  static Widget buildFloatingActionButton(BuildContext context) {
-    return FloatingActionButton(
-      child: Icon(Icons.group_add),
-      backgroundColor: Theme.of(context).primaryColor,
-      onPressed: () {
-        Navigator.of(context).push(
-          CupertinoPageRoute(
-            builder: (_) => BlocProvider<FriendBloc>.value(
-              value: BlocProvider.of<FriendBloc>(context),
-              child: AddFriendPage(),
-            ),
-          ),
-        );
-      },
     );
   }
 }

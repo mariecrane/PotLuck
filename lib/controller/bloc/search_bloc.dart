@@ -30,6 +30,8 @@ class IngredientRemoved extends SearchEvent {
   IngredientRemoved(this.ingredient);
 }
 
+class ResultsExited extends SearchEvent {}
+
 class SearchCleared extends SearchEvent {}
 
 class _PantriesUpdated extends SearchEvent {
@@ -100,6 +102,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       _myPantry = event.myPantry;
       _friendPantries = event.friendPantries;
       // FIXME: Updates to friend pantries could cause UI interruptions
+      yield _makeBuildingSearchState();
+    }
+
+    if (event is ResultsExited) {
       yield _makeBuildingSearchState();
     }
 
