@@ -167,16 +167,19 @@ class ProfileInfoListView extends StatelessWidget {
                     return AlertDialog(
                       title: Text(
                         "This will permanently delete your account and all data tied to it. Are you sure you want to proceed?",
+                        style: TextStyle(fontFamily: 'MontserratScript'),
                       ),
                       actions: <Widget>[
                         FlatButton(
-                          child: Text("Cancel"),
+                          child: Text("Cancel",
+                            style: TextStyle(fontFamily: 'MontserratScript'),),
                           onPressed: () {
                             Navigator.of(context).pop(false);
                           },
                         ),
                         FlatButton(
-                          child: Text("Proceed"),
+                          child: Text("Proceed",
+                            style: TextStyle(fontFamily: 'MontserratScript'),),
                           onPressed: () {
                             Navigator.of(context).pop(true);
                           },

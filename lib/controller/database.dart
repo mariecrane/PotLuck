@@ -25,7 +25,7 @@ class DatabaseController {
       DatabaseController._privateConstructor();
 
   static final List<Color> _colors = <Color>[
-    Colors.blueGrey[200],
+    Colors.black,
     Colors.red[700],
     Color(0xff604d53),
     Colors.deepOrange[400],

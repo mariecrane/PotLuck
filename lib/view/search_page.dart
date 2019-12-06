@@ -115,7 +115,7 @@ class SearchAppBar extends StatelessWidget {
           decoration: InputDecoration(
               border: InputBorder.none,
               // Shows when TextField is empty
-              hintText: "Add Ingredients",
+              hintText: "Add Ingredients...",
               hintStyle: TextStyle(fontFamily: 'MontserratScript')),
           onSubmitted: (value) {
             BlocProvider.of<SearchBloc>(context).add(SearchBarSubmitted());
@@ -225,7 +225,7 @@ class SearchBody extends StatelessWidget {
               return Center(
                 child: Text(
                   "No ingredients found",
-                  style: TextStyle(color: Colors.grey),
+                  style: TextStyle(color: Colors.grey, fontFamily: 'MontserratScript'),
                 ),
               );
             }
@@ -252,7 +252,7 @@ class SearchBody extends StatelessWidget {
               return Center(
                 child: Text(
                   "No recipes were found",
-                  style: TextStyle(color: Colors.grey),
+                  style: TextStyle(color: Colors.grey, fontFamily: 'MontserratScript'),
                 ),
               );
             }
@@ -327,7 +327,7 @@ class _SuggestionListView extends StatelessWidget {
         // TODO: Differentiate Other, My Pantry, and friend pantry ingredients
         return ListTile(
           leading: Icon(Icons.add_shopping_cart),
-          title: Text(ingredient.name + " in " + ingredient.fromPantry.title),
+          title: Text(ingredient.name + " in " + ingredient.fromPantry.title, style: TextStyle(fontFamily: 'MontserratScript')),
           trailing: Icon(Icons.add),
           onTap: () {
             BlocProvider.of<SearchBloc>(context)
@@ -354,7 +354,7 @@ class AllIngredientsTile extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text("Selected Ingredients",
-                  style: TextStyle(fontSize: 24.0)),
+                  style: TextStyle(fontSize: 24.0, fontFamily: 'MontserratScript')),
             ),
           ),
           Padding(
@@ -372,7 +372,8 @@ class AllIngredientsTile extends StatelessWidget {
                               ingredient.name,
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontWeight: FontWeight.w300),
+                                  fontWeight: FontWeight.w300,
+                                  fontFamily: 'MontserratScript'),
                             ),
                             deleteIconColor: Colors.white,
                             backgroundColor: ingredient.fromPantry.color,
@@ -410,7 +411,8 @@ class AllIngredientsTile extends StatelessWidget {
                     style: TextStyle(
                         fontSize: 20,
                         color: Colors.amber[100],
-                        fontWeight: FontWeight.w300),
+                        fontWeight: FontWeight.w300,
+                        fontFamily: 'MontserratScript'),
                   ),
                 ),
               ),
@@ -440,8 +442,8 @@ class PantryTile extends StatelessWidget {
                 backgroundImage: FirebaseImage(_pantry.owner.imageURI),
               ),
         title: Text(
-          _pantry.title,
-          style: TextStyle(color: _pantry.color, fontSize: 20.0),
+          _pantry.title.substring(0, _pantry.title.indexOf("@")),
+          style: TextStyle(color: _pantry.color, fontSize: 20.0, fontFamily: 'MontserratScript'),
         ),
         initiallyExpanded: false,
         children: <Widget>[
@@ -476,7 +478,7 @@ class IngredientChip extends StatelessWidget {
       child: FilterChip(
         label: Text(
           ingredient.name,
-          style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white),
+          style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white, fontFamily: 'MontserratScript'),
         ),
         selected: isSelected,
         backgroundColor: Colors.blueGrey[200],

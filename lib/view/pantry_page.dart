@@ -23,7 +23,7 @@ class PantryPage extends StatelessWidget {
             return Center(
               child: Text(
                 "No ingredients found",
-                style: TextStyle(color: Colors.grey),
+                style: TextStyle(color: Colors.grey, fontFamily: 'MontserratScript'),
               ),
             );
           }
@@ -89,7 +89,7 @@ class IngredientsListView extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text("Ingredients in Your Pantry",
-                  style: TextStyle(fontSize: 24.0)),
+                  style: TextStyle(fontSize: 24.0, fontFamily: 'MontserratScript')),
             ),
           ),
           Container(
@@ -105,12 +105,14 @@ class IngredientsListView extends StatelessWidget {
                         label: Text(ingredient.name,
                             style: TextStyle(
                                 fontSize: 17.0,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w400)),
+                                color: Colors.white,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'MontserratScript')),
                         onDeleted: () {
                           BlocProvider.of<PantryBloc>(context)
                               .add(PantryIngredientRemoved(ingredient));
                         },
+                        deleteIconColor: Colors.white,
                       ),
                     ),
                   )
@@ -135,8 +137,8 @@ class _SuggestionListView extends StatelessWidget {
       itemBuilder: (BuildContext context, int index) {
         var ingredient = suggestions[index];
         return ListTile(
-          leading: Icon(Icons.add_shopping_cart),
-          title: Text(ingredient.name),
+          leading: Icon(Icons.create),
+          title: Text(ingredient.name, style: TextStyle(fontFamily: 'MontserratScript')),
           trailing: Icon(Icons.add),
           onTap: () {
             BlocProvider.of<PantryBloc>(context)
