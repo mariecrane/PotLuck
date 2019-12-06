@@ -77,7 +77,6 @@ class ProfileInfoListView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircleAvatar(
-                    //TODO: replace set image with image from user's account and add default if none provided
                     backgroundImage: FirebaseImage(profile.imageURI),
                     radius: 130.0,
                   ),
@@ -91,7 +90,6 @@ class ProfileInfoListView extends StatelessWidget {
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: Container(
               child: ListTile(
-                //TODO: replace dummy data with data from user's account on database
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: 30.0,
                   vertical: 10.0,
@@ -171,15 +169,19 @@ class ProfileInfoListView extends StatelessWidget {
                       ),
                       actions: <Widget>[
                         FlatButton(
-                          child: Text("Cancel",
-                            style: TextStyle(fontFamily: 'MontserratScript'),),
+                          child: Text(
+                            "Cancel",
+                            style: TextStyle(fontFamily: 'MontserratScript'),
+                          ),
                           onPressed: () {
                             Navigator.of(context).pop(false);
                           },
                         ),
                         FlatButton(
-                          child: Text("Proceed",
-                            style: TextStyle(fontFamily: 'MontserratScript'),),
+                          child: Text(
+                            "Proceed",
+                            style: TextStyle(fontFamily: 'MontserratScript'),
+                          ),
                           onPressed: () {
                             Navigator.of(context).pop(true);
                           },
