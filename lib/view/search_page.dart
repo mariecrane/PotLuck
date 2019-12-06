@@ -1,3 +1,4 @@
+import 'package:firebase_image/firebase_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -433,23 +434,15 @@ class PantryTile extends StatelessWidget {
       child: ExpansionTile(
         key: PageStorageKey<Pantry>(_pantry),
         //change it into profile picture
-        leading: Icon(Icons.shopping_basket),
+        leading: _pantry.owner.isNobody
+            ? null
+            : CircleAvatar(
+                backgroundImage: FirebaseImage(_pantry.owner.imageURI),
+              ),
         title: Text(
           _pantry.title,
           style: TextStyle(color: _pantry.color, fontSize: 20.0),
         ),
-//        Stack(
-//          children: <Widget>[
-//            Text(_pantry.title, style:TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold,
-//              foreground: Paint()
-//              ..style = PaintingStyle.stroke
-//              ..strokeWidth = 0.5
-//              ..color = Colors.black,)),
-//            Text(_pantry.title, style:TextStyle(color: _pantry.color, fontSize: 20.0, fontWeight: FontWeight.bold)),
-//          ],
-//        ),
-//        Text(_pantry.title,
-//            style:TextStyle(color: _pantry.color, fontSize: 20.0, fontWeight: FontWeight.bold)),
         initiallyExpanded: false,
         children: <Widget>[
           Wrap(

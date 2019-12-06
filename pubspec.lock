@@ -106,6 +106,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.0+9"
+  firebase_image:
+    dependency: "direct main"
+    description:
+      name: firebase_image
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.4"
+  firebase_storage:
+    dependency: transitive
+    description:
+      name: firebase_storage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.8"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -165,6 +179,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.4"
+  path_provider:
+    dependency: transitive
+    description:
+      name: path_provider
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.5"
   pedantic:
     dependency: transitive
     description:
@@ -179,6 +200,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.4.0"
+  platform:
+    dependency: transitive
+    description:
+      name: platform
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.1"
   provider:
     dependency: "direct main"
     description:
@@ -212,6 +240,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.5"
+  sqflite:
+    dependency: transitive
+    description:
+      name: sqflite
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.7+3"
   stack_trace:
     dependency: transitive
     description:
@@ -233,6 +268,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.5"
+  synchronized:
+    dependency: transitive
+    description:
+      name: synchronized
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0+2"
   term_glyph:
     dependency: transitive
     description:
@@ -290,5 +332,5 @@ packages:
     source: hosted
     version: "2.2.0"
 sdks:
-  dart: ">=2.4.0 <3.0.0"
-  flutter: ">=1.9.1+hotfix.4 <2.0.0"
+  dart: ">=2.5.0 <3.0.0"
+  flutter: ">=1.9.1+hotfix.5 <2.0.0"

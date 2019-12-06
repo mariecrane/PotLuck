@@ -335,6 +335,7 @@ class DatabaseController {
       var friend = User(
         id: pantryData["id"],
         email: pantryData["email"],
+        imageURI: pantryData["imageURI"],
         // TODO: Add name to user data?
       );
       _friendsList.add(friend);
@@ -371,8 +372,20 @@ class DatabaseController {
   }
 
   void _onUserSnapshot(DocumentSnapshot snapshot) {
-    // TODO: Update user info from snapshot
+    if (snapshot == null) return;
+
+    var data = snapshot.data;
+
+    _me = User(
+      id: data["userId"],
+      email: data["email"],
+      imageURI: data["imageURI"],
+      isMe: true,
+    );
+
+    _doAuthUpdateCallbacks();
   }
+
   void _clearDocSubscriptions() {
     _friendPantriesDocSubscription?.cancel();
     _friendRequestsDocSubscription?.cancel();

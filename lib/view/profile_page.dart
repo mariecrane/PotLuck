@@ -1,3 +1,4 @@
+import 'package:firebase_image/firebase_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/controller/bloc/auth_bloc.dart';
@@ -77,9 +78,7 @@ class ProfileInfoListView extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     //TODO: replace set image with image from user's account and add default if none provided
-                    backgroundImage: NetworkImage(
-                      "https://as1.ftcdn.net/jpg/00/20/71/56/500_F_20715690_qfB7YxRpr4RUWdwXIUzHDrHlOpxsh2yN.jpg",
-                    ),
+                    backgroundImage: FirebaseImage(profile.imageURI),
                     radius: 130.0,
                   ),
                 ],
@@ -102,7 +101,7 @@ class ProfileInfoListView extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                      fontFamily: 'MontserratScript',
+                    fontFamily: 'MontserratScript',
                   ),
                 ),
               ),
@@ -127,7 +126,10 @@ class ProfileInfoListView extends StatelessWidget {
               color: Colors.white,
               child: const Text(
                 'Edit Profile',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300, fontFamily: 'MontserratScript'),
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w300,
+                    fontFamily: 'MontserratScript'),
               ),
             ),
           ),
@@ -147,7 +149,10 @@ class ProfileInfoListView extends StatelessWidget {
               icon: Icon(Icons.exit_to_app),
               label: const Text(
                 'Sign Out',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300, fontFamily: 'MontserratScript'),
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w300,
+                    fontFamily: 'MontserratScript'),
               ),
             ),
           ),
@@ -195,7 +200,10 @@ class ProfileInfoListView extends StatelessWidget {
               icon: Icon(Icons.delete_forever),
               label: const Text(
                 'Delete My Account',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300, fontFamily: 'MontserratScript'),
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w300,
+                    fontFamily: 'MontserratScript'),
               ),
             ),
           ),

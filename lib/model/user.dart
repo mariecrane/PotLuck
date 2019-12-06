@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 
-// TODO: Maybe add profile picture to User data model
 class User extends Equatable {
   final String name;
   final String email;
   final String id;
+  final String imageURI;
   final bool isNobody;
   final bool isMe;
 
@@ -12,6 +12,7 @@ class User extends Equatable {
     this.name,
     this.email,
     this.id,
+    this.imageURI = "",
     this.isNobody = false,
     this.isMe = false,
   });
