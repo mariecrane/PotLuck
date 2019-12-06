@@ -82,15 +82,24 @@ class SearchError extends SearchState {
 /// Connects our business logic with our UI code in an extensible way
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   String _barText = "";
+  bool _showingSuggestion = false;
 
   SearchBloc() {
     DatabaseController.instance.onPantryUpdate((myPantry, friendPantries) {
       add(_PantriesUpdated(myPantry, friendPantries));
     });
+    // FIXME: Search page probably won't update if profile image updates
   }
 
   Pantry _myPantry;
   List<Pantry> _friendPantries;
+  var _otherPantry = Pantry(
+    title: "Other",
+    owner: User(
+      isNobody: true,
+    ),
+    ingredients: <PantryIngredient>[],
+  );
   var _currentSearch = <PantryIngredient>[];
 
   @override
@@ -101,8 +110,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     if (event is _PantriesUpdated) {
       _myPantry = event.myPantry;
       _friendPantries = event.friendPantries;
-      // FIXME: Updates to friend pantries could cause UI interruptions
-      yield _makeBuildingSearchState();
+
+      if (_showingSuggestion == false) {
+        yield _makeBuildingSearchState();
+      }
     }
 
     if (event is ResultsExited) {
@@ -113,9 +124,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       _barText = event.text;
 
       if (event.text.isEmpty) {
+        _showingSuggestion = false;
         yield _makeBuildingSearchState();
         return;
       }
+      _showingSuggestion = true;
+
       var suggestions =
           await RecipeSearch.instance.getAutoSuggestions(event.text);
 
@@ -128,6 +142,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     if (event is SearchBarSubmitted) {
       if (state is SuggestingIngredient) {
+        _showingSuggestion = false;
         var s = state as SuggestingIngredient;
         add(IngredientAdded(s.otherSuggestion));
       }
@@ -141,36 +156,18 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     if (event is IngredientAdded) {
       var ingredient = event.ingredient;
 
-      Pantry pantry;
-      if (ingredient.fromPantry.owner.isMe) {
-        pantry = _myPantry;
-      } else {
-        try {
-          pantry =
-              _friendPantries.firstWhere((p) => p == ingredient.fromPantry);
-        } catch (e) {
-          pantry = Pantry(
-            title: "Other",
-            owner: User(
-              name: "",
-              isNobody: true,
-            ),
-            ingredients: <PantryIngredient>[ingredient],
-          );
-        }
-      }
+      var pantry = ingredient.fromPantry;
 
       bool doAdd = true;
-      // Don't add to search if the ingredient isn't in friend's pantry anymore
-      if (pantry.ingredients.contains(ingredient) == false) {
-        doAdd = false;
-      }
 
       if (_currentSearch.contains(ingredient)) {
         doAdd = false;
       }
 
       if (doAdd) {
+        if (pantry.owner.isNobody) {
+          _otherPantry.ingredients.add(ingredient);
+        }
         _currentSearch.add(ingredient);
       }
       yield _makeBuildingSearchState();
@@ -209,17 +206,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     _cleanSearch();
     var ingredients = _currentSearch.where((i) => i.fromPantry.owner.isNobody);
 
-    var otherIngredients = Pantry(
-      title: "Other",
-      owner: User(
-        name: "",
-        isNobody: true,
-      ),
-      ingredients: <PantryIngredient>[],
-    );
-
+    _otherPantry.ingredients.clear();
     ingredients.forEach((ingredient) {
-      otherIngredients.ingredients.add(ingredient);
+      _otherPantry.ingredients.add(ingredient);
     });
 
     var friendPantries = <Pantry>[];
@@ -227,8 +216,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       friendPantries.add(pantry);
     });
 
-    if (otherIngredients.ingredients.isNotEmpty) {
-      friendPantries.add(otherIngredients);
+    if (_otherPantry.ingredients.isNotEmpty) {
+      friendPantries.add(_otherPantry);
     }
 
     var allPantries = <Pantry>[_myPantry];
@@ -263,13 +252,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     // Add suggestion for Other category above all else
     var otherSuggestion = PantryIngredient(
       name: name,
-      fromPantry: Pantry(
-        title: "Other",
-        owner: User(
-          isNobody: true,
-        ),
-        ingredients: <PantryIngredient>[],
-      ),
+      fromPantry: _otherPantry,
     );
 
     // Add suggestion if my pantry contains the ingredient
@@ -314,19 +297,4 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     return SuggestingIngredient(
         otherSuggestion, myPantrySuggestion, friendSuggestions);
   }
-
-// TODO: Remove modeled data after replacing with live data
-//  List<PantryIngredient> _currentSearch = <PantryIngredient>[
-//    PantryIngredient(
-//      name: "cream cheese",
-//      fromPantry: Pantry(
-//        title: "Other",
-//        owner: User(
-//          name: "",
-//          isNobody: true,
-//        ),
-//        ingredients: <PantryIngredient>[],
-//      ),
-//    ),
-//  ];
 }

@@ -12,11 +12,11 @@ class User extends Equatable {
     this.name,
     this.email,
     this.id,
-    this.imageURI = "",
+    this.imageURI = "gs://potluck-d1796.appspot.com/users/images/profile.png",
     this.isNobody = false,
     this.isMe = false,
   });
 
   @override
-  List<Object> get props => [name, isNobody, isMe];
+  List<Object> get props => [id, isNobody, isMe];
 }

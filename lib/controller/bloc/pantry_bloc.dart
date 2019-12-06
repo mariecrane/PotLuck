@@ -75,6 +75,10 @@ class PantryBloc extends Bloc<PantryEvent, PantryState> {
     if (event is IngredientBarEdited) {
       _barText = event.text;
 
+      if (_barText.isEmpty) {
+        yield PantryUpdated(DatabaseController.instance.myPantry);
+      }
+
       var completions =
           await RecipeSearch.instance.getAutoSuggestions(event.text);
 
