@@ -6,9 +6,8 @@ import 'package:pot_luck/controller/bloc/friend_bloc.dart';
 import 'package:pot_luck/controller/bloc/search_bloc.dart';
 import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/recipe.dart';
-import 'package:pot_luck/view/recipe_page.dart';
 import 'package:pot_luck/model/user.dart';
-import 'package:pot_luck/controller/bloc/friend_bloc.dart';
+import 'package:pot_luck/view/recipe_page.dart';
 
 class SearchPage extends StatelessWidget {
   @override
@@ -252,7 +251,10 @@ class SearchBody extends StatelessWidget {
               return Center(
                 child: Text(
                   "No ingredients found",
-                  style: TextStyle(color: Colors.grey, fontFamily: 'MontserratScript'),
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontFamily: 'MontserratScript',
+                  ),
                 ),
               );
             }
@@ -279,7 +281,10 @@ class SearchBody extends StatelessWidget {
               return Center(
                 child: Text(
                   "No recipes were found",
-                  style: TextStyle(color: Colors.grey, fontFamily: 'MontserratScript'),
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontFamily: 'MontserratScript',
+                  ),
                 ),
               );
             }
@@ -354,7 +359,10 @@ class _SuggestionListView extends StatelessWidget {
         // TODO: Differentiate Other, My Pantry, and friend pantry ingredients
         return ListTile(
           leading: Icon(Icons.add_shopping_cart),
-          title: Text(ingredient.name + " in " + ingredient.fromPantry.title, style: TextStyle(fontFamily: 'MontserratScript')),
+          title: Text(
+            ingredient.name + " in " + ingredient.fromPantry.title,
+            style: TextStyle(fontFamily: 'MontserratScript'),
+          ),
           trailing: Icon(Icons.add),
           onTap: () {
             BlocProvider.of<SearchBloc>(context)
@@ -380,8 +388,12 @@ class AllIngredientsTile extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("Selected Ingredients",
-                  style: TextStyle(fontSize: 24.0, fontFamily: 'MontserratScript')
+              child: Text(
+                "Selected Ingredients",
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontFamily: 'MontserratScript',
+                ),
               ),
             ),
           ),
@@ -472,7 +484,11 @@ class PantryTile extends StatelessWidget {
               ),
         title: Text(
           _pantry.title.substring(0, _pantry.title.indexOf("@")),
-          style: TextStyle(color: _pantry.color, fontSize: 20.0, fontFamily: 'MontserratScript'),
+          style: TextStyle(
+            color: _pantry.color,
+            fontSize: 20.0,
+            fontFamily: 'MontserratScript',
+          ),
         ),
         initiallyExpanded: false,
         children: <Widget>[
@@ -504,21 +520,24 @@ class FriendTile extends StatelessWidget {
     return ListView(
       children: <Widget>[
         Row(
-         children: <Widget>[
-           CircleAvatar(
-             backgroundImage: FirebaseImage(_friend.imageURI),
-           ),
-           Title(
-             color: Colors.black,
-             child: Text( _friend.name,
-                 style: TextStyle(fontFamily: 'MontserratScript'))
-           ),
-           IconButton(
-             color: Colors.red,
-             icon: Icon(Icons.remove_circle),
-             onPressed: () {},
-           ),
-         ],
+          children: <Widget>[
+            CircleAvatar(
+              backgroundImage: FirebaseImage(_friend.imageURI),
+            ),
+            Title(
+                color: Colors.black,
+                child: Text(_friend.email,
+                    style: TextStyle(fontFamily: 'MontserratScript'))),
+            IconButton(
+              color: Colors.red,
+              icon: Icon(Icons.remove_circle),
+              onPressed: () {
+                BlocProvider.of<FriendBloc>(context).add(
+                  FriendRemoveRequest(_friend),
+                );
+              },
+            ),
+          ],
         )
       ],
     );
@@ -537,7 +556,12 @@ class IngredientChip extends StatelessWidget {
       child: FilterChip(
         label: Text(
           ingredient.name,
-          style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w300, color: Colors.white, fontFamily: 'MontserratScript'),
+          style: TextStyle(
+            fontSize: 17.0,
+            fontWeight: FontWeight.w300,
+            color: Colors.white,
+            fontFamily: 'MontserratScript',
+          ),
         ),
         selected: isSelected,
         backgroundColor: Colors.blueGrey[200],
