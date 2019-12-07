@@ -105,14 +105,6 @@ class _AuthPageState extends State<AuthPage> {
             });
           },
         ),
-        FlatButton(
-          child: Text("Sign in later",
-              style: TextStyle(fontSize: 15.0, color: Theme.of(context).primaryColor, fontWeight: FontWeight.w300, fontFamily: 'MontserratScript')),
-          onPressed: () {
-            // Request BLoC to do anonymous login
-            BlocProvider.of<AuthBloc>(context).add(AnonymousAuthRequested());
-          },
-        ),
       ],
     );
   }

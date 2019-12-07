@@ -36,7 +36,7 @@ class SearchPage extends StatelessWidget {
         }
 
         return FloatingActionButton(
-          child: Icon(Icons.group_add),
+          child: Icon(Icons.group_add, color: Colors.amber[100]),
           backgroundColor: Theme.of(context).primaryColor,
           onPressed: () {
             Navigator.of(context).push(
@@ -354,7 +354,8 @@ class AllIngredientsTile extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text("Selected Ingredients",
-                  style: TextStyle(fontSize: 24.0, fontFamily: 'MontserratScript')),
+                  style: TextStyle(fontSize: 24.0, fontFamily: 'MontserratScript')
+              ),
             ),
           ),
           Padding(
@@ -371,6 +372,7 @@ class AllIngredientsTile extends StatelessWidget {
                             label: Text(
                               ingredient.name,
                               style: TextStyle(
+                                  fontSize: 17.0,
                                   color: Colors.white,
                                   fontWeight: FontWeight.w300,
                                   fontFamily: 'MontserratScript'),
@@ -393,7 +395,7 @@ class AllIngredientsTile extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50),
+              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
               child: RaisedButton(
                 elevation: 0.0,
                 onPressed: () {
@@ -478,7 +480,7 @@ class IngredientChip extends StatelessWidget {
       child: FilterChip(
         label: Text(
           ingredient.name,
-          style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white, fontFamily: 'MontserratScript'),
+          style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.w300, color: Colors.white, fontFamily: 'MontserratScript'),
         ),
         selected: isSelected,
         backgroundColor: Colors.blueGrey[200],
