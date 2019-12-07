@@ -13,11 +13,11 @@ class RecipePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.blueGrey[50],
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColor,
         automaticallyImplyLeading: true,
-        title: Text(result.recipeName, style: TextStyle(color: Colors.black)),
+        title: Text(result.recipeName, style: TextStyle(color: Colors.white)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context, false),
         ),
       ),
@@ -94,9 +94,9 @@ class RecipePage extends StatelessWidget {
                     },
                     shape: RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(20.0),
-                        side: BorderSide(color: Colors.white)),
-                    textColor: Colors.black,
-                    color: Colors.white,
+                        side: BorderSide(color: Theme.of(context).primaryColor)),
+                    textColor: Colors.white,
+                    color: Theme.of(context).primaryColor,
                     child: const Text(
                       'Visit the Webpage',
                       style:

@@ -7,6 +7,8 @@ import 'package:pot_luck/controller/bloc/search_bloc.dart';
 import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/recipe.dart';
 import 'package:pot_luck/view/recipe_page.dart';
+import 'package:pot_luck/model/user.dart';
+import 'package:pot_luck/controller/bloc/friend_bloc.dart';
 
 class SearchPage extends StatelessWidget {
   @override
@@ -181,6 +183,31 @@ class _AddFriendPageState extends State<AddFriendPage> {
                 FriendAddRequest(_controller.text),
               );
               Navigator.of(context).pop();
+            },
+          ),
+          BlocBuilder<FriendBloc, FriendState>(
+            builder: (context, state) {
+              if (state is FriendsLoading) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (state is FriendsListUpdate) {
+                return ListView.builder(
+                  key: PageStorageKey<String>("friends_list"),
+                  itemCount: state.friendsList.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return FriendTile(state.friendsList[index]);
+                  },
+                );
+              }
+              return Center(
+                child: Text(
+                  "Hmm, something went wrong...",
+                  style: TextStyle(color: Colors.red),
+                ),
+              );
             },
           ),
         ],
@@ -464,6 +491,36 @@ class PantryTile extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class FriendTile extends StatelessWidget {
+  final User _friend;
+  FriendTile(this._friend);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: <Widget>[
+        Row(
+         children: <Widget>[
+           CircleAvatar(
+             backgroundImage: FirebaseImage(_friend.imageURI),
+           ),
+           Title(
+             color: Colors.black,
+             child: Text( _friend.name,
+                 style: TextStyle(fontFamily: 'MontserratScript'))
+           ),
+           IconButton(
+             color: Colors.red,
+             icon: Icon(Icons.remove_circle),
+             onPressed: () {},
+           ),
+         ],
+        )
+      ],
     );
   }
 }
