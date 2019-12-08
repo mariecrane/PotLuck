@@ -178,6 +178,7 @@ class ProfileInfoListView extends StatelessWidget {
                 ),
                 title: Text(
                   profile.email,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

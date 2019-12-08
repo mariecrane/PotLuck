@@ -15,7 +15,7 @@ class RecipePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         automaticallyImplyLeading: true,
-        title: Text(result.recipeName, style: TextStyle(color: Colors.white)),
+        title: Text(result.recipeName, style: TextStyle(color: Colors.white, fontFamily: 'MontserratScript')),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context, false),
@@ -71,6 +71,7 @@ class RecipePage extends StatelessWidget {
                   margin: EdgeInsets.all(10),
                 ),
                 Card(
+                  elevation: 0.0,
                   semanticContainer: true,
                   clipBehavior: Clip.antiAliasWithSaveLayer,
                   child: Container(
@@ -79,8 +80,8 @@ class RecipePage extends StatelessWidget {
                               horizontal: 30.0, vertical: 10.0),
                           title: Text('Ingredients:',
                               style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold)),
-                          subtitle: Text(ingredient_list))),
+                                  fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'MontserratScript')),
+                          subtitle: Text(ingredient_list, style: TextStyle(fontFamily: 'MontserratScript')))),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
                   ),
@@ -89,6 +90,7 @@ class RecipePage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: RaisedButton(
+                    elevation: 0.0,
                     onPressed: () {
                       launch(data.sourceUrl);
                     },
@@ -100,7 +102,7 @@ class RecipePage extends StatelessWidget {
                     child: const Text(
                       'Visit the Webpage',
                       style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'MontserratScript'),
                     ),
                   ),
                 ),
