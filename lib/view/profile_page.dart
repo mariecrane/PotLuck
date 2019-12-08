@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/controller/bloc/auth_bloc.dart';
 import 'package:pot_luck/controller/bloc/profile_bloc.dart';
 import 'package:pot_luck/model/user.dart';
+import 'package:flutter/cupertino.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -56,6 +57,87 @@ class ProfilePage extends StatelessWidget {
   static Widget buildFloatingActionButton(BuildContext context) {
     return null;
   }
+}
+
+class EditPage extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Edit profile",
+          style: TextStyle(
+              fontSize: 20.0,
+              fontWeight: FontWeight.w300,
+              fontFamily: 'MontserratScript'),
+        ),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.all(20.0),
+            child: TextField(
+//              controller: _controller,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Enter a new email...",
+                labelStyle: TextStyle(fontFamily: 'MontserratScript'),
+              ),
+            ),
+          ),
+          RaisedButton(
+            elevation: 0.0,
+            color: Colors.amber[100],
+            shape: RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(25.0),
+            ),
+            child: Text(
+              "Update email",
+              style: TextStyle(
+                  fontSize: 17.0,
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.w300,
+                  fontFamily: 'MontserratScript'),
+            ),
+            onPressed: () {
+              //TODO: update user doc
+            },
+          ),
+          Container(
+            padding: const EdgeInsets.all(20.0),
+            child: TextField(
+//              controller: _controller,
+              obscureText: true,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Enter a new password...",
+                labelStyle: TextStyle(fontFamily: 'MontserratScript'),
+              ),
+            ),
+          ),
+          RaisedButton(
+            elevation: 0.0,
+            color: Colors.amber[100],
+            shape: RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(25.0),
+            ),
+            child: Text(
+              "Update password",
+              style: TextStyle(
+                  fontSize: 17.0,
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.w300,
+                  fontFamily: 'MontserratScript'),
+            ),
+            onPressed: () {
+              //TODO: update user doc
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
 }
 
 class ProfileInfoListView extends StatelessWidget {
@@ -114,6 +196,13 @@ class ProfileInfoListView extends StatelessWidget {
             child: RaisedButton(
               elevation: 0.0,
               onPressed: () {
+                Navigator.of(context).push(
+                  CupertinoPageRoute(
+                    builder: (_) => BlocProvider<ProfileBloc>.value(
+                      value: BlocProvider.of<ProfileBloc>(context),
+                      child: EditPage(),
+                  ),
+                ));
                 //TODO: implement pop up window to edit name, username, email, password, and photo
               },
               shape: RoundedRectangleBorder(
