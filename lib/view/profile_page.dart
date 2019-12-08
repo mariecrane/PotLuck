@@ -77,6 +77,7 @@ class EditPage extends StatelessWidget{
           Container(
             padding: const EdgeInsets.all(20.0),
             child: TextField(
+              style: TextStyle(color:Colors.black, fontFamily: 'MontserratScript'),
 //              controller: _controller,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
@@ -106,6 +107,7 @@ class EditPage extends StatelessWidget{
           Container(
             padding: const EdgeInsets.all(20.0),
             child: TextField(
+              style: TextStyle(color:Colors.black, fontFamily: 'MontserratScript'),
 //              controller: _controller,
               obscureText: true,
               decoration: InputDecoration(

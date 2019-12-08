@@ -142,6 +142,7 @@ class _AuthFormState extends State<AuthForm> {
           ),
           TextField(
             keyboardType: TextInputType.emailAddress,
+            style: TextStyle(color:Colors.black, fontFamily: 'MontserratScript'),
             controller: _emailController,
             decoration: InputDecoration(
                 border: OutlineInputBorder(), labelText: "Email", labelStyle: TextStyle(fontWeight: FontWeight.w300, fontFamily: 'MontserratScript')),
@@ -153,6 +154,7 @@ class _AuthFormState extends State<AuthForm> {
           ),
           TextField(
             keyboardType: TextInputType.visiblePassword,
+            style: TextStyle(color:Colors.black, fontFamily: 'MontserratScript'),
             controller: _passwordController,
             obscureText: true,
             decoration: InputDecoration(
