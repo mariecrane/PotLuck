@@ -8,63 +8,114 @@ import 'package:pot_luck/model/pantry.dart';
 class PantryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: BlocBuilder<PantryBloc, PantryState>(
+    return NestedScrollView(
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                SliverAppBar(
+                  expandedHeight: 200.0,
+                  floating: false,
+                  pinned: true,
+//                  leading: Icon(Icons.add, color: Theme.of(context).primaryColor),
+                  flexibleSpace: FlexibleSpaceBar(
+                    centerTitle: false,
+                    title:
+                      Padding(
+                        // Adds some padding around our TextField
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 5.0,
+                        ),
+                        child: TextField(
+                          cursorColor: Theme.of(context).primaryColor,
+                          style: TextStyle(color:Colors.white, fontFamily: 'MontserratScript'),
+                          // Type of "Done" button to show on keyboard
+                          textInputAction: TextInputAction.search,
+                          decoration: InputDecoration(
+//                              icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
+                              border: InputBorder.none,
+                              // Shows when TextField is empty
+                              hintText: "Add Ingredients to Pantry...",
+                              hintStyle: TextStyle(color: Colors.white, fontFamily: 'MontserratScript')),
+                          onSubmitted: (value) {},
+                          onChanged: (value) {
+                            BlocProvider.of<PantryBloc>(context)
+                                .add(IngredientBarEdited(value));
+                          },
+                        ),
+                      ),
+//                      leading: IconButton(
+//                        icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
+//                      ),
+//                    ),
+                    background:
+                    Image(image: AssetImage('assets/images/pantry.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                )
+                ];},
+      body:
+      BlocBuilder<PantryBloc, PantryState>(
         builder: (context, state) {
-          if (state is PantryUpdated) {
-            return IngredientsListView(state.pantry);
-          }
+    if (state is PantryUpdated) {
+    return IngredientsListView(state.pantry);
+    }
 
-          if (state is SuggestingIngredients) {
-            return _SuggestionListView(state.suggestions);
-          }
+    if (state is SuggestingIngredients) {
+    return _SuggestionListView(state.suggestions);
+    }
 
-          if (state is PantrySuggestionsEmpty) {
-            return Center(
-              child: Text(
-                "No ingredients found",
-                style: TextStyle(color: Colors.grey, fontFamily: 'MontserratScript'),
-              ),
-            );
-          }
+    if (state is PantrySuggestionsEmpty) {
+    return Center(
+    child: Text(
+    "No ingredients found",
+    style: TextStyle(color: Colors.grey, fontFamily: 'MontserratScript'),
+    ),
+    );
+    }
 
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        },
-      ),
+    return Center(
+    child: CircularProgressIndicator(),
+    );
+    },
+    ),
     );
   }
 
   static Widget buildAppBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 1.0,
-      automaticallyImplyLeading: true,
-      title: Padding(
-        // Adds some padding around our TextField
-        padding: const EdgeInsets.symmetric(
-          vertical: 5.0,
-        ),
-        child: TextField(
-          // Type of "Done" button to show on keyboard
-          textInputAction: TextInputAction.search,
-          decoration: InputDecoration(
-              border: InputBorder.none,
-              // Shows when TextField is empty
-              hintText: "Add Ingredients to Pantry...",
-              hintStyle: TextStyle(fontFamily: 'MontserratScript')),
-          onSubmitted: (value) {},
-          onChanged: (value) {
-            BlocProvider.of<PantryBloc>(context)
-                .add(IngredientBarEdited(value));
-          },
-        ),
-      ),
-      leading: IconButton(
-        icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
-      ),
-    );
+    return null;
+//        Image(image: AssetImage('assets/pantry.png'),
+//          fit: BoxFit.cover,
+//      ),
+//        AppBar(
+//          backgroundColor: Colors.white,
+//
+//          elevation: 1.0,
+//          automaticallyImplyLeading: true,
+//          title:
+//          Padding(
+//            // Adds some padding around our TextField
+//            padding: const EdgeInsets.symmetric(
+//              vertical: 5.0,
+//            ),
+//            child: TextField(
+//              // Type of "Done" button to show on keyboard
+//              textInputAction: TextInputAction.search,
+//              decoration: InputDecoration(
+//                  border: InputBorder.none,
+//                  // Shows when TextField is empty
+//                  hintText: "Add Ingredients to Pantry...",
+//                  hintStyle: TextStyle(fontFamily: 'MontserratScript')),
+//              onSubmitted: (value) {},
+//              onChanged: (value) {
+//                BlocProvider.of<PantryBloc>(context)
+//                    .add(IngredientBarEdited(value));
+//              },
+//            ),
+//          ),
+//          leading: IconButton(
+//            icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
+//          ),
+//        );
   }
 
   static Widget buildFloatingActionButton(BuildContext context) {
