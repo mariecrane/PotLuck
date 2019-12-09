@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/user.dart';
 
@@ -116,7 +119,57 @@ class DatabaseController {
     }
   }
 
-  // TODO: Treat pantry operations differently when anonymously authenticated
+  void updateProfileImage(File imageFile) async {
+    var ext = imageFile.path.substring(imageFile.path.lastIndexOf("."));
+    var path = "users/images/${_me.id}$ext";
+    var imageRef = FirebaseStorage.instance.ref().child(path);
+    var previous = _me.imageURI;
+
+    // Upload image file to cloud storage
+    var task = imageRef.putFile(imageFile);
+    var snapshot = await task.onComplete;
+
+    // Delete FirebaseImage cache to force reload of image
+    var temp = await getTemporaryDirectory();
+    var files = temp.listSync();
+    files.forEach((file) async {
+      if (file.path.contains("firebase_image")) {
+        await file.delete(recursive: true);
+      }
+    });
+
+    // Change imageURI field in user doc
+    var bucket = await snapshot.ref.getBucket();
+    var userRef = Firestore.instance.collection("users").document(_me.id);
+    var uri = "gs://$bucket/$path";
+    await userRef.updateData(<String, dynamic>{
+      "imageURI": uri,
+    });
+
+    // If last image is not the default and has different URI, delete it
+    if (previous.contains("profile.png") == false && previous != uri) {
+      var ref = await FirebaseStorage.instance.getReferenceFromUrl(previous);
+      await ref.delete();
+    }
+
+    _me = User(
+      id: _me.id,
+      email: _me.email,
+      imageURI: uri,
+      isMe: true,
+    );
+
+    _myPantry = Pantry(
+      owner: _me,
+      title: _me.email,
+      color: _colors[0],
+      ingredients: _myPantry.ingredients,
+    );
+
+    _doAuthUpdateCallbacks();
+    _doPantryUpdateCallbacks();
+  }
+
   void addToMyPantry(PantryIngredient ingredient) async {
     if (_myPantry.ingredients.contains(ingredient)) return;
 
@@ -384,7 +437,15 @@ class DatabaseController {
       isMe: true,
     );
 
+    _myPantry = Pantry(
+      owner: _me,
+      title: _me.email,
+      color: _colors[0],
+      ingredients: _myPantry.ingredients,
+    );
+
     _doAuthUpdateCallbacks();
+    _doPantryUpdateCallbacks();
   }
 
   void _clearDocSubscriptions() {
