@@ -22,7 +22,7 @@ class PantryPage extends StatelessWidget {
                       Padding(
                         // Adds some padding around our TextField
                         padding: const EdgeInsets.symmetric(
-                          vertical: 5.0,
+        vertical: 5.0,
                         ),
                         child: TextField(
                           cursorColor: Theme.of(context).primaryColor,
@@ -33,8 +33,8 @@ class PantryPage extends StatelessWidget {
 //                              icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
                               border: InputBorder.none,
                               // Shows when TextField is empty
-                              hintText: "Add Ingredients to Pantry...",
-                              hintStyle: TextStyle(color: Colors.white, fontFamily: 'MontserratScript')),
+                              hintText: "Click Here to Add Ingredients",
+                              hintStyle: TextStyle(fontSize: 14, color: Colors.white, fontFamily: 'MontserratScript')),
                           onSubmitted: (value) {},
                           onChanged: (value) {
                             BlocProvider.of<PantryBloc>(context)

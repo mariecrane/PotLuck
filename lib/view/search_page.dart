@@ -1,6 +1,7 @@
 import 'package:firebase_image/firebase_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/controller/bloc/friend_bloc.dart';
 import 'package:pot_luck/controller/bloc/search_bloc.dart';
@@ -186,6 +187,11 @@ class _AddFriendPageState extends State<AddFriendPage> {
               Navigator.of(context).pop();
             },
           ),
+          Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  child: Text("Your Friends:", style: TextStyle(fontFamily: "MontserratScript", fontSize: 20)))),
           BlocBuilder<FriendBloc, FriendState>(
             builder: (context, state) {
               if (state is FriendsLoading) {
@@ -521,17 +527,17 @@ class FriendTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        Row(
+    return Row(
           children: <Widget>[
+            Padding(padding: (EdgeInsets.symmetric(horizontal: 10.0))),
             CircleAvatar(
               backgroundImage: FirebaseImage(_friend.imageURI),
             ),
+            Padding(padding: (EdgeInsets.symmetric(horizontal: 5.0))),
             Title(
                 color: Colors.black,
                 child: Text(_friend.email,
-                    style: TextStyle(fontFamily: 'MontserratScript'))),
+                    style: TextStyle(fontSize: 17, fontFamily: 'MontserratScript'))),
             IconButton(
               color: Colors.red,
               icon: Icon(Icons.remove_circle),
@@ -541,8 +547,6 @@ class FriendTile extends StatelessWidget {
                 );
               },
             ),
-          ],
-        )
       ],
     );
   }
