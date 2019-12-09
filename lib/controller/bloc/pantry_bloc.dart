@@ -77,6 +77,7 @@ class PantryBloc extends Bloc<PantryEvent, PantryState> {
 
       if (_barText.isEmpty) {
         yield PantryUpdated(DatabaseController.instance.myPantry);
+        return;
       }
 
       var completions =
