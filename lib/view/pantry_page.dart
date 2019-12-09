@@ -34,7 +34,7 @@ class PantryPage extends StatelessWidget {
                               border: InputBorder.none,
                               // Shows when TextField is empty
                               hintText: "Add Ingredients to Pantry...",
-                              hintStyle: TextStyle(color: Colors.white, fontFamily: 'MontserratScript')),
+                              hintStyle: TextStyle(color: Colors.white, fontFamily: 'MontserratScript', fontSize: 13.0)),
                           onSubmitted: (value) {},
                           onChanged: (value) {
                             BlocProvider.of<PantryBloc>(context)
