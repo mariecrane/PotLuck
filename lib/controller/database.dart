@@ -12,6 +12,7 @@ import 'package:pot_luck/model/user.dart';
 typedef void PantryUpdateCallback(Pantry myPantry, List<Pantry> friendPantries);
 typedef void FriendsUpdateCallback(List<User> friends);
 typedef void AuthUpdateCallback(User currentUser);
+typedef void FriendRequestsUpdateCallback(List<User> friendRequests);
 
 class DatabaseController {
   DatabaseController._privateConstructor() {
@@ -41,6 +42,7 @@ class DatabaseController {
   Pantry _myPantry;
   var _friendPantries = <Pantry>[];
   var _friendsList = <User>[];
+  var _friendRequests = <User>[];
 
   Pantry get myPantry => _myPantry;
   List<Pantry> get friendPantries => _friendPantries;
@@ -49,6 +51,7 @@ class DatabaseController {
   var _pantryUpdateCallbacks = <PantryUpdateCallback>[];
   var _friendsUpdateCallbacks = <FriendsUpdateCallback>[];
   var _authUpdateCallbacks = <AuthUpdateCallback>[];
+  var _friendRequestsUpdateCallbacks = <FriendRequestsUpdateCallback>[];
 
   StreamSubscription _friendPantriesDocSubscription;
   StreamSubscription _friendRequestsDocSubscription;
@@ -297,6 +300,10 @@ class DatabaseController {
     _authUpdateCallbacks.add(callback);
   }
 
+  void onFriendRequestsUpdate(FriendRequestsUpdateCallback callback) {
+    _friendRequestsUpdateCallbacks.add(callback);
+  }
+
   void _doPantryUpdateCallbacks() {
     _pantryUpdateCallbacks.forEach((callback) {
       callback(_myPantry, _friendPantries);
@@ -312,6 +319,12 @@ class DatabaseController {
   void _doAuthUpdateCallbacks() {
     _authUpdateCallbacks.forEach((callback) {
       callback(_me);
+    });
+  }
+
+  void _doFriendRequestsUpdateCallbacks() {
+    _friendRequestsUpdateCallbacks.forEach((callback) {
+      callback(_friendRequests);
     });
   }
 
@@ -421,8 +434,34 @@ class DatabaseController {
     _doFriendsUpdateCallbacks();
   }
 
-  void _onFriendRequestsSnapshot(DocumentSnapshot snapshot) {
-    // TODO: Update friend requests list from snapshot
+  // TODO: Update friend requests list from snapshot
+  void _onFriendRequestsSnapshot(DocumentSnapshot snapshot) async {
+    if (snapshot == null) return;
+
+    var requests = snapshot.data["requestFromIds"]
+        .map<String>((i) => i as String)
+        .toList();
+
+    var friendRequests = <User>[];
+
+    var futures = requests.map((id) async {
+      var data =
+          await Firestore.instance.collection("users").document(id).get();
+
+      friendRequests.add(
+        User(
+          id: id,
+          email: data["email"],
+          imageURI: data["imageURI"],
+        ),
+      );
+    });
+
+    await Future.wait(futures);
+
+    _friendRequests = friendRequests;
+
+    _doFriendRequestsUpdateCallbacks();
   }
 
   void _onUserSnapshot(DocumentSnapshot snapshot) {

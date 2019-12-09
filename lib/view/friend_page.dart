@@ -72,6 +72,9 @@ class _AddFriendPageState extends State<AddFriendPage> {
             ),
           ),
           BlocBuilder<FriendBloc, FriendState>(
+            condition: (before, after) {
+              return (after is FriendsLoading) || (after is FriendsListUpdate);
+            },
             builder: (context, state) {
               if (state is FriendsLoading) {
                 return Center(
