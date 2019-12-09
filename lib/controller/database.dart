@@ -76,10 +76,11 @@ class DatabaseController {
     if (_me != null) return;
 
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      var result = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      result.user.sendEmailVerification();
     } catch (e) {
       _doAuthUpdateCallbacks();
     }
