@@ -1,6 +1,8 @@
 import 'package:firebase_image/firebase_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pot_luck/controller/bloc/auth_bloc.dart';
 import 'package:pot_luck/controller/bloc/profile_bloc.dart';
 import 'package:pot_luck/model/user.dart';
@@ -170,17 +172,27 @@ class ProfileInfoListView extends StatelessWidget {
       children: ListTile.divideTiles(
         context: context,
         tiles: [
-          new Container(
+          Container(
             padding: const EdgeInsets.symmetric(vertical: 15),
             child: new Center(
-              child: new Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    backgroundImage: FirebaseImage(profile.imageURI),
-                    radius: 130.0,
-                  ),
-                ],
+              child: InkWell(
+                child: CircleAvatar(
+                  backgroundImage: FirebaseImage(profile.imageURI),
+                  radius: 130.0,
+                ),
+                onTap: () async {
+                  var image = await ImagePicker.pickImage(
+                    source: ImageSource.gallery,
+                  );
+                  if (image == null) return;
+                  var cropped = await ImageCropper.cropImage(
+                    sourcePath: image.path,
+                  );
+                  if (cropped == null) return;
+                  BlocProvider.of<ProfileBloc>(context).add(
+                    PictureSelected(cropped),
+                  );
+                },
               ),
             ),
           ),
