@@ -56,7 +56,8 @@ class _AuthPageState extends State<AuthPage> {
   Widget _buildAuthChooser() {
     return Column(
       children: <Widget>[
-        Image.asset('assets/images/icon.png'),
+        Padding(padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0), child: Image.asset('assets/images/icon.png')),
+        Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
         Text.rich(
           TextSpan(
             children: <TextSpan>[
