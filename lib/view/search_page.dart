@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_image/firebase_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -99,9 +101,36 @@ class ResultsAppBar extends StatelessWidget {
   }
 }
 
-class SearchAppBar extends StatelessWidget {
+class SearchAppBar extends StatefulWidget {
+  @override
+  _SearchAppBarState createState() => _SearchAppBarState();
+}
+
+class _SearchAppBarState extends State<SearchAppBar> {
+  StreamSubscription _bloc;
+  TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _bloc?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    _bloc?.cancel();
+    _bloc = BlocProvider.of<SearchBloc>(context).listen((state) {
+      if (state is BuildingSearch && state.clearInput) {
+        _controller.clear();
+      }
+    });
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 1.0,
@@ -112,6 +141,7 @@ class SearchAppBar extends StatelessWidget {
           vertical: 5.0,
         ),
         child: TextField(
+          controller: _controller,
           cursorColor: Theme.of(context).primaryColor,
           // Type of "Done" button to show on keyboard
           textInputAction: TextInputAction.done,
@@ -279,7 +309,7 @@ class _SuggestionListView extends StatelessWidget {
           trailing: Icon(Icons.add),
           onTap: () {
             BlocProvider.of<SearchBloc>(context)
-                .add(IngredientAdded(ingredient));
+                .add(IngredientAdded(ingredient, fromSuggestion: true));
           },
         );
       },
