@@ -25,13 +25,13 @@ class DatabaseController {
       DatabaseController._privateConstructor();
 
   static final List<Color> _colors = <Color>[
-    Colors.black,
-    Colors.red[700],
+    Color(0xffe28413),
     Color(0xff604d53),
-    Colors.deepOrange[400],
-    Colors.amber[700],
-    Colors.brown[300],
-    Colors.purple[300],
+    Color(0xff604d53),
+    Color(0xff604d53),
+    Color(0xff604d53),
+    Color(0xff604d53),
+    Color(0xff604d53),
   ];
 
   User _me;
@@ -305,7 +305,7 @@ class DatabaseController {
     _myPantry = Pantry(
       owner: _me,
       title: _me.email,
-      color: _colors[0],
+      color: Color(0xffe28413),
       ingredients: List<PantryIngredient>(),
     );
 
@@ -344,7 +344,8 @@ class DatabaseController {
       var pantry = Pantry(
         owner: friend,
         title: friend.email,
-        color: _colors[(i % (_colors.length - 1)) + 1],
+        color: Color(0xff604d53),
+//        color: _colors[(i % (_colors.length - 1)) + 1],
         ingredients: List<PantryIngredient>(),
       );
 

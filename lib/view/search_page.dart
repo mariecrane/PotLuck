@@ -111,8 +111,10 @@ class SearchAppBar extends StatelessWidget {
           vertical: 5.0,
         ),
         child: TextField(
+          cursorColor:Theme.of(context).primaryColor,
           // Type of "Done" button to show on keyboard
           textInputAction: TextInputAction.done,
+          style: TextStyle(color:Colors.brown[700], fontFamily: 'MontserratScript'),
           decoration: InputDecoration(
               border: InputBorder.none,
               // Shows when TextField is empty
@@ -417,7 +419,7 @@ class AllIngredientsTile extends StatelessWidget {
                                   fontFamily: 'MontserratScript'),
                             ),
                             deleteIconColor: Colors.white,
-                            backgroundColor: ingredient.fromPantry.color,
+                            backgroundColor: ingredient.fromPantry.owner.isNobody ? Colors.brown[200]:ingredient.fromPantry.color,
                             onDeleted: () {
                               BlocProvider.of<SearchBloc>(context).add(
                                 IngredientRemoved(ingredient),
@@ -473,7 +475,7 @@ class PantryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: ThemeData(accentColor: _pantry.color),
+      data: ThemeData(accentColor:_pantry.owner.isNobody ? Colors.brown[200]: _pantry.color),
       child: ExpansionTile(
         key: PageStorageKey<Pantry>(_pantry),
         //change it into profile picture
@@ -483,7 +485,9 @@ class PantryTile extends StatelessWidget {
                 backgroundImage: FirebaseImage(_pantry.owner.imageURI),
               ),
         title: Text(
-          _pantry.title.substring(0, _pantry.title.indexOf("@")),
+          _pantry.title.contains("@")
+          ?_pantry.title.substring(0, _pantry.title.indexOf("@"))
+          :_pantry.title,
           style: TextStyle(
             color: _pantry.color,
             fontSize: 20.0,
@@ -573,7 +577,7 @@ class IngredientChip extends StatelessWidget {
                 : IngredientAdded(ingredient),
           );
         },
-        selectedColor: ingredient.fromPantry.color,
+        selectedColor: ingredient.fromPantry.owner.isNobody ? Colors.brown[200]:ingredient.fromPantry.color,
       ),
     );
   }
@@ -633,6 +637,7 @@ class RecipeResult extends StatelessWidget {
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
+                            fontFamily: 'MontserratScript'
                           // TODO: font change
                         ),
                       ),
@@ -646,6 +651,7 @@ class RecipeResult extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 14.0,
                           color: Colors.black54,
+                            fontFamily: 'MontserratScript'
                         ),
                       ),
                       Expanded(
@@ -655,7 +661,7 @@ class RecipeResult extends StatelessWidget {
                             data.likes.toString() + " LIKES",
                             style: const TextStyle(
                               fontSize: 13.0,
-                              color: Colors.black87,
+                              color: Colors.black87, fontFamily: 'MontserratScript'
                             ),
                           ),
                         ),
