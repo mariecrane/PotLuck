@@ -60,6 +60,9 @@ class ProfilePage extends StatelessWidget {
 }
 
 class EditPage extends StatelessWidget{
+  var _authController = TextEditingController();
+  var _emailController = TextEditingController();
+  var _passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,12 +75,25 @@ class EditPage extends StatelessWidget{
               fontFamily: 'MontserratScript'),
         ),
       ),
-      body: Column(
+      body: ListView(
+        physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
           Container(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(10.0),
             child: TextField(
-//              controller: _controller,
+              controller: _authController,
+              obscureText: true,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Confirm your current password...",
+                labelStyle: TextStyle(fontFamily: 'MontserratScript'),
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(10.0),
+            child: TextField(
+              controller: _emailController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: "Enter a new email...",
@@ -100,13 +116,14 @@ class EditPage extends StatelessWidget{
                   fontFamily: 'MontserratScript'),
             ),
             onPressed: () {
-              //TODO: update user doc
+              BlocProvider.of<ProfileBloc>(context)
+                  .add(EmailUpdated(_emailController.text, _authController.text));
             },
           ),
           Container(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(10.0),
             child: TextField(
-//              controller: _controller,
+              controller: _passwordController,
               obscureText: true,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
@@ -130,7 +147,8 @@ class EditPage extends StatelessWidget{
                   fontFamily: 'MontserratScript'),
             ),
             onPressed: () {
-              //TODO: update user doc
+              BlocProvider.of<ProfileBloc>(context)
+                  .add(PasswordUpdated(_passwordController.text, _authController.text));
             },
           ),
         ],
