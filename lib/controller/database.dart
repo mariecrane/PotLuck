@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/user.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 typedef void PantryUpdateCallback(Pantry myPantry, List<Pantry> friendPantries);
 typedef void FriendsUpdateCallback(List<User> friends);
@@ -24,6 +25,11 @@ class DatabaseController {
     _clearDocSubscriptions();
     _authStateSubscription.cancel();
   }
+
+  static final HttpsCallable updateEmail =
+  CloudFunctions.instance.getHttpsCallable(
+    functionName: 'updateEmail',
+  );
 
   static final DatabaseController instance =
       DatabaseController._privateConstructor();
@@ -120,6 +126,16 @@ class DatabaseController {
       await user.delete();
     } catch (e) {
       _doAuthUpdateCallbacks();
+    }
+  }
+
+  void updateUserEmail(String email) async{
+    try {
+      await updateEmail.call(<String, dynamic>{
+        "query": email,
+      });
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 

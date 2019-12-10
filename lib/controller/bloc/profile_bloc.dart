@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pot_luck/controller/database.dart';
 import 'package:pot_luck/model/user.dart';
+import 'package:pot_luck/controller/database.dart';
 
 abstract class ProfileEvent {}
 
@@ -72,6 +73,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         debugPrint(e.toString());
       }
       await user.updateEmail(event.email);
+      DatabaseController.instance.updateUserEmail(event.email);
     }
 
     if (event is PasswordUpdated) {
