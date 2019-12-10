@@ -387,7 +387,7 @@ class DatabaseController {
 
     _myPantry = Pantry(
       owner: _me,
-      title: _me.email,
+      title: 'My Pantry',
       color: Color(0xffe28413),
       ingredients: List<PantryIngredient>(),
     );
