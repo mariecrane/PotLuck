@@ -16,8 +16,12 @@ class FriendAddRequest extends FriendEvent {
 
 class _FriendsRetrieved extends FriendEvent {
   final List<User> friendsList;
-
   _FriendsRetrieved(this.friendsList);
+}
+
+class _FriendRequestsRetrieved extends FriendEvent {
+  final List<User> friendRequests;
+  _FriendRequestsRetrieved(this.friendRequests);
 }
 
 abstract class FriendState {}
@@ -27,7 +31,10 @@ class FriendsListUpdate extends FriendState {
   FriendsListUpdate(this.friendsList);
 }
 
-class FriendsListEmpty extends FriendState {}
+class FriendRequestsUpdate extends FriendState {
+  final List<User> friendRequests;
+  FriendRequestsUpdate(this.friendRequests);
+}
 
 class FriendsLoading extends FriendState {}
 
@@ -35,6 +42,9 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
   FriendBloc() {
     DatabaseController.instance.onFriendsUpdate((friends) {
       add(_FriendsRetrieved(friends));
+    });
+    DatabaseController.instance.onFriendRequestsUpdate((requests) {
+      add(_FriendRequestsRetrieved(requests));
     });
   }
 
@@ -44,9 +54,11 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
   @override
   Stream<FriendState> mapEventToState(FriendEvent event) async* {
     if (event is _FriendsRetrieved) {
-      yield event.friendsList.isEmpty
-          ? FriendsListEmpty()
-          : FriendsListUpdate(event.friendsList);
+      yield FriendsListUpdate(event.friendsList);
+    }
+
+    if (event is _FriendRequestsRetrieved) {
+      yield FriendRequestsUpdate(event.friendRequests);
     }
 
     if (event is FriendRemoveRequest) {

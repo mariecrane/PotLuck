@@ -20,8 +20,9 @@ class Submit extends SearchEvent {}
 
 class IngredientAdded extends SearchEvent {
   final PantryIngredient ingredient;
+  final bool fromSuggestion;
 
-  IngredientAdded(this.ingredient);
+  IngredientAdded(this.ingredient, {this.fromSuggestion = false});
 }
 
 class IngredientRemoved extends SearchEvent {
@@ -47,10 +48,12 @@ abstract class SearchState {}
 class BuildingSearch extends SearchState {
   final List<PantryIngredient> allIngredients;
   final List<Pantry> pantries;
+  final bool clearInput;
 
   BuildingSearch({
     this.allIngredients = const <PantryIngredient>[],
     this.pantries = const <Pantry>[],
+    this.clearInput = false,
   });
 }
 
@@ -88,7 +91,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     DatabaseController.instance.onPantryUpdate((myPantry, friendPantries) {
       add(_PantriesUpdated(myPantry, friendPantries));
     });
-    // FIXME: Search page probably won't update if profile image updates
   }
 
   Pantry _myPantry;
@@ -101,6 +103,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     ingredients: <PantryIngredient>[],
   );
   var _currentSearch = <PantryIngredient>[];
+  bool _clearInput = false;
 
   @override
   SearchState get initialState => SearchLoading();
@@ -170,6 +173,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         }
         _currentSearch.add(ingredient);
       }
+
+      _clearInput = event.fromSuggestion;
+
       yield _makeBuildingSearchState();
     }
 
@@ -223,9 +229,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     var allPantries = <Pantry>[_myPantry];
     allPantries.addAll(friendPantries);
 
+    var clear = _clearInput;
+    _clearInput = false;
+
     return BuildingSearch(
       allIngredients: _currentSearch,
       pantries: allPantries,
+      clearInput: clear,
     );
   }
 

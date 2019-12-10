@@ -1,12 +1,15 @@
+import 'dart:async';
+
 import 'package:firebase_image/firebase_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/controller/bloc/friend_bloc.dart';
 import 'package:pot_luck/controller/bloc/search_bloc.dart';
 import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/recipe.dart';
-import 'package:pot_luck/model/user.dart';
+import 'package:pot_luck/view/friend_page.dart';
 import 'package:pot_luck/view/recipe_page.dart';
 
 class SearchPage extends StatelessWidget {
@@ -98,9 +101,36 @@ class ResultsAppBar extends StatelessWidget {
   }
 }
 
-class SearchAppBar extends StatelessWidget {
+class SearchAppBar extends StatefulWidget {
+  @override
+  _SearchAppBarState createState() => _SearchAppBarState();
+}
+
+class _SearchAppBarState extends State<SearchAppBar> {
+  StreamSubscription _bloc;
+  TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _bloc?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    _bloc?.cancel();
+    _bloc = BlocProvider.of<SearchBloc>(context).listen((state) {
+      if (state is BuildingSearch && state.clearInput) {
+        _controller.clear();
+      }
+    });
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 1.0,
@@ -111,10 +141,12 @@ class SearchAppBar extends StatelessWidget {
           vertical: 5.0,
         ),
         child: TextField(
-          cursorColor:Theme.of(context).primaryColor,
+          controller: _controller,
+          cursorColor: Theme.of(context).primaryColor,
           // Type of "Done" button to show on keyboard
           textInputAction: TextInputAction.done,
-          style: TextStyle(color:Colors.brown[700], fontFamily: 'MontserratScript'),
+          style: TextStyle(
+              color: Colors.brown[700], fontFamily: 'MontserratScript'),
           decoration: InputDecoration(
               border: InputBorder.none,
               // Shows when TextField is empty
@@ -129,97 +161,6 @@ class SearchAppBar extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class AddFriendPage extends StatefulWidget {
-  @override
-  _AddFriendPageState createState() => _AddFriendPageState();
-}
-
-class _AddFriendPageState extends State<AddFriendPage> {
-  var _controller = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Add a Friend",
-          style: TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.w300,
-              fontFamily: 'MontserratScript'),
-        ),
-      ),
-      body: Column(
-        children: <Widget>[
-          Container(
-            padding: const EdgeInsets.all(20.0),
-            child: TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Search for friends by email...",
-                labelStyle: TextStyle(fontFamily: 'MontserratScript'),
-              ),
-            ),
-          ),
-          RaisedButton(
-            elevation: 0.0,
-            color: Colors.amber[100],
-            shape: RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(25.0),
-            ),
-            child: Text(
-              "Add",
-              style: TextStyle(
-                  fontSize: 17.0,
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.w300,
-                  fontFamily: 'MontserratScript'),
-            ),
-            onPressed: () {
-              BlocProvider.of<FriendBloc>(context).add(
-                FriendAddRequest(_controller.text),
-              );
-              Navigator.of(context).pop();
-            },
-          ),
-          BlocBuilder<FriendBloc, FriendState>(
-            builder: (context, state) {
-              if (state is FriendsLoading) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              if (state is FriendsListUpdate) {
-                return ListView.builder(
-                  key: PageStorageKey<String>("friends_list"),
-                  itemCount: state.friendsList.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return FriendTile(state.friendsList[index]);
-                  },
-                );
-              }
-              return Center(
-                child: Text(
-                  "Hmm, something went wrong...",
-                  style: TextStyle(color: Colors.red),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 }
 
@@ -368,7 +309,7 @@ class _SuggestionListView extends StatelessWidget {
           trailing: Icon(Icons.add),
           onTap: () {
             BlocProvider.of<SearchBloc>(context)
-                .add(IngredientAdded(ingredient));
+                .add(IngredientAdded(ingredient, fromSuggestion: true));
           },
         );
       },
@@ -419,7 +360,10 @@ class AllIngredientsTile extends StatelessWidget {
                                   fontFamily: 'MontserratScript'),
                             ),
                             deleteIconColor: Colors.white,
-                            backgroundColor: ingredient.fromPantry.owner.isNobody ? Colors.brown[200]:ingredient.fromPantry.color,
+                            backgroundColor:
+                                ingredient.fromPantry.owner.isNobody
+                                    ? Colors.brown[200]
+                                    : ingredient.fromPantry.color,
                             onDeleted: () {
                               BlocProvider.of<SearchBloc>(context).add(
                                 IngredientRemoved(ingredient),
@@ -475,7 +419,9 @@ class PantryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: ThemeData(accentColor:_pantry.owner.isNobody ? Colors.brown[200]: _pantry.color),
+      data: ThemeData(
+          accentColor:
+              _pantry.owner.isNobody ? Colors.brown[200] : _pantry.color),
       child: ExpansionTile(
         key: PageStorageKey<Pantry>(_pantry),
         //change it into profile picture
@@ -486,8 +432,8 @@ class PantryTile extends StatelessWidget {
               ),
         title: Text(
           _pantry.title.contains("@")
-          ?_pantry.title.substring(0, _pantry.title.indexOf("@"))
-          :_pantry.title,
+              ? _pantry.title.substring(0, _pantry.title.indexOf("@"))
+              : _pantry.title,
           style: TextStyle(
             color: _pantry.color,
             fontSize: 20.0,
@@ -511,39 +457,6 @@ class PantryTile extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class FriendTile extends StatelessWidget {
-  final User _friend;
-  FriendTile(this._friend);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        Row(
-          children: <Widget>[
-            CircleAvatar(
-              backgroundImage: FirebaseImage(_friend.imageURI),
-            ),
-            Title(
-                color: Colors.black,
-                child: Text(_friend.email,
-                    style: TextStyle(fontFamily: 'MontserratScript'))),
-            IconButton(
-              color: Colors.red,
-              icon: Icon(Icons.remove_circle),
-              onPressed: () {
-                BlocProvider.of<FriendBloc>(context).add(
-                  FriendRemoveRequest(_friend),
-                );
-              },
-            ),
-          ],
-        )
-      ],
     );
   }
 }
@@ -577,7 +490,9 @@ class IngredientChip extends StatelessWidget {
                 : IngredientAdded(ingredient),
           );
         },
-        selectedColor: ingredient.fromPantry.owner.isNobody ? Colors.brown[200]:ingredient.fromPantry.color,
+        selectedColor: ingredient.fromPantry.owner.isNobody
+            ? Colors.brown[200]
+            : ingredient.fromPantry.color,
       ),
     );
   }
@@ -635,11 +550,11 @@ class RecipeResult extends StatelessWidget {
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
                             fontFamily: 'MontserratScript'
-                          // TODO: font change
-                        ),
+                            // TODO: font change
+                            ),
                       ),
                       const Padding(
                         padding: EdgeInsets.only(bottom: 5.0),
@@ -649,10 +564,9 @@ class RecipeResult extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.black54,
-                            fontFamily: 'MontserratScript'
-                        ),
+                            fontSize: 14.0,
+                            color: Colors.black54,
+                            fontFamily: 'MontserratScript'),
                       ),
                       Expanded(
                         child: Align(
@@ -660,9 +574,9 @@ class RecipeResult extends StatelessWidget {
                           child: Text(
                             data.likes.toString() + " LIKES",
                             style: const TextStyle(
-                              fontSize: 13.0,
-                              color: Colors.black87, fontFamily: 'MontserratScript'
-                            ),
+                                fontSize: 13.0,
+                                color: Colors.black87,
+                                fontFamily: 'MontserratScript'),
                           ),
                         ),
                       ),

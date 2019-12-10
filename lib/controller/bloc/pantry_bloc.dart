@@ -39,8 +39,9 @@ class LoadingPantry extends PantryState {}
 
 class PantryUpdated extends PantryState {
   final Pantry pantry;
+  final bool clearInput;
 
-  PantryUpdated(this.pantry);
+  PantryUpdated(this.pantry, {this.clearInput = false});
 }
 
 class SuggestingIngredients extends PantryState {
@@ -77,6 +78,7 @@ class PantryBloc extends Bloc<PantryEvent, PantryState> {
 
       if (_barText.isEmpty) {
         yield PantryUpdated(DatabaseController.instance.myPantry);
+        return;
       }
 
       var completions =
@@ -92,7 +94,7 @@ class PantryBloc extends Bloc<PantryEvent, PantryState> {
     if (event is PantryIngredientAdded) {
       var pantry = DatabaseController.instance.myPantry;
       if (pantry.ingredients.contains(event.ingredient)) {
-        yield PantryUpdated(pantry);
+        yield PantryUpdated(pantry, clearInput: true);
         return;
       }
 
@@ -111,7 +113,7 @@ class PantryBloc extends Bloc<PantryEvent, PantryState> {
     }
 
     if (event is _PantryRetrieved) {
-      yield PantryUpdated(event.myPantry);
+      yield PantryUpdated(event.myPantry, clearInput: true);
     }
   }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -10,6 +12,13 @@ class PantryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+<<<<<<< HEAD
+        return <Widget>[
+          PantryAppBar(),
+        ];
+      },
+      body: BlocBuilder<PantryBloc, PantryState>(
+=======
               return <Widget>[
                 SliverAppBar(
                   expandedHeight: 200.0,
@@ -55,29 +64,31 @@ class PantryPage extends StatelessWidget {
                 ];},
       body:
       BlocBuilder<PantryBloc, PantryState>(
+>>>>>>> UI adjustment on pantry header and pant
         builder: (context, state) {
-    if (state is PantryUpdated) {
-    return IngredientsListView(state.pantry);
-    }
+          if (state is PantryUpdated) {
+            return IngredientsListView(state.pantry);
+          }
 
-    if (state is SuggestingIngredients) {
-    return _SuggestionListView(state.suggestions);
-    }
+          if (state is SuggestingIngredients) {
+            return _SuggestionListView(state.suggestions);
+          }
 
-    if (state is PantrySuggestionsEmpty) {
-    return Center(
-    child: Text(
-    "No ingredients found",
-    style: TextStyle(color: Colors.grey, fontFamily: 'MontserratScript'),
-    ),
-    );
-    }
+          if (state is PantrySuggestionsEmpty) {
+            return Center(
+              child: Text(
+                "No ingredients found",
+                style: TextStyle(
+                    color: Colors.grey, fontFamily: 'MontserratScript'),
+              ),
+            );
+          }
 
-    return Center(
-    child: CircularProgressIndicator(),
-    );
-    },
-    ),
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      ),
     );
   }
 
@@ -123,6 +134,88 @@ class PantryPage extends StatelessWidget {
   }
 }
 
+class PantryAppBar extends StatefulWidget {
+  @override
+  _PantryAppBarState createState() => _PantryAppBarState();
+}
+
+class _PantryAppBarState extends State<PantryAppBar> {
+  StreamSubscription _bloc;
+  TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _bloc?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _bloc?.cancel();
+    _bloc = BlocProvider.of<PantryBloc>(context).listen((state) {
+      if (state is PantryUpdated && state.clearInput) {
+        _controller.clear();
+      }
+    });
+    return SliverAppBar(
+      expandedHeight: 200.0,
+      floating: false,
+      pinned: true,
+//                  leading: Icon(Icons.add, color: Theme.of(context).primaryColor),
+      flexibleSpace: FlexibleSpaceBar(
+        centerTitle: false,
+        title: Padding(
+          // Adds some padding around our TextField
+          padding: const EdgeInsets.symmetric(
+            vertical: 5.0,
+          ),
+          child: TextField(
+            controller: _controller,
+            cursorColor: Theme.of(context).primaryColor,
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'MontserratScript',
+            ),
+            // Type of "Done" button to show on keyboard
+            textInputAction: TextInputAction.search,
+            decoration: InputDecoration(
+//                              icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
+              border: InputBorder.none,
+              // Shows when TextField is empty
+              hintText: "Click Here to Add Ingredients",
+              hintStyle: TextStyle(
+                fontSize: 14,
+                color: Colors.white,
+                fontFamily: 'MontserratScript',
+              ),
+            ),
+            onSubmitted: (value) {},
+            onChanged: (value) {
+              BlocProvider.of<PantryBloc>(context)
+                  .add(IngredientBarEdited(value));
+            },
+          ),
+        ),
+//                      leading: IconButton(
+//                        icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
+//                      ),
+//                    ),
+        background: Image(
+          image: AssetImage('assets/images/pantry.png'),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+}
+
 class IngredientsListView extends StatelessWidget {
   final Pantry _pantry;
 
@@ -140,7 +233,8 @@ class IngredientsListView extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text("Ingredients in Your Pantry",
-                  style: TextStyle(fontSize: 24.0, fontFamily: 'MontserratScript')),
+                  style: TextStyle(
+                      fontSize: 24.0, fontFamily: 'MontserratScript')),
             ),
           ),
           Container(
@@ -189,7 +283,8 @@ class _SuggestionListView extends StatelessWidget {
         var ingredient = suggestions[index];
         return ListTile(
           leading: Icon(Icons.create),
-          title: Text(ingredient.name, style: TextStyle(fontFamily: 'MontserratScript')),
+          title: Text(ingredient.name,
+              style: TextStyle(fontFamily: 'MontserratScript')),
           trailing: Icon(Icons.add),
           onTap: () {
             BlocProvider.of<PantryBloc>(context)
