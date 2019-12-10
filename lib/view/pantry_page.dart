@@ -12,59 +12,11 @@ class PantryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-<<<<<<< HEAD
         return <Widget>[
           PantryAppBar(),
         ];
       },
       body: BlocBuilder<PantryBloc, PantryState>(
-=======
-              return <Widget>[
-                SliverAppBar(
-                  expandedHeight: 200.0,
-                  floating: false,
-                  pinned: true,
-//                  leading: Icon(Icons.add, color: Theme.of(context).primaryColor),
-                  flexibleSpace: FlexibleSpaceBar(
-                    centerTitle: false,
-                    title:
-                      Padding(
-                        // Adds some padding around our TextField
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 5.0,
-                        ),
-                        child: TextField(
-                          cursorColor: Theme.of(context).primaryColor,
-                          style: TextStyle(color:Colors.white, fontFamily: 'MontserratScript'),
-                          // Type of "Done" button to show on keyboard
-                          textInputAction: TextInputAction.search,
-                          decoration: InputDecoration(
-//                              icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
-                              border: InputBorder.none,
-                              // Shows when TextField is empty
-                              hintText: "Add Ingredients to Pantry...",
-                              hintStyle: TextStyle(color: Colors.white, fontFamily: 'MontserratScript', fontSize: 13.0)),
-                          onSubmitted: (value) {},
-                          onChanged: (value) {
-                            BlocProvider.of<PantryBloc>(context)
-                                .add(IngredientBarEdited(value));
-                          },
-                        ),
-                      ),
-//                      leading: IconButton(
-//                        icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
-//                      ),
-//                    ),
-                    background:
-                    Image(image: AssetImage('assets/images/pantry.png'),
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                )
-                ];},
-      body:
-      BlocBuilder<PantryBloc, PantryState>(
->>>>>>> UI adjustment on pantry header and pant
         builder: (context, state) {
           if (state is PantryUpdated) {
             return IngredientsListView(state.pantry);
