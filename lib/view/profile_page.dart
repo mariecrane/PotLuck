@@ -83,18 +83,6 @@ class EditPage extends StatelessWidget{
           Container(
             padding: const EdgeInsets.all(10.0),
             child: TextField(
-              controller: _authController,
-              obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Confirm your current password...",
-                labelStyle: TextStyle(fontFamily: 'MontserratScript'),
-              ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(10.0),
-            child: TextField(
               controller: _emailController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
@@ -103,7 +91,9 @@ class EditPage extends StatelessWidget{
               ),
             ),
           ),
-          RaisedButton(
+          Padding(
+          padding: EdgeInsets.symmetric(horizontal: 100.0),
+          child: RaisedButton(
             elevation: 0.0,
             color: Colors.amber[100],
             shape: RoundedRectangleBorder(
@@ -122,6 +112,19 @@ class EditPage extends StatelessWidget{
                   .add(EmailUpdated(_emailController.text, _authController.text));
             },
           ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(10.0),
+            child: TextField(
+              controller: _authController,
+              obscureText: true,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Confirm your current password...",
+                labelStyle: TextStyle(fontFamily: 'MontserratScript'),
+              ),
+            ),
+          ),
           Container(
             padding: const EdgeInsets.all(10.0),
             child: TextField(
@@ -134,7 +137,9 @@ class EditPage extends StatelessWidget{
               ),
             ),
           ),
-          RaisedButton(
+          Padding(
+          padding: EdgeInsets.symmetric(horizontal: 90.0),
+          child: RaisedButton(
             elevation: 0.0,
             color: Colors.amber[100],
             shape: RoundedRectangleBorder(
@@ -152,6 +157,7 @@ class EditPage extends StatelessWidget{
               BlocProvider.of<ProfileBloc>(context)
                   .add(PasswordUpdated(_passwordController.text, _authController.text));
             },
+          ),
           ),
         ],
       ),

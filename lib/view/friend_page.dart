@@ -24,9 +24,9 @@ class _AddFriendPageState extends State<AddFriendPage> {
               fontFamily: 'MontserratScript'),
         ),
       ),
-      body: Column(
+      body: ListView(
         children: <Widget>[
-          Container(
+          Padding(
             padding: const EdgeInsets.all(20.0),
             child: TextField(
               controller: _controller,
@@ -37,25 +37,69 @@ class _AddFriendPageState extends State<AddFriendPage> {
               ),
             ),
           ),
-          RaisedButton(
-            elevation: 0.0,
-            color: Colors.amber[100],
-            shape: RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(25.0),
-            ),
-            child: Text(
-              "Add",
-              style: TextStyle(
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 130.0),
+            child: RaisedButton(
+              elevation: 0.0,
+              color: Colors.amber[100],
+              shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(25.0),
+              ),
+              child: Text(
+                "Add",
+                style: TextStyle(
                   fontSize: 17.0,
                   color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.w300,
                   fontFamily: 'MontserratScript'),
+              ),
+              onPressed: () {
+                BlocProvider.of<FriendBloc>(context).add(
+                  FriendAddRequest(_controller.text),
+                );
+                Navigator.of(context).pop();
+              },
             ),
-            onPressed: () {
-              BlocProvider.of<FriendBloc>(context).add(
-                FriendAddRequest(_controller.text),
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              child: Text(
+                "Friend Requests:",
+                style: TextStyle(
+                  fontFamily: "MontserratScript",
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ),
+          BlocBuilder<FriendBloc, FriendState>(
+            condition: (before, after) {
+              return (after is FriendsLoading) || (after is FriendRequestsUpdate);
+            },
+            builder: (context, state) {
+              if (state is FriendsLoading) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (state is FriendRequestsUpdate) {
+                return ListView.builder(
+                  key: PageStorageKey<String>("request_list"),
+                  itemCount: state.friendRequests.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return RequestTile(state.friendRequests[index]);
+                  },
+                );
+              }
+              return Center(
+                child: Text(
+                  "You Have No Friend Requests",
+                  style: TextStyle(color: Colors.red),
+                ),
               );
-              Navigator.of(context).pop();
             },
           ),
           Align(
@@ -134,6 +178,36 @@ class FriendTile extends StatelessWidget {
         onPressed: () {
           BlocProvider.of<FriendBloc>(context).add(
             FriendRemoveRequest(_friend),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class RequestTile extends StatelessWidget {
+  final User _friend;
+  RequestTile(this._friend);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundImage: FirebaseImage(_friend.imageURI),
+      ),
+      title: Title(
+        color: Colors.black,
+        child: Text(
+          _friend.email,
+          style: TextStyle(fontSize: 17, fontFamily: 'MontserratScript'),
+        ),
+      ),
+      trailing: IconButton(
+        color: Colors.green,
+        icon: Icon(Icons.add_circle),
+        onPressed: () {
+          BlocProvider.of<FriendBloc>(context).add(
+            FriendAddRequest(_friend.email),
           );
         },
       ),
