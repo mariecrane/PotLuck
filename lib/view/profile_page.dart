@@ -92,7 +92,7 @@ class EditPage extends StatelessWidget{
             ),
           ),
           Padding(
-          padding: EdgeInsets.symmetric(horizontal: 100.0),
+          padding: EdgeInsets.symmetric(horizontal: 80.0),
           child: RaisedButton(
             elevation: 0.0,
             color: Colors.amber[100],
@@ -138,7 +138,7 @@ class EditPage extends StatelessWidget{
             ),
           ),
           Padding(
-          padding: EdgeInsets.symmetric(horizontal: 90.0),
+          padding: EdgeInsets.symmetric(horizontal: 70.0),
           child: RaisedButton(
             elevation: 0.0,
             color: Colors.amber[100],
