@@ -2,67 +2,41 @@ import 'package:bloc/bloc.dart';
 import 'package:pot_luck/controller/database.dart';
 import 'package:pot_luck/model/user.dart';
 
-abstract class FriendEvent {}
+abstract class FriendsListEvent {}
 
-class FriendRemoveRequest extends FriendEvent {
+class FriendRemoveRequest extends FriendsListEvent {
   final User friend;
   FriendRemoveRequest(this.friend);
 }
 
-class FriendAddRequest extends FriendEvent {
-  final String email;
-  FriendAddRequest(this.email);
-}
-
-class _FriendsRetrieved extends FriendEvent {
+class _FriendsRetrieved extends FriendsListEvent {
   final List<User> friendsList;
   _FriendsRetrieved(this.friendsList);
 }
 
-class _FriendRequestsRetrieved extends FriendEvent {
-  final List<User> friendRequests;
-  _FriendRequestsRetrieved(this.friendRequests);
-}
+abstract class FriendsListState {}
 
-abstract class FriendState {}
-
-class FriendsListUpdate extends FriendState {
+class FriendsListUpdate extends FriendsListState {
   final List<User> friendsList;
   FriendsListUpdate(this.friendsList);
 }
 
-class FriendRequestsUpdate extends FriendState {
-  final List<User> friendRequests;
-  FriendRequestsUpdate(this.friendRequests);
-}
+class FriendsListLoading extends FriendsListState {}
 
-class InitialFriendState extends FriendState {}
-
-class FriendsListLoading extends FriendState {}
-
-class FriendRequestsLoading extends FriendState {}
-
-class FriendBloc extends Bloc<FriendEvent, FriendState> {
-  FriendBloc() {
+class FriendsListBloc extends Bloc<FriendsListEvent, FriendsListState> {
+  FriendsListBloc() {
     DatabaseController.instance.onFriendsUpdate((friends) {
       add(_FriendsRetrieved(friends));
-    });
-    DatabaseController.instance.onFriendRequestsUpdate((requests) {
-      add(_FriendRequestsRetrieved(requests));
     });
   }
 
   @override
-  FriendState get initialState => InitialFriendState();
+  FriendsListState get initialState => FriendsListLoading();
 
   @override
-  Stream<FriendState> mapEventToState(FriendEvent event) async* {
+  Stream<FriendsListState> mapEventToState(FriendsListEvent event) async* {
     if (event is _FriendsRetrieved) {
       yield FriendsListUpdate(event.friendsList);
-    }
-
-    if (event is _FriendRequestsRetrieved) {
-      yield FriendRequestsUpdate(event.friendRequests);
     }
 
     if (event is FriendRemoveRequest) {
@@ -70,15 +44,6 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
 
       DatabaseController.instance.removeFriend(
         event.friend,
-      );
-    }
-
-    if (event is FriendAddRequest) {
-      yield FriendsListLoading();
-      yield FriendRequestsLoading();
-
-      DatabaseController.instance.sendFriendRequest(
-        User(email: event.email),
       );
     }
   }

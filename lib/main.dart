@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/controller/bloc/auth_bloc.dart';
 import 'package:pot_luck/controller/bloc/friend_bloc.dart';
+import 'package:pot_luck/controller/bloc/friend_requests_bloc.dart';
 import 'package:pot_luck/controller/bloc/pantry_bloc.dart';
-import 'package:pot_luck/controller/bloc/search_bloc.dart';
 import 'package:pot_luck/controller/bloc/profile_bloc.dart';
+import 'package:pot_luck/controller/bloc/search_bloc.dart';
 import 'package:pot_luck/controller/database.dart';
 import 'package:pot_luck/view/auth_page.dart';
 import 'package:pot_luck/view/nav.dart';
@@ -41,19 +42,22 @@ class MyApp extends StatelessWidget {
         child: MultiBlocProvider(
           providers: <BlocProvider>[
             BlocProvider<AuthBloc>(
-              builder: (context) => AuthBloc(),
+              create: (context) => AuthBloc(),
             ),
             BlocProvider<SearchBloc>(
-              builder: (context) => SearchBloc(),
+              create: (context) => SearchBloc(),
             ),
             BlocProvider<PantryBloc>(
-              builder: (context) => PantryBloc(),
+              create: (context) => PantryBloc(),
             ),
-            BlocProvider<FriendBloc>(
-              builder: (context) => FriendBloc(),
+            BlocProvider<FriendsListBloc>(
+              create: (context) => FriendsListBloc(),
+            ),
+            BlocProvider<FriendRequestsBloc>(
+              create: (context) => FriendRequestsBloc(),
             ),
             BlocProvider<ProfileBloc>(
-              builder: (context) => ProfileBloc(),
+              create: (context) => ProfileBloc(),
             ),
           ],
           child: BlocBuilder<AuthBloc, AuthState>(

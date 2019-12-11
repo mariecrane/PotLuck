@@ -202,8 +202,10 @@ class DatabaseController {
       var doc = await transaction.get(pantryDoc);
       List<String> ingredients =
           doc.data["ingredients"].map<String>((i) => i as String).toList();
-      if (ingredients.contains(ingredient.name)) return;
-      ingredients.add(ingredient.name);
+
+      if (ingredients.contains(ingredient.name) == false) {
+        ingredients.add(ingredient.name);
+      }
       await transaction.update(pantryDoc, <String, dynamic>{
         "ingredients": ingredients,
       });
@@ -222,8 +224,10 @@ class DatabaseController {
       var doc = await transaction.get(pantryDoc);
       List<String> ingredients =
           doc.data["ingredients"].map<String>((i) => i as String).toList();
-      if (ingredients.contains(ingredient.name) == false) return;
-      ingredients.remove(ingredient.name);
+
+      if (ingredients.contains(ingredient.name)) {
+        ingredients.remove(ingredient.name);
+      }
       await transaction.update(pantryDoc, <String, dynamic>{
         "ingredients": ingredients,
       });
@@ -270,9 +274,10 @@ class DatabaseController {
       var result = await transaction.get(doc);
       List<String> requests =
           result.data["requestToIds"].map<String>((r) => r as String).toList();
-      if (requests.contains(friendId)) return;
 
-      requests.add(friendId);
+      if (requests.contains(friendId) == false) {
+        requests.add(friendId);
+      }
       await transaction
           .update(doc, <String, dynamic>{"requestToIds": requests});
     });
@@ -298,9 +303,10 @@ class DatabaseController {
       var result = await transaction.get(doc);
       List<String> removals =
           result.data["removeIds"].map<String>((r) => r as String).toList();
-      if (removals.contains(friendId)) return;
 
-      removals.add(friendId);
+      if (removals.contains(friendId) == false) {
+        removals.add(friendId);
+      }
       await transaction.update(doc, <String, dynamic>{"removeIds": removals});
     });
   }
@@ -460,7 +466,7 @@ class DatabaseController {
 
     var friendRequests = <User>[];
 
-    var futures = requests.map((id) async {
+    var futures = requests.map<Future>((id) async {
       var data =
           await Firestore.instance.collection("users").document(id).get();
 
@@ -473,7 +479,7 @@ class DatabaseController {
       );
     });
 
-    await Future.wait(futures);
+    await Future.wait(futures.toList());
 
     _friendRequests = friendRequests;
 

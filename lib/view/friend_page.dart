@@ -2,6 +2,7 @@ import 'package:firebase_image/firebase_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/controller/bloc/friend_bloc.dart';
+import 'package:pot_luck/controller/bloc/friend_requests_bloc.dart';
 import 'package:pot_luck/model/user.dart';
 
 ///@uthors: Preston Locke, Shouayee Vue
@@ -59,7 +60,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
                     fontFamily: 'MontserratScript'),
               ),
               onPressed: () {
-                BlocProvider.of<FriendBloc>(context).add(
+                BlocProvider.of<FriendRequestsBloc>(context).add(
                   FriendAddRequest(_controller.text),
                 );
                 Navigator.of(context).pop();
@@ -79,15 +80,9 @@ class _AddFriendPageState extends State<AddFriendPage> {
               ),
             ),
           ),
-          BlocBuilder<FriendBloc, FriendState>(
-            condition: (before, after) {
-              return (after is FriendRequestsLoading) ||
-                  (after is FriendRequestsUpdate) ||
-                  (after is InitialFriendState);
-            },
+          BlocBuilder<FriendRequestsBloc, FriendRequestsState>(
             builder: (context, state) {
-              if (state is FriendRequestsLoading ||
-                  state is InitialFriendState) {
+              if (state is FriendRequestsLoading) {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
@@ -124,12 +119,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
               ),
             ),
           ),
-          BlocBuilder<FriendBloc, FriendState>(
-            condition: (before, after) {
-              return (after is FriendsListLoading) ||
-                  (after is FriendsListUpdate) ||
-                  (after is InitialFriendState);
-            },
+          BlocBuilder<FriendsListBloc, FriendsListState>(
             builder: (context, state) {
               if (state is FriendsListLoading) {
                 return Center(
@@ -146,6 +136,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
                   },
                 );
               }
+              debugPrint("state is of type: " + state.runtimeType.toString());
               return Center(
                 child: Text(
                   "Hmm, something went wrong...",
@@ -220,7 +211,7 @@ class FriendTile extends StatelessWidget {
             },
           );
           if (delete) {
-            BlocProvider.of<FriendBloc>(context).add(
+            BlocProvider.of<FriendsListBloc>(context).add(
               FriendRemoveRequest(_friend),
             );
           }
@@ -252,7 +243,7 @@ class RequestTile extends StatelessWidget {
         color: Colors.green,
         icon: Icon(Icons.add_circle),
         onPressed: () {
-          BlocProvider.of<FriendBloc>(context).add(
+          BlocProvider.of<FriendRequestsBloc>(context).add(
             FriendAddRequest(_friend.email),
           );
         },

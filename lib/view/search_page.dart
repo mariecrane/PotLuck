@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/controller/bloc/friend_bloc.dart';
+import 'package:pot_luck/controller/bloc/friend_requests_bloc.dart';
 import 'package:pot_luck/controller/bloc/search_bloc.dart';
 import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/recipe.dart';
@@ -45,8 +46,15 @@ class SearchPage extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).push(
               CupertinoPageRoute(
-                builder: (_) => BlocProvider<FriendBloc>.value(
-                  value: BlocProvider.of<FriendBloc>(context),
+                builder: (_) => MultiBlocProvider(
+                  providers: <BlocProvider>[
+                    BlocProvider<FriendsListBloc>.value(
+                      value: BlocProvider.of<FriendsListBloc>(context),
+                    ),
+                    BlocProvider<FriendRequestsBloc>.value(
+                      value: BlocProvider.of<FriendRequestsBloc>(context),
+                    ),
+                  ],
                   child: AddFriendPage(),
                 ),
               ),
