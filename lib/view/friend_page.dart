@@ -175,10 +175,43 @@ class FriendTile extends StatelessWidget {
       trailing: IconButton(
         color: Colors.red,
         icon: Icon(Icons.remove_circle),
-        onPressed: () {
-          BlocProvider.of<FriendBloc>(context).add(
-            FriendRemoveRequest(_friend),
+        onPressed: () async {
+          bool delete = await showDialog<bool>(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text(
+                  "This will permanently delete your friend. Are you sure you want to proceed?",
+                  style: TextStyle(fontFamily: 'MontserratScript'),
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(fontFamily: 'MontserratScript'),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                  ),
+                  FlatButton(
+                    child: Text(
+                      "Proceed",
+                      style: TextStyle(fontFamily: 'MontserratScript'),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
+                ],
+              );
+            },
           );
+          if (delete) {
+            BlocProvider.of<FriendBloc>(context).add(
+                FriendRemoveRequest(_friend)
+            );
+          }
         },
       ),
     );
