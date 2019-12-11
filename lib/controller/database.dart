@@ -181,7 +181,7 @@ class DatabaseController {
 
     _myPantry = Pantry(
       owner: _me,
-      title: _me.email,
+      title: "My Pantry",
       color: _colors[0],
       ingredients: _myPantry.ingredients,
     );
@@ -495,7 +495,7 @@ class DatabaseController {
 
     _myPantry = Pantry(
       owner: _me,
-      title: _me.email,
+      title: 'My Pantry',
       color: _colors[0],
       ingredients: _myPantry.ingredients,
     );

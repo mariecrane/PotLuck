@@ -136,14 +136,14 @@ class _PantryAppBarState extends State<PantryAppBar> {
               fontFamily: 'MontserratScript',
             ),
             // Type of "Done" button to show on keyboard
-            textInputAction: TextInputAction.search,
+            textInputAction: TextInputAction.done,
             decoration: InputDecoration(
 //                              icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
               border: InputBorder.none,
               // Shows when TextField is empty
-              hintText: "Click Here to Add Ingredients",
+              hintText: "Tap Here to Add Ingredients",
               hintStyle: TextStyle(
-                fontSize: 14,
+                fontSize: 12,
                 color: Colors.white,
                 fontFamily: 'MontserratScript',
               ),
