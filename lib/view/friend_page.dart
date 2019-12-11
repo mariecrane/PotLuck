@@ -4,11 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/controller/bloc/friend_bloc.dart';
 import 'package:pot_luck/model/user.dart';
 
-/**
- * @uthors: Preston Locke, Shouayee Vue
- *  Last Updated 12/11/2019
- *  friend_page.dart is the page where users can see friend requests, add, and delete friends. It is an extension from the floating icon from the search_page.dart
- */
+///@uthors: Preston Locke, Shouayee Vue
+///Last Updated 12/11/2019
+///friend_page.dart is the page where users can see friend requests, add, and delete friends. It is an extension from the floating icon from the search_page.dart
 
 class AddFriendPage extends StatefulWidget {
   ///AddFriendPage is the body of the page.

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -7,7 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/controller/bloc/pantry_bloc.dart';
 import 'package:pot_luck/model/pantry.dart';
 
+///@uthors: Preston Locke, Shouayee Vue, Tracy Cai
+///pantry_page.dart is the Pantry page that shows a user's current ingredients stored. They are able to add ingredients on this page to their Pnatry.
+
 class PantryPage extends StatelessWidget {
+  ///The body of the page
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
@@ -46,39 +49,6 @@ class PantryPage extends StatelessWidget {
 
   static Widget buildAppBar(BuildContext context) {
     return null;
-//        Image(image: AssetImage('assets/pantry.png'),
-//          fit: BoxFit.cover,
-//      ),
-//        AppBar(
-//          backgroundColor: Colors.white,
-//
-//          elevation: 1.0,
-//          automaticallyImplyLeading: true,
-//          title:
-//          Padding(
-//            // Adds some padding around our TextField
-//            padding: const EdgeInsets.symmetric(
-//              vertical: 5.0,
-//            ),
-//            child: TextField(
-//              // Type of "Done" button to show on keyboard
-//              textInputAction: TextInputAction.search,
-//              decoration: InputDecoration(
-//                  border: InputBorder.none,
-//                  // Shows when TextField is empty
-//                  hintText: "Add Ingredients to Pantry...",
-//                  hintStyle: TextStyle(fontFamily: 'MontserratScript')),
-//              onSubmitted: (value) {},
-//              onChanged: (value) {
-//                BlocProvider.of<PantryBloc>(context)
-//                    .add(IngredientBarEdited(value));
-//              },
-//            ),
-//          ),
-//          leading: IconButton(
-//            icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
-//          ),
-//        );
   }
 
   static Widget buildFloatingActionButton(BuildContext context) {
@@ -87,6 +57,7 @@ class PantryPage extends StatelessWidget {
 }
 
 class PantryAppBar extends StatefulWidget {
+  ///Creates the header with the search where users can add new ingredients to th pantry
   @override
   _PantryAppBarState createState() => _PantryAppBarState();
 }
@@ -120,11 +91,9 @@ class _PantryAppBarState extends State<PantryAppBar> {
       expandedHeight: 200.0,
       floating: false,
       pinned: true,
-//                  leading: Icon(Icons.add, color: Theme.of(context).primaryColor),
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: false,
         title: Padding(
-          // Adds some padding around our TextField
           padding: const EdgeInsets.symmetric(
             vertical: 5.0,
           ),
@@ -135,10 +104,8 @@ class _PantryAppBarState extends State<PantryAppBar> {
               color: Colors.white,
               fontFamily: 'MontserratScript',
             ),
-            // Type of "Done" button to show on keyboard
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(
-//                              icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
               border: InputBorder.none,
               // Shows when TextField is empty
               hintText: "Tap Here to Add Ingredients",
@@ -155,10 +122,6 @@ class _PantryAppBarState extends State<PantryAppBar> {
             },
           ),
         ),
-//                      leading: IconButton(
-//                        icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
-//                      ),
-//                    ),
         background: Image(
           image: AssetImage('assets/images/pantry.png'),
           fit: BoxFit.cover,
@@ -169,6 +132,7 @@ class _PantryAppBarState extends State<PantryAppBar> {
 }
 
 class IngredientsListView extends StatelessWidget {
+  ///Creates chips for each ingredient and puts them in a wrap to view
   final Pantry _pantry;
 
   IngredientsListView(this._pantry);
@@ -223,6 +187,7 @@ class IngredientsListView extends StatelessWidget {
 }
 
 class _SuggestionListView extends StatelessWidget {
+  ///This is the suggestion dropdown for the search bar
   final List<PantryIngredient> suggestions;
 
   const _SuggestionListView(this.suggestions, {Key key}) : super(key: key);

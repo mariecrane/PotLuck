@@ -3,12 +3,16 @@ import 'package:pot_luck/view/pantry_page.dart';
 import 'package:pot_luck/view/profile_page.dart';
 import 'package:pot_luck/view/search_page.dart';
 
+///@uthors: Preston Locke, Shouayee Vue
+///nav.dart is the Navigation that connects all the pages in the view folder together.
+
 class NavWrapper extends StatefulWidget {
   @override
   _NavWrapperState createState() => _NavWrapperState();
 }
 
 class _NavWrapperState extends State<NavWrapper> {
+  ///Wraps the pages in a Scaffold and created a bottom navigation bar for the app
   int _page = 1;
 
   @override

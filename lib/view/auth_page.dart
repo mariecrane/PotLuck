@@ -3,10 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/controller/bloc/auth_bloc.dart';
 
-/**
- * @uthers: Preston Locke, Shouayee Vue, Tracy Cai
- * auth_page.dart is the Authentication Page before a user logs into the App
- */
+///@uthers: Preston Locke, Shouayee Vue, Tracy Cai
+///auth_page.dart is the Authentication Page before a user logs into the App
 
 class AuthPage extends StatefulWidget {
   ///This is the body of the page
