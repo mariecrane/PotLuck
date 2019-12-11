@@ -102,7 +102,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
               return Center(
                 child: Text(
                   "You Have No Friend Requests",
-                  style: TextStyle(color: Colors.red),
+                  style: TextStyle(color: Colors.red, fontFamily: "MontserratScript"),
                 ),
               );
             },
