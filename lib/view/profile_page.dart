@@ -8,7 +8,12 @@ import 'package:pot_luck/controller/bloc/profile_bloc.dart';
 import 'package:pot_luck/model/user.dart';
 import 'package:flutter/cupertino.dart';
 
+/// Authors: Marie Crane, Preston Locke
+/// This page shows the user's email and profile picture and includes options to
+/// edit them and the password. Also includes "sign out" and "delete" buttons.
+
 class ProfilePage extends StatelessWidget {
+  /// Body of the page, either loading or displaying the user's profile
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileBloc, ProfileState>(
@@ -16,25 +21,6 @@ class ProfilePage extends StatelessWidget {
         if (state is ProfileLoading) {
           return Center(
             child: CircularProgressIndicator(),
-          );
-        }
-
-        if (state is NotSignedIn) {
-          return Center(
-            child: Column(
-              children: <Widget>[
-                Text(
-                  "You're not signed in! Create an account or sign in to access all the features of PotLuck",
-                  style: TextStyle(color: Colors.grey),
-                ),
-                RaisedButton(
-                  child: Text("Go to sign-in"),
-                  onPressed: () {
-                    BlocProvider.of<AuthBloc>(context).add(SignOutRequested());
-                  },
-                ),
-              ],
-            ),
           );
         }
 
@@ -62,6 +48,9 @@ class ProfilePage extends StatelessWidget {
 }
 
 class EditPage extends StatelessWidget{
+  /// This page is loaded when the user clicks on the "Edit Profile" button. It
+  /// allows the user to change their email or password, after re-authentication
+  /// by entering their current password.
   var _authController = TextEditingController();
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
@@ -80,6 +69,18 @@ class EditPage extends StatelessWidget{
       body: ListView(
         physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
+          Container(
+            padding: const EdgeInsets.all(10.0),
+            child: TextField(
+              controller: _authController,
+              obscureText: true,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Confirm your current password...",
+                labelStyle: TextStyle(fontFamily: 'MontserratScript'),
+              ),
+            ),
+          ),
           Container(
             padding: const EdgeInsets.all(10.0),
             child: TextField(
@@ -112,18 +113,6 @@ class EditPage extends StatelessWidget{
                   .add(EmailUpdated(_emailController.text, _authController.text));
             },
           ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(10.0),
-            child: TextField(
-              controller: _authController,
-              obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Confirm your current password...",
-                labelStyle: TextStyle(fontFamily: 'MontserratScript'),
-              ),
-            ),
           ),
           Container(
             padding: const EdgeInsets.all(10.0),
@@ -167,6 +156,9 @@ class EditPage extends StatelessWidget{
 }
 
 class ProfileInfoListView extends StatelessWidget {
+  /// Shows user's profile information in a list. Shows user's profile picture,
+  /// which can be edited by clicking on it. Also shows user's email and includes
+  /// buttons to edit profile, sign out, and delete account.
   final User profile;
 
   const ProfileInfoListView(this.profile, {Key key}) : super(key: key);
@@ -240,7 +232,6 @@ class ProfileInfoListView extends StatelessWidget {
                       child: EditPage(),
                   ),
                 ));
-                //TODO: implement pop up window to edit name, username, email, password, and photo
               },
               shape: RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(20.0),
