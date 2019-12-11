@@ -4,7 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/controller/bloc/friend_bloc.dart';
 import 'package:pot_luck/model/user.dart';
 
+/**
+ * @uthors: Preston Locke, Shouayee Vue
+ *  Last Updated 12/11/2019
+ *  friend_page.dart is the page where users can see friend requests, add, and delete friends. It is an extension from the floating icon from the search_page.dart
+ */
+
 class AddFriendPage extends StatefulWidget {
+  ///AddFriendPage is the body of the page.
   @override
   _AddFriendPageState createState() => _AddFriendPageState();
 }
@@ -156,6 +163,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
 }
 
 class FriendTile extends StatelessWidget {
+  ///FriendTile creates a ListTile of Widgets representing the user's current friends
   final User _friend;
   FriendTile(this._friend);
 
@@ -209,7 +217,7 @@ class FriendTile extends StatelessWidget {
           );
           if (delete) {
             BlocProvider.of<FriendBloc>(context).add(
-                FriendRemoveRequest(_friend)
+                FriendRemoveRequest(_friend),
             );
           }
         },
@@ -219,6 +227,7 @@ class FriendTile extends StatelessWidget {
 }
 
 class RequestTile extends StatelessWidget {
+  ///Request creates a ListTile of Widgets representing the user's friend requests
   final User _friend;
   RequestTile(this._friend);
 

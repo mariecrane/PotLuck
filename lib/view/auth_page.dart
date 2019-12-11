@@ -3,7 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/controller/bloc/auth_bloc.dart';
 
+/**
+ * @uthers: Preston Locke, Shouayee Vue, Tracy Cai
+ * auth_page.dart is the Authentication Page before a user logs into the App
+ */
+
 class AuthPage extends StatefulWidget {
+  ///This is the body of the page
   final String errorMessage;
 
   AuthPage({this.errorMessage});
@@ -23,13 +29,10 @@ class _AuthPageState extends State<AuthPage> {
       key: key,
       body: SafeArea(
         child: WillPopScope(
-            // Allow back button to trigger a return to AuthChooser before exiting app
             onWillPop: () async {
-              // If already/still on AuthChooser, do default back button behavior
               if (_currentForm == 0) {
                 return true;
               }
-              // Back out of SignInForm/CreateAccountForm and display AuthChooser
               setState(() {
                 _currentForm = 0;
               });
@@ -44,12 +47,6 @@ class _AuthPageState extends State<AuthPage> {
             )),
       ),
     );
-
-//    key.currentState.showSnackBar(SnackBar(
-//      content: Text(widget.errorMessage),
-//      duration: Duration(seconds: 2),
-//    ));
-
     return scaffold;
   }
 
@@ -118,6 +115,7 @@ class _AuthPageState extends State<AuthPage> {
 }
 
 class AuthForm extends StatefulWidget {
+  ///This is the body of the forum used to enter in email and password
   final createAccount;
 
   AuthForm({@required this.createAccount});
