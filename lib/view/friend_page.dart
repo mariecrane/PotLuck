@@ -53,10 +53,10 @@ class _AddFriendPageState extends State<AddFriendPage> {
               child: Text(
                 "Add",
                 style: TextStyle(
-                  fontSize: 17.0,
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.w300,
-                  fontFamily: 'MontserratScript'),
+                    fontSize: 17.0,
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w300,
+                    fontFamily: 'MontserratScript'),
               ),
               onPressed: () {
                 BlocProvider.of<FriendBloc>(context).add(
@@ -81,10 +81,13 @@ class _AddFriendPageState extends State<AddFriendPage> {
           ),
           BlocBuilder<FriendBloc, FriendState>(
             condition: (before, after) {
-              return (after is FriendsLoading) || (after is FriendRequestsUpdate);
+              return (after is FriendRequestsLoading) ||
+                  (after is FriendRequestsUpdate) ||
+                  (after is InitialFriendState);
             },
             builder: (context, state) {
-              if (state is FriendsLoading) {
+              if (state is FriendRequestsLoading ||
+                  state is InitialFriendState) {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
@@ -102,7 +105,8 @@ class _AddFriendPageState extends State<AddFriendPage> {
               return Center(
                 child: Text(
                   "You Have No Friend Requests",
-                  style: TextStyle(color: Colors.red, fontFamily: "MontserratScript"),
+                  style: TextStyle(
+                      color: Colors.red, fontFamily: "MontserratScript"),
                 ),
               );
             },
@@ -122,10 +126,12 @@ class _AddFriendPageState extends State<AddFriendPage> {
           ),
           BlocBuilder<FriendBloc, FriendState>(
             condition: (before, after) {
-              return (after is FriendsLoading) || (after is FriendsListUpdate);
+              return (after is FriendsListLoading) ||
+                  (after is FriendsListUpdate) ||
+                  (after is InitialFriendState);
             },
             builder: (context, state) {
-              if (state is FriendsLoading) {
+              if (state is FriendsListLoading) {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
@@ -215,7 +221,7 @@ class FriendTile extends StatelessWidget {
           );
           if (delete) {
             BlocProvider.of<FriendBloc>(context).add(
-                FriendRemoveRequest(_friend),
+              FriendRemoveRequest(_friend),
             );
           }
         },

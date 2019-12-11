@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/user.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 
 typedef void PantryUpdateCallback(Pantry myPantry, List<Pantry> friendPantries);
 typedef void FriendsUpdateCallback(List<User> friends);
@@ -27,7 +27,7 @@ class DatabaseController {
   }
 
   static final HttpsCallable updateEmail =
-  CloudFunctions.instance.getHttpsCallable(
+      CloudFunctions.instance.getHttpsCallable(
     functionName: 'updateEmail',
   );
 
@@ -129,7 +129,7 @@ class DatabaseController {
     }
   }
 
-  void updateUserEmail(String email) async{
+  void updateUserEmail(String email) async {
     try {
       await updateEmail.call(<String, dynamic>{
         "query": email,
@@ -451,7 +451,6 @@ class DatabaseController {
     _doFriendsUpdateCallbacks();
   }
 
-  // TODO: Update friend requests list from snapshot
   void _onFriendRequestsSnapshot(DocumentSnapshot snapshot) async {
     if (snapshot == null) return;
 

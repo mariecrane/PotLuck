@@ -36,7 +36,11 @@ class FriendRequestsUpdate extends FriendState {
   FriendRequestsUpdate(this.friendRequests);
 }
 
-class FriendsLoading extends FriendState {}
+class InitialFriendState extends FriendState {}
+
+class FriendsListLoading extends FriendState {}
+
+class FriendRequestsLoading extends FriendState {}
 
 class FriendBloc extends Bloc<FriendEvent, FriendState> {
   FriendBloc() {
@@ -49,7 +53,7 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
   }
 
   @override
-  FriendState get initialState => FriendsLoading();
+  FriendState get initialState => InitialFriendState();
 
   @override
   Stream<FriendState> mapEventToState(FriendEvent event) async* {
@@ -62,7 +66,7 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
     }
 
     if (event is FriendRemoveRequest) {
-      yield FriendsLoading();
+      yield FriendsListLoading();
 
       DatabaseController.instance.removeFriend(
         event.friend,
@@ -70,7 +74,8 @@ class FriendBloc extends Bloc<FriendEvent, FriendState> {
     }
 
     if (event is FriendAddRequest) {
-      yield FriendsLoading();
+      yield FriendsListLoading();
+      yield FriendRequestsLoading();
 
       DatabaseController.instance.sendFriendRequest(
         User(email: event.email),
