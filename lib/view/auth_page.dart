@@ -54,11 +54,12 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Widget _buildAuthChooser() {
-    return Column(
+    return ListView(
       children: <Widget>[
         Padding(padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0), child: Image.asset('assets/images/icon.png')),
         Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
-        Text.rich(
+        Center(
+        child: Text.rich(
           TextSpan(
             children: <TextSpan>[
               TextSpan(text: 'Welcome to ',
@@ -72,12 +73,14 @@ class _AuthPageState extends State<AuthPage> {
             ],
           ),
         ),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(
             vertical: 25.0,
           ),
         ),
-        RaisedButton(
+        Padding(padding: EdgeInsets.symmetric(horizontal: 120.0),
+          child: RaisedButton(
           elevation: 0.0,
           color: Colors.amber[100],
           shape: RoundedRectangleBorder(
@@ -91,7 +94,9 @@ class _AuthPageState extends State<AuthPage> {
             });
           },
         ),
-        RaisedButton(
+        ),
+    Padding(padding: EdgeInsets.symmetric(horizontal: 100.0),
+          child: RaisedButton(
           elevation: 0.0,
           color: Theme.of(context).primaryColor,
           shape: RoundedRectangleBorder(
@@ -106,6 +111,7 @@ class _AuthPageState extends State<AuthPage> {
             });
           },
         ),
+    ),
       ],
     );
   }
@@ -128,7 +134,7 @@ class _AuthFormState extends State<AuthForm> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20.0),
-      child: Column(
+      child: ListView(
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(
@@ -166,7 +172,8 @@ class _AuthFormState extends State<AuthForm> {
               vertical: 15.0,
             ),
           ),
-          RaisedButton(
+    Padding(padding: EdgeInsets.symmetric(horizontal: 80.0),
+    child: RaisedButton(
             elevation: 0.0,
             color: Theme.of(context).primaryColor,
             shape: RoundedRectangleBorder(
@@ -191,6 +198,7 @@ class _AuthFormState extends State<AuthForm> {
               BlocProvider.of<AuthBloc>(context).add(event);
             },
           )
+    ),
         ],
       ),
     );

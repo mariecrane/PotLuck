@@ -181,7 +181,7 @@ class FriendTile extends StatelessWidget {
             builder: (context) {
               return AlertDialog(
                 title: Text(
-                  "This will permanently delete your friend. Are you sure you want to proceed?",
+                  "Are you sure you want to unfriend?",
                   style: TextStyle(fontFamily: 'MontserratScript'),
                 ),
                 actions: <Widget>[
