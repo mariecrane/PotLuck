@@ -13,6 +13,12 @@ import 'package:pot_luck/model/recipe.dart';
 import 'package:pot_luck/view/friend_page.dart';
 import 'package:pot_luck/view/recipe_page.dart';
 
+/// Authors: Preston Locke, Tracy Cai
+/// pantry_page.dart is the Search page which the user can choose or add the
+/// ingredients from their own & friends' pantry and search recipes based on
+/// the chosen ingredients.
+
+/// The body of the Search Page
 class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -66,6 +72,8 @@ class SearchPage extends StatelessWidget {
   }
 }
 
+/// The builder of AppBar; returns a SearchAppBar before searching, a Container
+/// when searching, and a ResultAppBar after the search
 class SearchAppBarWrapper extends StatelessWidget
     implements PreferredSizeWidget {
   @override
@@ -90,6 +98,7 @@ class SearchAppBarWrapper extends StatelessWidget
   Size get preferredSize => AppBar().preferredSize;
 }
 
+/// The AppBar when showing the result page
 class ResultsAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -109,6 +118,7 @@ class ResultsAppBar extends StatelessWidget {
   }
 }
 
+/// The AppBar when the user is adding or choosing ingredients
 class SearchAppBar extends StatefulWidget {
   @override
   _SearchAppBarState createState() => _SearchAppBarState();
@@ -172,6 +182,8 @@ class _SearchAppBarState extends State<SearchAppBar> {
   }
 }
 
+/// The searchBody where the ingredients of the user's and friends' pantries are
+/// shown by a ListView
 class SearchBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -274,6 +286,7 @@ class SearchListView extends StatelessWidget {
   }
 }
 
+/// The autosuggestion page which shows up when
 class _SuggestionListView extends StatelessWidget {
   final PantryIngredient otherSuggestion;
   final PantryIngredient myPantrySuggestion;
@@ -297,7 +310,7 @@ class _SuggestionListView extends StatelessWidget {
           ingredient = otherSuggestion;
         } else if (myPantryUsed) {
           ingredient =
-              index == 1 ? myPantrySuggestion : friendSuggestions[index - 2];
+          index == 1 ? myPantrySuggestion : friendSuggestions[index - 2];
         } else {
           ingredient = friendSuggestions[index - 1];
         }
@@ -353,28 +366,28 @@ class AllIngredientsTile extends StatelessWidget {
                   children: ingredients
                       .map<Widget>(
                         (ingredient) => Container(
-                          child: InputChip(
-                            label: Text(
-                              ingredient.name,
-                              style: TextStyle(
-                                  fontSize: 17.0,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w300,
-                                  fontFamily: 'MontserratScript'),
-                            ),
-                            deleteIconColor: Colors.white,
-                            backgroundColor:
-                                ingredient.fromPantry.owner.isNobody
-                                    ? Colors.brown[200]
-                                    : ingredient.fromPantry.color,
-                            onDeleted: () {
-                              BlocProvider.of<SearchBloc>(context).add(
-                                IngredientRemoved(ingredient),
-                              );
-                            },
-                          ),
+                      child: InputChip(
+                        label: Text(
+                          ingredient.name,
+                          style: TextStyle(
+                              fontSize: 17.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w300,
+                              fontFamily: 'MontserratScript'),
                         ),
-                      )
+                        deleteIconColor: Colors.white,
+                        backgroundColor:
+                        ingredient.fromPantry.owner.isNobody
+                            ? Colors.brown[200]
+                            : ingredient.fromPantry.color,
+                        onDeleted: () {
+                          BlocProvider.of<SearchBloc>(context).add(
+                            IngredientRemoved(ingredient),
+                          );
+                        },
+                      ),
+                    ),
+                  )
                       .toList(),
                 ),
               ),
@@ -424,15 +437,15 @@ class PantryTile extends StatelessWidget {
     return Theme(
       data: ThemeData(
           accentColor:
-              _pantry.owner.isNobody ? Colors.brown[200] : _pantry.color),
+          _pantry.owner.isNobody ? Colors.brown[200] : _pantry.color),
       child: ExpansionTile(
         key: PageStorageKey<Pantry>(_pantry),
         //change it into profile picture
         leading: _pantry.owner.isNobody
             ? null
             : CircleAvatar(
-                backgroundImage: FirebaseImage(_pantry.owner.imageURI),
-              ),
+          backgroundImage: FirebaseImage(_pantry.owner.imageURI),
+        ),
         title: Text(
           _pantry.title.contains("@")
               ? _pantry.title.substring(0, _pantry.title.indexOf("@"))
@@ -450,12 +463,12 @@ class PantryTile extends StatelessWidget {
             children: _pantry.ingredients
                 .map<Widget>(
                   (ingredient) => Container(
-                    child: IngredientChip(
-                      ingredient,
-                      _selectedIngredients.contains(ingredient),
-                    ),
-                  ),
-                )
+                child: IngredientChip(
+                  ingredient,
+                  _selectedIngredients.contains(ingredient),
+                ),
+              ),
+            )
                 .toList(),
           ),
         ],
@@ -515,7 +528,7 @@ class RecipeResult extends StatelessWidget {
       child: InkWell(
         splashColor: Colors.blueGrey[200],
         customBorder:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(35.0)),
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(35.0)),
         onTap: () {
           Navigator.push(
             context,
@@ -555,8 +568,8 @@ class RecipeResult extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
                             fontFamily: 'MontserratScript'
-                            // TODO: font change
-                            ),
+                          // TODO: font change
+                        ),
                       ),
                       const Padding(
                         padding: EdgeInsets.only(bottom: 5.0),
