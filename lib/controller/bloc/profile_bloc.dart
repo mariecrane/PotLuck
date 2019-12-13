@@ -1,13 +1,18 @@
 import 'dart:io';
-
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pot_luck/controller/database.dart';
 import 'package:pot_luck/model/user.dart';
-import 'package:pot_luck/controller/database.dart';
+
+/// Authors: Marie Crane, Preston Locke
+/// This is the business logic component for the profile page. It handles all
+/// interactions with the API or the database in response to actions by the user
+/// on the profile page.
 
 abstract class ProfileEvent {}
+/// ProfileEvents are some of the possible actions that the user could take from
+/// the profile page: selecting a picture or updating the email or password
 
 class PictureSelected extends ProfileEvent {
   final File imageFile;
@@ -32,6 +37,8 @@ class _ProfileUpdated extends ProfileEvent {
 }
 
 abstract class ProfileState {}
+/// ProfileState indicates the state of the profile as either loading, not
+/// signed in, or displaying profile, which dictates to the UI what to show
 
 class ProfileLoading extends ProfileState {}
 
@@ -43,6 +50,8 @@ class DisplayingProfile extends ProfileState {
 }
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
+  /// The ProfileBloc interacts with the database based on the ProfileEvent, to
+  /// update the email, password, or picture
   ProfileBloc() {
     DatabaseController.instance.onAuthUpdate((profile) async {
       add(_ProfileUpdated(profile));
