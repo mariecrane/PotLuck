@@ -3,7 +3,13 @@ import 'package:pot_luck/controller/search.dart';
 import 'package:pot_luck/model/recipe.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// Authors: Preston Locke, Shouayee Vue, Tracy Cai
+/// Last Updated 12/11/2019
+/// recipe_page.dart is the landing page for the recipe results. It pulls from the Spoonacular API to display the
+/// recipe's picture and ingredients list. There is a link to visit the web page of the recipe for more information.
+
 class RecipePage extends StatelessWidget {
+  ///This creates a scaffold that builds the page with widgets.
   final SearchResult result;
 
   RecipePage(this.result);
