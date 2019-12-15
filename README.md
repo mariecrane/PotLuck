@@ -16,6 +16,8 @@ PotLuck facilitates this process and makes it easy to decide what to cook.
  - You must follow at least one (or both) of the platform-specific (iOS/Android) sets of instructions
    to be able to build the app, including instructions for setting up an emulator if you do not have
    a physical device to install the app to.
+ 
+ - If installing Flutter on iOS, make sure to follow the steps to install and set up CocoaPods. 
 
 2. In a terminal, clone this repo in a directory of your choice.
 ```shell
