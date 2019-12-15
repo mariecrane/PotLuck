@@ -1,6 +1,9 @@
 # PotLuck
 
-A Flutter application to help people find recipes based on ingredients they already have.
+PotLuck is a cross-platform flutter application that helps people find recipes based on the ingredients
+that they already have. We believe in reducing food waste by using every ingredient in your pantry.
+You can do this by cooking alone or by cooking with friends, pooling together your available ingredients.
+PotLuck facilitates this process and makes it easy to decide what to cook.
 
 ## Flutter and Project Setup
 
