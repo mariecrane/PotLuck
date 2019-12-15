@@ -5,6 +5,10 @@ import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/recipe.dart';
 import 'package:pot_luck/model/user.dart';
 
+/// Authors: Preston Locke
+/// This is the business logic component for the search and results pages. It
+/// responds to actions by the user and supplies state information back to the UI
+
 /// A search-related event emitted from the UI
 abstract class SearchEvent {}
 

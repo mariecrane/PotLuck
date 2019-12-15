@@ -2,6 +2,10 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:pot_luck/model/user.dart';
 
+/// Authors: Preston Locke
+/// These are the data models related to user pantries and the ingredients they
+/// contain
+
 /// Models a pantry belonging to [owner] with a [title] and a specific [color]
 class Pantry extends Equatable {
   final User owner;

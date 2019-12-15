@@ -3,6 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:pot_luck/controller/database.dart';
 import 'package:pot_luck/model/user.dart';
 
+/// Authors: Preston Locke
+/// This is the business logic component for authentication-related events. It
+/// responds to actions by the user and supplies state information back to the UI
+
 /// An authentication-related event emitted from the UI
 abstract class AuthEvent {}
 

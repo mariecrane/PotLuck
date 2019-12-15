@@ -4,6 +4,11 @@ import 'package:html_unescape/html_unescape.dart';
 import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/recipe.dart';
 
+/// Authors: Preston Locke, Marie Crane
+/// This is the code that actually interfaces with the recipe and search-related
+/// parts of our backend, including the recipesByIngredients, recipeInfo, and
+/// autocomplete Cloud Functions
+
 /// A singleton that implements all search-related functionality, including
 /// ingredient auto-completion, recipe-by-ingredient search, and requests for
 /// detailed info on specific recipes

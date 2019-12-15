@@ -1,5 +1,8 @@
 import 'package:equatable/equatable.dart';
 
+/// Authors: Preston Locke
+/// These are the data models related to user information saved in the database
+
 /// Models a single user's information. Might be the current logged in user, or
 /// have the [isNobody] attribute set to indicate the absence of a real user.
 class User extends Equatable {

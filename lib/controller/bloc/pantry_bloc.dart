@@ -3,6 +3,10 @@ import 'package:pot_luck/controller/database.dart';
 import 'package:pot_luck/controller/search.dart';
 import 'package:pot_luck/model/pantry.dart';
 
+/// Authors: Preston Locke
+/// This is the business logic component for the pantry page. It responds to
+/// actions by the user and supplies state information back to the UI
+
 /// An event emitted from the UI that is related to the user's pantry
 abstract class PantryEvent {}
 

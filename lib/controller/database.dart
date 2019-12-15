@@ -10,6 +10,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/user.dart';
 
+/// Authors: Preston Locke, Marie Crane
+/// This is the code that actually interfaces with our Firebase backend,
+/// including Firebase Auth, Cloud Firestore, Cloud Storage, and the updateEmail
+/// Cloud Function
+
 /// A callback to receive changes in the current user's, or any of their
 /// friends' pantries. The current states of all pantries are given by
 /// [myPantry] and [friendPantries]

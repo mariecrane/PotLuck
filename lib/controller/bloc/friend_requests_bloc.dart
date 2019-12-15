@@ -2,6 +2,11 @@ import 'package:bloc/bloc.dart';
 import 'package:pot_luck/controller/database.dart';
 import 'package:pot_luck/model/user.dart';
 
+/// Authors: Preston Locke
+/// This is the business logic component for events related to the user's
+/// incoming and outgoing friend requests. It responds to actions by the user
+/// and supplies state information back to the UI
+
 /// An event emitted from the UI that is related to the user's friend requests,
 /// both incoming and outgoing
 abstract class FriendRequestsEvent {}

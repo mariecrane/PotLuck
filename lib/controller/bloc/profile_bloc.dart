@@ -7,9 +7,9 @@ import 'package:pot_luck/controller/database.dart';
 import 'package:pot_luck/model/user.dart';
 
 /// Authors: Marie Crane, Preston Locke
-/// This is the business logic component for the profile page. It handles all
-/// interactions with the API or the database in response to actions by the user
-/// on the profile page.
+/// This is the business logic component for the profile page. It responds to
+/// actions by the user on the profile page and supplies state information
+/// back to the UI
 
 /// An event emitted from the UI that is related to the user's profile
 abstract class ProfileEvent {}

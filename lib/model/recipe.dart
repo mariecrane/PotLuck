@@ -1,3 +1,9 @@
+import 'package:pot_luck/controller/search.dart';
+
+/// Authors: Preston Locke
+/// These are the data models related to recipe and ingredient information
+/// returned by the [RecipeSearch] class
+
 /// Models the available info about a single recipe
 class RecipeInfo {
   final int id;
