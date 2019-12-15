@@ -49,7 +49,9 @@ $ cd PotLuck
 
     1. Open the project in XCode, if not already opened.
 
-    2.
+    2. Near the run and stop buttons at the top of the window, select which device to run the app on. You can choose a connected iOS device or an iOS simulator. To run on your own device, you may need to modify your device management settings to allow PotLuck to build. Go to Settings/General/Profiles & Device Management and tap "Trust Apple Development"
+
+    3. Press the white Run button in the top left corner of XCode. (Looks like a play button, a triangle pointing to the right.)
 
  - For running on Android devices:
 
