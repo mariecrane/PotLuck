@@ -3,11 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:pot_luck/controller/database.dart';
 import 'package:pot_luck/model/user.dart';
 
-/// Encodes the type and data of events coming from our auth UI
+/// An authentication-related event emitted from the UI
 abstract class AuthEvent {}
 
+/// Signifies that the user has requested anonymous login
 class AnonymousAuthRequested extends AuthEvent {}
 
+/// Signifies that the user has requested a new account be created with the
+/// given [email] and [password]
 class AccountCreationRequested extends AuthEvent {
   final String email;
   final String password;
@@ -15,8 +18,11 @@ class AccountCreationRequested extends AuthEvent {
   AccountCreationRequested({@required this.email, @required this.password});
 }
 
+/// Signifies that the user has requested to delete the current account
 class AccountDeletionRequested extends AuthEvent {}
 
+/// Signifies that the user has requested to sign into an account with the given
+/// [email] and [password]
 class SignInRequested extends AuthEvent {
   final String email;
   final String password;
@@ -24,27 +30,37 @@ class SignInRequested extends AuthEvent {
   SignInRequested({@required this.email, @required this.password});
 }
 
+/// Signifies that the user has requested to sign out of the current account
 class SignOutRequested extends AuthEvent {}
 
+/// Signifies that the [AuthBloc] has received updated authentication
+/// information from the backend. This is triggered upon successful login
+/// attempts, as well as changes to the currently logged-in user's information.
 class _AuthChanged extends AuthEvent {
   final User currentUser;
   _AuthChanged(this.currentUser);
 }
 
-/// Encodes the status and data of results returned from Firebase Auth
+/// An authentication state emitted from [AuthBloc] to the UI
 abstract class AuthState {}
 
+/// Signifies that the [AuthBloc] is still initializing
 class Initializing extends AuthState {}
 
+/// Signifies that the user has been successfully authenticated
 class Authenticated extends AuthState {}
 
+/// Signifies that the user is not currently authenticated
 class NotAuthenticated extends AuthState {}
 
+/// Signifies that the [AuthBloc] is currently performing authentication
 class AuthInProgress extends AuthState {}
 
+/// Signifies that the [AuthBloc] encountered some kind of error
 class AuthError extends AuthState {}
 
-/// Connects our business logic with our UI code in an extensible way
+/// Accepts [AuthEvent] objects from the UI, handles those events accordingly,
+/// and emits [AuthState] objects back to the UI
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() {
     DatabaseController.instance.onAuthUpdate((currentUser) {

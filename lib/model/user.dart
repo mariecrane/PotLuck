@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+/// Models a single user's information. Might be the current logged in user, or
+/// have the [isNobody] attribute set to indicate the absence of a real user.
 class User extends Equatable {
   final String name;
   final String email;

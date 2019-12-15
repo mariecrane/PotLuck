@@ -179,11 +179,6 @@ class SearchBody extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: BlocBuilder<SearchBloc, SearchState>(
-          /*
-           * This function is called on every change in our app's state.
-           * This allows us to show different UI depending on the status
-           * of our search (not submitted, loading, finished, error).
-           */
           builder: (context, state) {
             // Nothing has been searched yet; show tip/hint
             if (state is BuildingSearch) {
@@ -513,7 +508,6 @@ class RecipeResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // A container with rounded corners and a shadow by default
     return Card(
       color: Colors.white,
       elevation: 0.0,

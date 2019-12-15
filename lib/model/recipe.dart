@@ -37,8 +37,7 @@ class RecipeIngredient {
   RecipeIngredient({this.id, this.name, this.amount, this.unit, this.imageUrl});
 }
 
-/// Encodes all the data that is returned by our recipe API interface
-/// (Can be expanded later)
+/// Encodes all the data that is returned about a recipe by the API interface
 class SearchResult {
   final int id;
   final String recipeName;

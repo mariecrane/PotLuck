@@ -1,4 +1,5 @@
 import 'package:firebase_image/firebase_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -6,14 +7,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pot_luck/controller/bloc/auth_bloc.dart';
 import 'package:pot_luck/controller/bloc/profile_bloc.dart';
 import 'package:pot_luck/model/user.dart';
-import 'package:flutter/cupertino.dart';
 
 /// Authors: Marie Crane, Preston Locke
 /// This page shows the user's email and profile picture and includes options to
 /// edit them and the password. Also includes "sign out" and "delete" buttons.
 
+/// Body of the Profile page, either loading or displaying the user's profile.
 class ProfilePage extends StatelessWidget {
-  /// Body of the page, either loading or displaying the user's profile
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileBloc, ProfileState>(
@@ -47,10 +47,10 @@ class ProfilePage extends StatelessWidget {
   }
 }
 
-class EditPage extends StatelessWidget{
-  /// This page is loaded when the user clicks on the "Edit Profile" button. It
-  /// allows the user to change their email or password, after re-authentication
-  /// by entering their current password.
+/// Allows the user to change their email or password, after re-authentication
+/// by entering their current password. Loaded when the user clicks on the
+/// "Edit Profile" button.
+class EditPage extends StatelessWidget {
   var _authController = TextEditingController();
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
@@ -93,26 +93,26 @@ class EditPage extends StatelessWidget{
             ),
           ),
           Padding(
-          padding: EdgeInsets.symmetric(horizontal: 80.0),
-          child: RaisedButton(
-            elevation: 0.0,
-            color: Colors.amber[100],
-            shape: RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(25.0),
+            padding: EdgeInsets.symmetric(horizontal: 80.0),
+            child: RaisedButton(
+              elevation: 0.0,
+              color: Colors.amber[100],
+              shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(25.0),
+              ),
+              child: Text(
+                "Update email",
+                style: TextStyle(
+                    fontSize: 17.0,
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w300,
+                    fontFamily: 'MontserratScript'),
+              ),
+              onPressed: () {
+                BlocProvider.of<ProfileBloc>(context).add(
+                    EmailUpdated(_emailController.text, _authController.text));
+              },
             ),
-            child: Text(
-              "Update email",
-              style: TextStyle(
-                  fontSize: 17.0,
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.w300,
-                  fontFamily: 'MontserratScript'),
-            ),
-            onPressed: () {
-              BlocProvider.of<ProfileBloc>(context)
-                  .add(EmailUpdated(_emailController.text, _authController.text));
-            },
-          ),
           ),
           Container(
             padding: const EdgeInsets.all(10.0),
@@ -127,38 +127,37 @@ class EditPage extends StatelessWidget{
             ),
           ),
           Padding(
-          padding: EdgeInsets.symmetric(horizontal: 70.0),
-          child: RaisedButton(
-            elevation: 0.0,
-            color: Colors.amber[100],
-            shape: RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(25.0),
+            padding: EdgeInsets.symmetric(horizontal: 70.0),
+            child: RaisedButton(
+              elevation: 0.0,
+              color: Colors.amber[100],
+              shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(25.0),
+              ),
+              child: Text(
+                "Update password",
+                style: TextStyle(
+                    fontSize: 17.0,
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w300,
+                    fontFamily: 'MontserratScript'),
+              ),
+              onPressed: () {
+                BlocProvider.of<ProfileBloc>(context).add(PasswordUpdated(
+                    _passwordController.text, _authController.text));
+              },
             ),
-            child: Text(
-              "Update password",
-              style: TextStyle(
-                  fontSize: 17.0,
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.w300,
-                  fontFamily: 'MontserratScript'),
-            ),
-            onPressed: () {
-              BlocProvider.of<ProfileBloc>(context)
-                  .add(PasswordUpdated(_passwordController.text, _authController.text));
-            },
-          ),
           ),
         ],
       ),
     );
   }
-
 }
 
+/// Shows user's profile information in a list. Shows user's profile picture,
+/// which can be edited by clicking on it. Also shows user's email and includes
+/// buttons to edit profile, sign out, and delete account.
 class ProfileInfoListView extends StatelessWidget {
-  /// Shows user's profile information in a list. Shows user's profile picture,
-  /// which can be edited by clicking on it. Also shows user's email and includes
-  /// buttons to edit profile, sign out, and delete account.
   final User profile;
 
   const ProfileInfoListView(this.profile, {Key key}) : super(key: key);
@@ -225,11 +224,10 @@ class ProfileInfoListView extends StatelessWidget {
             child: RaisedButton(
               elevation: 0.0,
               onPressed: () {
-                Navigator.of(context).push(
-                  CupertinoPageRoute(
-                    builder: (_) => BlocProvider<ProfileBloc>.value(
-                      value: BlocProvider.of<ProfileBloc>(context),
-                      child: EditPage(),
+                Navigator.of(context).push(CupertinoPageRoute(
+                  builder: (_) => BlocProvider<ProfileBloc>.value(
+                    value: BlocProvider.of<ProfileBloc>(context),
+                    child: EditPage(),
                   ),
                 ));
               },

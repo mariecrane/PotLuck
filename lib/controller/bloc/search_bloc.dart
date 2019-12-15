@@ -5,19 +5,24 @@ import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/recipe.dart';
 import 'package:pot_luck/model/user.dart';
 
-/// Encodes the type and data of events coming from our search UI
+/// A search-related event emitted from the UI
 abstract class SearchEvent {}
 
+/// Signifies that the current ingredient search query has changed to [text]
 class SearchBarEdited extends SearchEvent {
   final String text;
 
   SearchBarEdited(this.text);
 }
 
+/// Signifies that the user has hit submit in the ingredient search bar
 class SearchBarSubmitted extends SearchEvent {}
 
+/// Signifies that the user has hit submit on the recipe search
 class Submit extends SearchEvent {}
 
+/// Signifies that the user has added [ingredient] to their search. If
+/// [fromSuggestion] is true, then the ingredient was added via auto-suggestion
 class IngredientAdded extends SearchEvent {
   final PantryIngredient ingredient;
   final bool fromSuggestion;
@@ -25,16 +30,21 @@ class IngredientAdded extends SearchEvent {
   IngredientAdded(this.ingredient, {this.fromSuggestion = false});
 }
 
+/// Signifies that the user has removed [ingredient] from their search
 class IngredientRemoved extends SearchEvent {
   final PantryIngredient ingredient;
 
   IngredientRemoved(this.ingredient);
 }
 
+/// Signifies that the user has tapped to exit the recipe results page
 class ResultsExited extends SearchEvent {}
 
+/// Signifies that the user has cleared their search
 class SearchCleared extends SearchEvent {}
 
+/// Signifies that the [SearchBloc] has received updated information from the
+/// backend about either the user's or their friends' pantries
 class _PantriesUpdated extends SearchEvent {
   final Pantry myPantry;
   final List<Pantry> friendPantries;
@@ -42,9 +52,14 @@ class _PantriesUpdated extends SearchEvent {
   _PantriesUpdated(this.myPantry, this.friendPantries);
 }
 
-/// Encodes the status and data of results returned from our recipe API interface
+/// A state emitted from [SearchBloc] to the UI
 abstract class SearchState {}
 
+/// Signifies that the UI should display the search page with the given search
+/// query [allIngredients] and the given [pantries]. If [clearInput] is set to
+/// true, the UI should clear any input currently displaying in the search bar.
+/// This is used to clear input after successfully searching for then adding an
+/// ingredient via auto-suggestion
 class BuildingSearch extends SearchState {
   final List<PantryIngredient> allIngredients;
   final List<Pantry> pantries;
@@ -57,6 +72,8 @@ class BuildingSearch extends SearchState {
   });
 }
 
+/// Signifies that the UI should display [otherSuggestion], [myPantrySuggestion],
+/// and [friendSuggestions] to the user
 class SuggestingIngredient extends SearchState {
   final PantryIngredient otherSuggestion;
   final PantryIngredient myPantrySuggestion;
@@ -66,23 +83,30 @@ class SuggestingIngredient extends SearchState {
       this.otherSuggestion, this.myPantrySuggestion, this.friendSuggestions);
 }
 
+/// Signifies that no auto-suggestions were found for a given search input
 class SuggestionsEmpty extends SearchState {}
 
+/// Signifies that [SearchBloc] is currently performing state-changing
+/// operations, such as performing a search
 class SearchLoading extends SearchState {}
 
+/// Signifies that a search was successful and returned [results]
 class SearchSuccessful extends SearchState {
   final List<SearchResult> results;
 
   SearchSuccessful(this.results);
 }
 
+/// Signifies that there was an error while searching for recipes. A short
+/// description of the error is given by [message]
 class SearchError extends SearchState {
   final String message;
 
   SearchError(this.message);
 }
 
-/// Connects our business logic with our UI code in an extensible way
+/// Accepts [SearchBloc] objects from the UI, handles those events
+/// accordingly, and emits [SearchState] objects back to the UI
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   String _barText = "";
   bool _showingSuggestion = false;
@@ -239,6 +263,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     );
   }
 
+  /// Removes [PantryIngredient] objects from the current search if they no
+  /// longer exist in any pantry
   void _cleanSearch() {
     _currentSearch.removeWhere((ingredient) {
       if (ingredient.fromPantry.owner.isMe) {

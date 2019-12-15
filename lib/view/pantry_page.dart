@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -6,11 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/controller/bloc/pantry_bloc.dart';
 import 'package:pot_luck/model/pantry.dart';
 
-///@uthors: Preston Locke, Shouayee Vue, Tracy Cai
-///pantry_page.dart is the Pantry page that shows a user's current ingredients stored. They are able to add ingredients on this page to their Pnatry.
+/// Authors: Preston Locke, Shouayee Vue, Tracy Cai
+/// pantry_page.dart is the Pantry page that shows a user's current ingredients
+/// stored. They are able to add ingredients on this page to their [Pantry].
 
+/// The body of the Pantry page
 class PantryPage extends StatelessWidget {
-  ///The body of the page
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
@@ -56,8 +58,8 @@ class PantryPage extends StatelessWidget {
   }
 }
 
+/// The search bar to add a new [PantryIngredient] to the user's [Pantry]
 class PantryAppBar extends StatefulWidget {
-  ///Creates the header with the search where users can add new ingredients to th pantry
   @override
   _PantryAppBarState createState() => _PantryAppBarState();
 }
@@ -131,8 +133,8 @@ class _PantryAppBarState extends State<PantryAppBar> {
   }
 }
 
+/// Displays each ingredient in the user's [Pantry] as a material design chip
 class IngredientsListView extends StatelessWidget {
-  ///Creates chips for each ingredient and puts them in a wrap to view
   final Pantry _pantry;
 
   IngredientsListView(this._pantry);
@@ -186,8 +188,8 @@ class IngredientsListView extends StatelessWidget {
   }
 }
 
+/// The suggestion dropdown for the search bar
 class _SuggestionListView extends StatelessWidget {
-  ///This is the suggestion dropdown for the search bar
   final List<PantryIngredient> suggestions;
 
   const _SuggestionListView(this.suggestions, {Key key}) : super(key: key);

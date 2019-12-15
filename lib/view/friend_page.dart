@@ -5,14 +5,13 @@ import 'package:pot_luck/controller/bloc/friend_bloc.dart';
 import 'package:pot_luck/controller/bloc/friend_requests_bloc.dart';
 import 'package:pot_luck/model/user.dart';
 
+/// Authors: Preston Locke, Shouayee Vue, Tracy Cai
+/// Last Updated 12/11/2019
+/// friend_page.dart is the page where users can see friend requests, add,
+/// and delete friends. It is an extension from the floating icon from the search_page.dart
 
-///@uthors: Preston Locke, Shouayee Vue, Tracy Cai
-///Last Updated 12/11/2019
-///friend_page.dart is the page where users can see friend requests, add, and delete friends. It is an extension from the floating icon from the search_page.dart
-
-
+/// The body of the Friends page
 class AddFriendPage extends StatefulWidget {
-  ///AddFriendPage is the body of the page.
   @override
   _AddFriendPageState createState() => _AddFriendPageState();
 }
@@ -159,8 +158,8 @@ class _AddFriendPageState extends State<AddFriendPage> {
   }
 }
 
+/// A [ListTile] representing one of the user's current friends
 class FriendTile extends StatelessWidget {
-  ///FriendTile creates a ListTile of Widgets representing the user's current friends
   final User _friend;
   FriendTile(this._friend);
 
@@ -223,8 +222,8 @@ class FriendTile extends StatelessWidget {
   }
 }
 
+/// A [ListTile] representing a friend request from a user
 class RequestTile extends StatelessWidget {
-  ///Request creates a ListTile of Widgets representing the user's friend requests
   final User _friend;
   RequestTile(this._friend);
 

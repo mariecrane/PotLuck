@@ -4,22 +4,35 @@ import 'package:html_unescape/html_unescape.dart';
 import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/recipe.dart';
 
+/// A singleton that implements all search-related functionality, including
+/// ingredient auto-completion, recipe-by-ingredient search, and requests for
+/// detailed info on specific recipes
 class RecipeSearch {
   RecipeSearch._privateConstructor();
+
+  /// A singleton of [RecipeSearch]
   static final RecipeSearch instance = RecipeSearch._privateConstructor();
+
+  /// A reference to the recipesByIngredients cloud function used by
+  /// [RecipeSearch]
   static final HttpsCallable recipesByIngredients =
       CloudFunctions.instance.getHttpsCallable(
     functionName: 'recipesByIngredients',
   );
+
+  /// A reference to the recipesInfo cloud function used by [RecipeSearch]
   static final HttpsCallable recipeInfo =
       CloudFunctions.instance.getHttpsCallable(
     functionName: 'recipeInfo',
   );
+
+  /// A reference to the autocomplete cloud function used by [RecipeSearch]
   static final HttpsCallable autocomplete =
       CloudFunctions.instance.getHttpsCallable(
     functionName: 'autocomplete',
   );
 
+  /// Whether to use Metric or Imperial units
   bool get useMetricUnits {
     // TODO: Add logic to determine whether we should use US or Metric units
     // (Could also maybe fetch this from app settings in the future...)
@@ -48,7 +61,7 @@ class RecipeSearch {
     }
   }
 
-  /// Fetches recipe results asynchronously
+  /// Fetches recipe results for the given query [search]
   Future<List<SearchResult>> getRecipeResults(
       List<PantryIngredient> search) async {
     var searchString = _ingredientsListToString(search);
@@ -97,7 +110,7 @@ class RecipeSearch {
     return resultList;
   }
 
-  /// Fetches detailed info for a single recipe asynchronously
+  /// Fetches detailed info for [recipe]
   Future<RecipeInfo> getRecipeInfo(SearchResult recipe) async {
     var response = await recipeInfo.call(<String, dynamic>{
       'id': recipe.id,

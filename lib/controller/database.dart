@@ -10,27 +10,47 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/user.dart';
 
+/// A callback to receive changes in the current user's, or any of their
+/// friends' pantries. The current states of all pantries are given by
+/// [myPantry] and [friendPantries]
 typedef void PantryUpdateCallback(Pantry myPantry, List<Pantry> friendPantries);
+
+/// A callback to receive changes in the current user's friends list, given by
+/// [friends]
 typedef void FriendsUpdateCallback(List<User> friends);
+
+/// A callback to receive changes in the current [User]. If the user is not
+/// currently authenticated, [currentUser] will be a [User] with [User.isNobody]
+/// set to true
 typedef void AuthUpdateCallback(User currentUser);
+
+/// A callback to receive changes in the current user's list of incoming friend
+/// requests, given by [friendRequests]
 typedef void FriendRequestsUpdateCallback(List<User> friendRequests);
 
+/// A singleton that implements all database-related functionality, including
+/// authentication, user account management, friend requests, pantry changes,
+/// etc.
 class DatabaseController {
   DatabaseController._privateConstructor() {
     _authStateSubscription =
         FirebaseAuth.instance.onAuthStateChanged.listen(_onAuthStateChange);
   }
 
+  /// Disposes of this [DatabaseController]. Do not call any methods on this
+  /// controller once this method has been called
   void dispose() {
     _clearDocSubscriptions();
     _authStateSubscription.cancel();
   }
 
+  /// A reference to the updateEmail cloud function used by [DatabaseController]
   static final HttpsCallable updateEmail =
       CloudFunctions.instance.getHttpsCallable(
     functionName: 'updateEmail',
   );
 
+  /// A singleton instance of [DatabaseController]
   static final DatabaseController instance =
       DatabaseController._privateConstructor();
 
@@ -50,8 +70,13 @@ class DatabaseController {
   var _friendsList = <User>[];
   var _friendRequests = <User>[];
 
+  /// The [Pantry] of the current user
   Pantry get myPantry => _myPantry;
+
+  /// The pantries of the current user's friends
   List<Pantry> get friendPantries => _friendPantries;
+
+  /// The list of the current user's friends
   List<User> get friendsList => _friendsList;
 
   var _pantryUpdateCallbacks = <PantryUpdateCallback>[];
@@ -66,6 +91,7 @@ class DatabaseController {
 
   StreamSubscription _authStateSubscription;
 
+  /// Attempts an anonymous sign-in, or fails if the user is already signed in
   void signInAnonymously() async {
     // Don't do anything if already signed in somewhere. Need to sign out first
     if (_me != null) return;
@@ -77,6 +103,9 @@ class DatabaseController {
     }
   }
 
+  /// Attempts to create a new user account with the given [email] and
+  /// [password] and then sign into that account. Fails if the user is already
+  /// signed into an account
   void createAccount(String email, String password) async {
     // Don't do anything if already signed in somewhere. Need to sign out first
     if (_me != null) return;
@@ -92,6 +121,8 @@ class DatabaseController {
     }
   }
 
+  /// Attempts to sign into the account with the given [email] and [password],
+  /// or fails if the user is already signed into an account
   void signIn(String email, String password) async {
     // Don't do anything if already signed in somewhere. Need to sign out first
     if (_me != null) return;
@@ -106,6 +137,8 @@ class DatabaseController {
     }
   }
 
+  /// Attempts to sign out of the current account, or does nothing if user is
+  /// currently not authenticated
   void signOut() async {
     // Don't do anything if not already signed in. Need to sign in first
     if (_me == null) return;
@@ -117,6 +150,8 @@ class DatabaseController {
     }
   }
 
+  /// Attempts to delete the current user account, or fails if user is currently
+  /// not signed into any account
   void deleteAccount() async {
     // Don't do anything if not already signed in. Need to sign in first
     if (_me == null) return;
@@ -129,6 +164,8 @@ class DatabaseController {
     }
   }
 
+  /// Attempts to update the email address linked to the current user account to
+  /// [email], or fails if user is currently not signed into any account
   void updateUserEmail(String email) async {
     try {
       await updateEmail.call(<String, dynamic>{
@@ -139,6 +176,9 @@ class DatabaseController {
     }
   }
 
+  /// Attempts to update the profile image of the current user account to the
+  /// image in [imageFile], or fails if user is currently not signed into any
+  /// account
   void updateProfileImage(File imageFile) async {
     var ext = imageFile.path.substring(imageFile.path.lastIndexOf("."));
     var path = "users/images/${_me.id}$ext";
@@ -190,6 +230,7 @@ class DatabaseController {
     _doPantryUpdateCallbacks();
   }
 
+  /// Attempts to add [ingredient] to the current user's [Pantry]
   void addToMyPantry(PantryIngredient ingredient) async {
     if (_myPantry.ingredients.contains(ingredient)) return;
 
@@ -212,6 +253,7 @@ class DatabaseController {
     });
   }
 
+  /// Attempts to remove [ingredient] from the current user's [Pantry]
   void removeFromMyPantry(PantryIngredient ingredient) async {
     if (_myPantry.ingredients.contains(ingredient) == false) return;
 
@@ -234,6 +276,7 @@ class DatabaseController {
     });
   }
 
+  /// Attempts to clear everything from the current user's [Pantry]
   void clearMyPantry() async {
     var pantryDoc = Firestore.instance
         .collection("users")
@@ -245,6 +288,9 @@ class DatabaseController {
     });
   }
 
+  /// Attempts to send a friend request to [user] from the current user's
+  /// account, or fails if the user is not currently authenticated, [user] is
+  /// already their friend, or [user] does not exist
   void sendFriendRequest(User user) async {
     // Check if user is already in the locally cached friends list, exit if so
     var alreadyFriend = true;
@@ -283,6 +329,9 @@ class DatabaseController {
     });
   }
 
+  /// Attempts to remove [user] from the current user's friends list, or fails
+  /// if the user is not currently authenticated, [user] isn't already their
+  /// friend, or [user] does not exist
   void removeFriend(User user) async {
     // Check if user is in the locally cached friends list, exit if not
     try {
@@ -311,18 +360,29 @@ class DatabaseController {
     });
   }
 
+  /// Registers a [PantryUpdateCallback] to be called whenever there is a change
+  /// to the [Pantry] of the current user or any [Pantry] belonging to one of
+  /// the user's friends
   void onPantryUpdate(PantryUpdateCallback callback) {
     _pantryUpdateCallbacks.add(callback);
   }
 
+  /// Registers a [FriendsUpdateCallback] to be called whenever there is a
+  /// change to the profile info of any of the current user's friends, or if
+  /// a friend is added or removed from their friends list
   void onFriendsUpdate(FriendsUpdateCallback callback) {
     _friendsUpdateCallbacks.add(callback);
   }
 
+  /// Registers an [AuthUpdateCallback] to be called whenever there is a change
+  /// to the current [User]. This may be called when the user signs in or out,
+  /// or if the currently signed-in user's profile info changes
   void onAuthUpdate(AuthUpdateCallback callback) {
     _authUpdateCallbacks.add(callback);
   }
 
+  /// Registers a [FriendRequestsUpdateCallback] to be called whenever there is
+  /// a change to the list of incoming friend requests to the current user
   void onFriendRequestsUpdate(FriendRequestsUpdateCallback callback) {
     _friendRequestsUpdateCallbacks.add(callback);
   }

@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pot_luck/controller/bloc/auth_bloc.dart';
 
-///@uthers: Preston Locke, Shouayee Vue, Tracy Cai
-///auth_page.dart is the Authentication Page before a user logs into the App
+/// Authors: Preston Locke, Shouayee Vue, Tracy Cai
+/// auth_page.dart is the Authentication Page before a user logs into the App
 
+/// The body of the Authentication page
 class AuthPage extends StatefulWidget {
-  ///This is the body of the page
   final String errorMessage;
 
   AuthPage({this.errorMessage});
@@ -51,69 +51,83 @@ class _AuthPageState extends State<AuthPage> {
   Widget _buildAuthChooser() {
     return ListView(
       children: <Widget>[
-        Padding(padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0), child: Image.asset('assets/images/icon.png')),
+        Padding(
+            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+            child: Image.asset('assets/images/icon.png')),
         Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
         Center(
-        child: Text.rich(
-          TextSpan(
-            children: <TextSpan>[
-              TextSpan(text: 'Welcome to ',
-                  style: TextStyle(fontSize: 30, fontFamily: 'MontserratScript')),
-              TextSpan(
-                  text: 'PotLuck!',
-                  style: TextStyle(
-                      fontSize: 30, fontWeight: FontWeight.bold, color: Theme
-                      .of(context)
-                      .primaryColor, fontFamily: 'MontserratScript')),
-            ],
+          child: Text.rich(
+            TextSpan(
+              children: <TextSpan>[
+                TextSpan(
+                    text: 'Welcome to ',
+                    style: TextStyle(
+                        fontSize: 30, fontFamily: 'MontserratScript')),
+                TextSpan(
+                    text: 'PotLuck!',
+                    style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                        fontFamily: 'MontserratScript')),
+              ],
+            ),
           ),
-        ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(
             vertical: 25.0,
           ),
         ),
-        Padding(padding: EdgeInsets.symmetric(horizontal: 120.0),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 120.0),
           child: RaisedButton(
-          elevation: 0.0,
-          color: Colors.amber[100],
-          shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(25.0),
+            elevation: 0.0,
+            color: Colors.amber[100],
+            shape: RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(25.0),
+            ),
+            child: Text("Sign in",
+                style: TextStyle(
+                    fontSize: 15.0,
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w300,
+                    fontFamily: 'MontserratScript')),
+            onPressed: () {
+              setState(() {
+                _currentForm = 1;
+              });
+            },
           ),
-          child: Text("Sign in",
-              style: TextStyle(fontSize: 15.0, color: Theme.of(context).primaryColor, fontWeight: FontWeight.w300, fontFamily: 'MontserratScript')),
-          onPressed: () {
-            setState(() {
-              _currentForm = 1;
-            });
-          },
         ),
-        ),
-    Padding(padding: EdgeInsets.symmetric(horizontal: 100.0),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 100.0),
           child: RaisedButton(
-          elevation: 0.0,
-          color: Theme.of(context).primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(25.0),
+            elevation: 0.0,
+            color: Theme.of(context).primaryColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(25.0),
+            ),
+            child: Text("Create Account",
+                style: TextStyle(
+                    fontSize: 17.0,
+                    color: Colors.amber[100],
+                    fontWeight: FontWeight.w300,
+                    fontFamily: 'MontserratScript')),
+            onPressed: () {
+              setState(() {
+                _currentForm = 2;
+              });
+            },
           ),
-          child: Text("Create Account",
-              style: TextStyle(fontSize: 17.0, color: Colors.amber[100], fontWeight: FontWeight.w300, fontFamily: 'MontserratScript')
-          ),
-          onPressed: () {
-            setState(() {
-              _currentForm = 2;
-            });
-          },
         ),
-    ),
       ],
     );
   }
 }
 
+/// The form used to enter in email and password
 class AuthForm extends StatefulWidget {
-  ///This is the body of the forum used to enter in email and password
   final createAccount;
 
   AuthForm({@required this.createAccount});
@@ -137,7 +151,12 @@ class _AuthFormState extends State<AuthForm> {
               vertical: 15.0,
             ),
           ),
-          Text("Please enter your Email and Password:", style: TextStyle(fontSize: 17.0, color:Colors.black, fontWeight: FontWeight.w300, fontFamily: 'MontserratScript')),
+          Text("Please enter your Email and Password:",
+              style: TextStyle(
+                  fontSize: 17.0,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w300,
+                  fontFamily: 'MontserratScript')),
           Padding(
             padding: const EdgeInsets.symmetric(
               vertical: 15.0,
@@ -145,10 +164,15 @@ class _AuthFormState extends State<AuthForm> {
           ),
           TextField(
             keyboardType: TextInputType.emailAddress,
-            style: TextStyle(color:Colors.black, fontFamily: 'MontserratScript'),
+            style:
+                TextStyle(color: Colors.black, fontFamily: 'MontserratScript'),
             controller: _emailController,
             decoration: InputDecoration(
-                border: OutlineInputBorder(), labelText: "Email", labelStyle: TextStyle(fontWeight: FontWeight.w300, fontFamily: 'MontserratScript')),
+                border: OutlineInputBorder(),
+                labelText: "Email",
+                labelStyle: TextStyle(
+                    fontWeight: FontWeight.w300,
+                    fontFamily: 'MontserratScript')),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
@@ -157,44 +181,54 @@ class _AuthFormState extends State<AuthForm> {
           ),
           TextField(
             keyboardType: TextInputType.visiblePassword,
-            style: TextStyle(color:Colors.black, fontFamily: 'MontserratScript'),
+            style:
+                TextStyle(color: Colors.black, fontFamily: 'MontserratScript'),
             controller: _passwordController,
             obscureText: true,
             decoration: InputDecoration(
-                border: OutlineInputBorder(), labelText: "Password", labelStyle: TextStyle(fontWeight: FontWeight.w300, fontFamily: 'MontserratScript')),
+                border: OutlineInputBorder(),
+                labelText: "Password",
+                labelStyle: TextStyle(
+                    fontWeight: FontWeight.w300,
+                    fontFamily: 'MontserratScript')),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
               vertical: 15.0,
             ),
           ),
-    Padding(padding: EdgeInsets.symmetric(horizontal: 80.0),
-    child: RaisedButton(
-            elevation: 0.0,
-            color: Theme.of(context).primaryColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(25.0),
-            ),
-            child: Text(widget.createAccount ? "Create account" : "Sign in", style: TextStyle(fontSize: 17.0, color:Colors.amber[100], fontWeight: FontWeight.w300, fontFamily: 'MontserratScript')),
-            onPressed: () {
-              // The event to dispatch to our AuthBloc
-              AuthEvent event;
-              if (widget.createAccount) {
-                event = AccountCreationRequested(
-                  email: _emailController.text,
-                  password: _passwordController.text,
-                );
-              } else {
-                event = SignInRequested(
-                  email: _emailController.text,
-                  password: _passwordController.text,
-                );
-              }
-              // Get reference to AuthBloc and dispatch event
-              BlocProvider.of<AuthBloc>(context).add(event);
-            },
-          )
-    ),
+          Padding(
+              padding: EdgeInsets.symmetric(horizontal: 80.0),
+              child: RaisedButton(
+                elevation: 0.0,
+                color: Theme.of(context).primaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(25.0),
+                ),
+                child: Text(widget.createAccount ? "Create account" : "Sign in",
+                    style: TextStyle(
+                        fontSize: 17.0,
+                        color: Colors.amber[100],
+                        fontWeight: FontWeight.w300,
+                        fontFamily: 'MontserratScript')),
+                onPressed: () {
+                  // The event to dispatch to our AuthBloc
+                  AuthEvent event;
+                  if (widget.createAccount) {
+                    event = AccountCreationRequested(
+                      email: _emailController.text,
+                      password: _passwordController.text,
+                    );
+                  } else {
+                    event = SignInRequested(
+                      email: _emailController.text,
+                      password: _passwordController.text,
+                    );
+                  }
+                  // Get reference to AuthBloc and dispatch event
+                  BlocProvider.of<AuthBloc>(context).add(event);
+                },
+              )),
         ],
       ),
     );

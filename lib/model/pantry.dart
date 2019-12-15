@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:pot_luck/model/user.dart';
 
-/// Simple data model for a single pantry with a title and a specific color
+/// Models a pantry belonging to [owner] with a [title] and a specific [color]
 class Pantry extends Equatable {
   final User owner;
   final String title;
@@ -15,7 +15,7 @@ class Pantry extends Equatable {
   List<Object> get props => [owner];
 }
 
-/// Simple data model for a single ingredient stored in a pantry
+/// Models a single ingredient stored in [fromPantry]
 class PantryIngredient extends Equatable {
   final Pantry fromPantry;
   final int id;
