@@ -14,7 +14,7 @@ A Flutter application to help people find recipes based on ingredients they alre
    to be able to build the app, including instructions for setting up an emulator if you do not have
    a physical device to install the app to.
 
-2. Clone this repo in a directory of your choice.
+2. In a terminal, clone this repo in a directory of your choice.
 ```shell
 $ git clone https://github.com/mariecrane/PotLuck.git
 $ cd PotLuck
@@ -37,7 +37,13 @@ $ cd PotLuck
 
     2. Move the config file into the **android/app/** directory of your Flutter app. Unlike for iOS, you can do this however you wish.
 
-5. Run the app.
+5. In a terminal, get the Flutter plugin dependencies for the project.
+   ```shell
+   $ cd <path/to/project/root>
+   $ flutter pub get
+   ```
+
+6. Run the app.
 
  - For running on iOS devices:
 
