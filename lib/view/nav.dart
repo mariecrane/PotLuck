@@ -3,7 +3,7 @@ import 'package:pot_luck/view/pantry_page.dart';
 import 'package:pot_luck/view/profile_page.dart';
 import 'package:pot_luck/view/search_page.dart';
 
-/// Authors: Preston Locke, Shouayee Vue
+/// Authors: Preston Locke, Shouayee Vue, Tracy Cai
 /// nav.dart is the Navigation that connects all the pages in the view folder together.
 
 class NavWrapper extends StatefulWidget {

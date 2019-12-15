@@ -286,7 +286,7 @@ class SearchListView extends StatelessWidget {
   }
 }
 
-/// The autosuggestion page which shows up when
+/// The autosuggestion page which shows up when the user is typing
 class _SuggestionListView extends StatelessWidget {
   final PantryIngredient otherSuggestion;
   final PantryIngredient myPantrySuggestion;
@@ -333,6 +333,7 @@ class _SuggestionListView extends StatelessWidget {
   }
 }
 
+/// The ListTile that shows all the chosen ingredients
 class AllIngredientsTile extends StatelessWidget {
   final List<PantryIngredient> ingredients;
 
@@ -427,6 +428,7 @@ class AllIngredientsTile extends StatelessWidget {
   }
 }
 
+/// The PantryTile which shows the ingredients and their owners by an ExpansionTIle
 class PantryTile extends StatelessWidget {
   final Pantry _pantry;
   final List<PantryIngredient> _selectedIngredients;
@@ -477,6 +479,7 @@ class PantryTile extends StatelessWidget {
   }
 }
 
+/// The IngredientChip, a filter chip which the user can choose them for search
 class IngredientChip extends StatelessWidget {
   final PantryIngredient ingredient;
   final bool isSelected;
@@ -514,6 +517,7 @@ class IngredientChip extends StatelessWidget {
   }
 }
 
+/// The search result page
 class RecipeResult extends StatelessWidget {
   final SearchResult data;
 
@@ -568,7 +572,6 @@ class RecipeResult extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
                             fontFamily: 'MontserratScript'
-                          // TODO: font change
                         ),
                       ),
                       const Padding(
