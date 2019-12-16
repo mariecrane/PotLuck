@@ -419,7 +419,6 @@ class DatabaseController {
   void _onAuthStateChange(FirebaseUser user) async {
     _clearDocSubscriptions();
 
-    // TODO: Make sure Firebase Auth gives null when signed out
     if (user == null) {
       _me = null;
       _doAuthUpdateCallbacks();
@@ -490,7 +489,6 @@ class DatabaseController {
         id: pantryData["id"],
         email: pantryData["email"],
         imageURI: pantryData["imageURI"],
-        // TODO: Add name to user data?
       );
       _friendsList.add(friend);
 

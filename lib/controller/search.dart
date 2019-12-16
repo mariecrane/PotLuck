@@ -39,14 +39,12 @@ class RecipeSearch {
 
   /// Whether to use Metric or Imperial units
   bool get useMetricUnits {
-    // TODO: Add logic to determine whether we should use US or Metric units
     // (Could also maybe fetch this from app settings in the future...)
     return false;
   }
 
   /// Builds the full URL for an image of an ingredient
   String ingredientImageUrl(String fileName) {
-    // TODO: Add some way to pick the image size? (Choices are 100, 250, 500)
     String size = "250x250";
     return "https://spoonacular.com/cdn/ingredients_$size/$fileName";
   }
@@ -142,7 +140,6 @@ class RecipeSearch {
       ));
     });
 
-    // TODO: Handle multiple sets of instructions (prerequisite ingredients)
     // Parse out the list of steps
     var steps = List<RecipeStep>();
     if (data["analyzedInstructions"].length != 0) {

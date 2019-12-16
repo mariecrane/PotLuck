@@ -226,7 +226,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
               await RecipeSearch.instance.getRecipeResults(_currentSearch);
           yield SearchSuccessful(results);
         } catch (error) {
-          // TODO: Add more meaningful error messages
           yield SearchError(error.toString());
         }
       } else {

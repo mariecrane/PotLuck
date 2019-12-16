@@ -310,12 +310,11 @@ class _SuggestionListView extends StatelessWidget {
           ingredient = otherSuggestion;
         } else if (myPantryUsed) {
           ingredient =
-          index == 1 ? myPantrySuggestion : friendSuggestions[index - 2];
+              index == 1 ? myPantrySuggestion : friendSuggestions[index - 2];
         } else {
           ingredient = friendSuggestions[index - 1];
         }
 
-        // TODO: Differentiate Other, My Pantry, and friend pantry ingredients
         return ListTile(
           leading: Icon(Icons.add_shopping_cart),
           title: Text(
@@ -367,28 +366,28 @@ class AllIngredientsTile extends StatelessWidget {
                   children: ingredients
                       .map<Widget>(
                         (ingredient) => Container(
-                      child: InputChip(
-                        label: Text(
-                          ingredient.name,
-                          style: TextStyle(
-                              fontSize: 17.0,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w300,
-                              fontFamily: 'MontserratScript'),
+                          child: InputChip(
+                            label: Text(
+                              ingredient.name,
+                              style: TextStyle(
+                                  fontSize: 17.0,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w300,
+                                  fontFamily: 'MontserratScript'),
+                            ),
+                            deleteIconColor: Colors.white,
+                            backgroundColor:
+                                ingredient.fromPantry.owner.isNobody
+                                    ? Colors.brown[200]
+                                    : ingredient.fromPantry.color,
+                            onDeleted: () {
+                              BlocProvider.of<SearchBloc>(context).add(
+                                IngredientRemoved(ingredient),
+                              );
+                            },
+                          ),
                         ),
-                        deleteIconColor: Colors.white,
-                        backgroundColor:
-                        ingredient.fromPantry.owner.isNobody
-                            ? Colors.brown[200]
-                            : ingredient.fromPantry.color,
-                        onDeleted: () {
-                          BlocProvider.of<SearchBloc>(context).add(
-                            IngredientRemoved(ingredient),
-                          );
-                        },
-                      ),
-                    ),
-                  )
+                      )
                       .toList(),
                 ),
               ),
@@ -439,15 +438,15 @@ class PantryTile extends StatelessWidget {
     return Theme(
       data: ThemeData(
           accentColor:
-          _pantry.owner.isNobody ? Colors.brown[200] : _pantry.color),
+              _pantry.owner.isNobody ? Colors.brown[200] : _pantry.color),
       child: ExpansionTile(
         key: PageStorageKey<Pantry>(_pantry),
         //change it into profile picture
         leading: _pantry.owner.isNobody
             ? null
             : CircleAvatar(
-          backgroundImage: FirebaseImage(_pantry.owner.imageURI),
-        ),
+                backgroundImage: FirebaseImage(_pantry.owner.imageURI),
+              ),
         title: Text(
           _pantry.title.contains("@")
               ? _pantry.title.substring(0, _pantry.title.indexOf("@"))
@@ -465,12 +464,12 @@ class PantryTile extends StatelessWidget {
             children: _pantry.ingredients
                 .map<Widget>(
                   (ingredient) => Container(
-                child: IngredientChip(
-                  ingredient,
-                  _selectedIngredients.contains(ingredient),
-                ),
-              ),
-            )
+                    child: IngredientChip(
+                      ingredient,
+                      _selectedIngredients.contains(ingredient),
+                    ),
+                  ),
+                )
                 .toList(),
           ),
         ],
@@ -532,7 +531,7 @@ class RecipeResult extends StatelessWidget {
       child: InkWell(
         splashColor: Colors.blueGrey[200],
         customBorder:
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(35.0)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(35.0)),
         onTap: () {
           Navigator.push(
             context,
@@ -571,8 +570,7 @@ class RecipeResult extends StatelessWidget {
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
-                            fontFamily: 'MontserratScript'
-                        ),
+                            fontFamily: 'MontserratScript'),
                       ),
                       const Padding(
                         padding: EdgeInsets.only(bottom: 5.0),
