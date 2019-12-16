@@ -8,7 +8,7 @@ import 'package:pot_luck/controller/bloc/auth_bloc.dart';
 import 'package:pot_luck/controller/bloc/profile_bloc.dart';
 import 'package:pot_luck/model/user.dart';
 
-/// Authors: Marie Crane, Preston Locke
+/// Authors: Marie Crane, Preston Locke, Tracy Cai
 /// This page shows the user's email and profile picture and includes options to
 /// edit them and the password. Also includes "sign out" and "delete" buttons.
 

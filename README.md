@@ -1,6 +1,9 @@
 # PotLuck
 
-A Flutter application to help people find recipes based on ingredients they already have.
+PotLuck is a cross-platform flutter application that helps people find recipes based on the ingredients
+that they already have. We believe in reducing food waste by using every ingredient in your pantry.
+You can do this by cooking alone or by cooking with friends, pooling together your available ingredients.
+PotLuck facilitates this process and makes it easy to decide what to cook.
 
 ## Flutter and Project Setup
 
@@ -13,6 +16,8 @@ A Flutter application to help people find recipes based on ingredients they alre
  - You must follow at least one (or both) of the platform-specific (iOS/Android) sets of instructions
    to be able to build the app, including instructions for setting up an emulator if you do not have
    a physical device to install the app to.
+ 
+ - If installing Flutter on iOS, make sure to follow the steps to install and set up CocoaPods. 
 
 2. In a terminal, clone this repo in a directory of your choice.
 ```shell
@@ -49,7 +54,7 @@ $ cd PotLuck
 
     1. Open the project in XCode, if not already opened.
 
-    2. Near the run and stop buttons at the top of the window, select which device to run the app on. You can choose a connected iOS device or an iOS simulator. To run on your own device, you may need to modify your device management settings to allow PotLuck to build. Go to Settings/General/Profiles & Device Management and tap "Trust Apple Development"
+    2. Near the run and stop buttons at the top of the window, select which device to run the app on. You can choose a connected iOS device or an iOS simulator. To run on your own device, you need to [set up a signing configuration and trust yourself as the developer on your device](https://medium.com/front-end-weekly/how-to-test-your-flutter-ios-app-on-your-ios-device-75924bfd75a8).
 
     3. Press the white Run button in the top left corner of XCode. (Looks like a play button, a triangle pointing to the right.)
 
