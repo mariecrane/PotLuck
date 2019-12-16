@@ -90,3 +90,35 @@ $ cd PotLuck
 5. How do I add ingredients that are not in a Pantry to my Search?
 
    Some users may wish to add additional ingredients that realistically may not be in their possession. Most common cases are for hypothetical searches. On the Search Page, there is a prompted search bar at the top of the page. This can be used to search for an ingredient that may reside in any of the User or Friends' pantries, or it can be used to add ingredients to an others catagory. When an ingredient is typed in, if it does not exist in any pantries, it will prompt to add to the Others section. Press this option and a new drop down will be created, similar to your friends' pantries, where ingredients can be deselected from the search.
+
+## Known Issues and Missing Features
+
+ - There is currently no way to revoke a friend request sent to another user.
+
+ - Auto-completions on the Pantry and Search pages lags behind the input when typing quickly.
+
+ - There is no way to specify the amount of each ingredient in a user's pantry, or how much to use in a search.
+
+ - Adding every ingredients of a given user to a search requires selecting every ingredient individually.
+
+ - Not all parts of the app layout scale well to low-dpi screens.
+
+ - There is no way to view more than the first 30 recipe results for any given search.
+
+ - Logging out of an account and then logging into a different acccount may still display the info from the previous account.
+
+ - Error messages are cryptic and unhelpful.
+
+ - Many user actions cause no immediate visual feedback, such as confirming a new profile image choice, until the UI finally receives an update from the back end.
+
+ - App does not fail gracefully in the absence of an internet connection.
+
+ - Recipe page does not display ingredient amounts.
+
+ - There is no way to filter search results by dietary restrictions like allergies, calorie count, micronutrients, vegan, vegetarian, kosher, halal, etc.
+
+ - Ingredients are not sorted by user as they are added to a search.
+
+ - Layout and usage of the search page can be unclear upon first encounter.
+
+ - There is currently no tutorial or onboarding experience for the main app features.
