@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:pot_luck/controller/database.dart';
 import 'package:pot_luck/model/user.dart';
 
@@ -89,9 +88,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           email: user.email, password: event.auth);
       try {
         await user.reauthenticateWithCredential(credential);
-      } catch (e) {
-        debugPrint(e.toString());
-      }
+      } catch (e) {}
       await user.updateEmail(event.email);
       DatabaseController.instance.updateUserEmail(event.email);
     }
@@ -102,9 +99,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           email: user.email, password: event.auth);
       try {
         await user.reauthenticateWithCredential(credential);
-      } catch (e) {
-        debugPrint(e.toString());
-      }
+      } catch (e) {}
       await user.updatePassword(event.password);
     }
 

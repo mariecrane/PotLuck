@@ -137,7 +137,6 @@ class _AddFriendPageState extends State<AddFriendPage> {
                   },
                 );
               }
-              debugPrint("state is of type: " + state.runtimeType.toString());
               return Center(
                 child: Text(
                   "Hmm, something went wrong...",

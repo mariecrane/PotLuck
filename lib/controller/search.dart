@@ -1,5 +1,4 @@
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:pot_luck/model/pantry.dart';
 import 'package:pot_luck/model/recipe.dart';
@@ -59,7 +58,6 @@ class RecipeSearch {
           results.map<String>((result) => result["name"]).toList();
       return completions;
     } catch (e) {
-      debugPrint(e.toString());
       return <String>[];
     }
   }

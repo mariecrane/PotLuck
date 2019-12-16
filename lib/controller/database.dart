@@ -176,9 +176,7 @@ class DatabaseController {
       await updateEmail.call(<String, dynamic>{
         "query": email,
       });
-    } catch (e) {
-      debugPrint(e.toString());
-    }
+    } catch (e) {}
   }
 
   /// Attempts to update the profile image of the current user account to the
