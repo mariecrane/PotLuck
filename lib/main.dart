@@ -11,6 +11,10 @@ import 'package:pot_luck/view/auth_page.dart';
 import 'package:pot_luck/view/nav.dart';
 import 'package:provider/provider.dart';
 
+///Authors: Preston, Tracy
+///This is the main that runs the app. All the colors we are using or the theme is set on this page.
+///The Bloc is also called here for each view page. The main feature here is to authenticate for the auth page.
+
 void main() => runApp(MyApp());
 
 const _primaryColor = <int, Color>{

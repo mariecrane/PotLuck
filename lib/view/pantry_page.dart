@@ -109,7 +109,6 @@ class _PantryAppBarState extends State<PantryAppBar> {
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(
               border: InputBorder.none,
-              // Shows when TextField is empty
               hintText: "Tap Here to Add Ingredients",
               hintStyle: TextStyle(
                 fontSize: 12,

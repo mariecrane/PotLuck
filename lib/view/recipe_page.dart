@@ -30,7 +30,6 @@ class RecipePage extends StatelessWidget {
       body: FutureBuilder<RecipeInfo>(
         future: RecipeSearch.instance.getRecipeInfo(result),
         builder: (context, snapshot) {
-          // We have not received our response yet
           if (!snapshot.hasData) {
             return Center(
               child: CircularProgressIndicator(),
@@ -47,7 +46,6 @@ class RecipePage extends StatelessWidget {
           }
 
           RecipeInfo data = snapshot.data;
-          // Now we can show our data
           String ingredient_list = "";
           int n = 0;
           data.ingredients.forEach((ingredient) {

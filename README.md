@@ -60,3 +60,28 @@ $ cd PotLuck
     2. Near the top of the window, select the device you want to run the app on. If nothing is selected, the dropdown will read "no devices". If no devices are available from the dropdown, you need to [connect a physical Android device](https://developer.android.com/studio/run/device) or [create a virtual device](https://developer.android.com/studio/run/managing-avds#createavd).
 
     3. Press the green Run button toward the top right of the window. (Looks like a play button, a triangle pointing to the right.)
+
+
+### Frequently Asked Question
+
+1. How do I add/remove friends?
+
+-To Add: On the Search Page, at the lower right of the page, there is a floating orange button with an add friends icon. After pressing the button, the Friends Page will show. You must know your friend's email address beforehand through off-App communications so that you are able to enter their email in the prompted section. After typing, press the orange Add button. This will send a friend request to that account. Friend Requests show underneath the Friend Requests section on the same page. It is empty if there are none. When you get a request, the friend's image and email will be displayed along with a green add icon. Pressing the icon will add them into your friend list.
+
+-To Remove: Route to the Friends Page *note above's instructions*. Your friends are listed on this page. Following their email, there is a red icon. When that icon is pressed, an alert will prompt you to continue or cancel your unfriending request. If confirmed, that account will be taken off you friend's list.
+
+2.What is the Pantry?
+
+-The Pantry is where you store information about the ingredients you have. It mimics a real pantry, cupboard, refrigerator that contains ingredients for usage. These ingredients in the Pantry can be realistic or to the will of the user. Ingredients can be added and removed at any time. When added to the Pantry, it will also show on the Search page to allow an easier selection of ingredients for the recipe search.
+
+3. How do I change my profile picture?
+
+-On the Profile Page, the default image is a User with an orange background. When this circle image is pressed, it will prompt the user to change their image to an existing image on their device. There are editing features available.
+
+4. Can I change my email/password?
+
+-To change your email and/or password, there is an Edit Profile button located on the Profile Page. When pressed, another page will show. In order to change for any option, THE CURRENT PASSWORD MUST BE ENTERED FIRST into the prompted box. Enter the desired new email and/or password into the prompted areas and press the following button to change.
+
+5. How do I add ingredients that are not in a Pantry to my Search?
+
+-Some users may wish to add additional ingredients that realistically may not be in their possession. Most common cases are for hypothetical searches. On the Search Page, there is a prompted search bar at the top of the page. This can be used to search for an ingredient that may reside in any of the User or Friends' pantries, or it can be used to add ingredients to an others catagory. When an ingredient is typed in, if it does not exist in any pantries, it will prompt to add to the Others section. Press this option and a new drop down will be created, similar to your friends' pantries, where ingredients can be deselected from the search.

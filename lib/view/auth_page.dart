@@ -212,7 +212,6 @@ class _AuthFormState extends State<AuthForm> {
                         fontWeight: FontWeight.w300,
                         fontFamily: 'MontserratScript')),
                 onPressed: () {
-                  // The event to dispatch to our AuthBloc
                   AuthEvent event;
                   if (widget.createAccount) {
                     event = AccountCreationRequested(
@@ -225,7 +224,6 @@ class _AuthFormState extends State<AuthForm> {
                       password: _passwordController.text,
                     );
                   }
-                  // Get reference to AuthBloc and dispatch event
                   BlocProvider.of<AuthBloc>(context).add(event);
                 },
               )),
